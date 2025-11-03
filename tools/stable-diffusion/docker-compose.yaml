@@ -1,0 +1,29 @@
+---
+
+services:
+  comfy:
+    image: yanwk/comfyui-boot:cu128-megapak-20251027
+    ports:
+      - "8188:8188"
+    volumes:
+      - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
+      - ${HOME}/.docker/volumes/comfy/input:/root/ComfyUI/input
+      - ${HOME}/.docker/volumes/comfy/output:/root/ComfyUI/output
+      - ${HOME}/.docker/volumes/comfy/workflows:/root/ComfyUI/user/default/workflows
+    environment:
+      CLI_ARGS: "--disable-xformers"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - sd-network
+
+networks:
+  sd-network:
+    driver: bridge
+
