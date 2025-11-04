@@ -1,6 +1,23 @@
 ---
 
 services:
+  forge:
+    build: ./forge
+    ports:
+      - "8877:7860"
+    volumes:
+      - ${HOME}/comfy/ComfyUI/models:/app/forge/models/Stable-diffusion
+      - ${HOME}/comfy/ComfyUI/vae:/app/forge/models/VAE
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - sd-network
   comfy:
     image: yanwk/comfyui-boot:cu128-megapak-20251027
     ports:
