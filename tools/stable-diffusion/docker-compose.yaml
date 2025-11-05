@@ -6,8 +6,9 @@ services:
     ports:
       - "8877:7860"
     volumes:
-      - ${HOME}/comfy/ComfyUI/models:/app/forge/models/Stable-diffusion
-      - ${HOME}/comfy/ComfyUI/vae:/app/forge/models/VAE
+      - ${HOME}/comfy/ComfyUI/models/checkpoints:/app/forge/models/Stable-diffusion
+      - ${HOME}/comfy/ComfyUI/models/vae:/app/forge/models/VAE
+      - ${HOME}/comfy/ComfyUI/models/embeddings:/app/forge/embeddings
     deploy:
       resources:
         reservations:

@@ -1,5 +1,8 @@
 ---
 
+# Reasoning: Qwen/Qwen3-14B-AWQ
+# Coding instruct: Qwen/Qwen2.5-14B-Instruct-AWQ
+
 services:
   vllm:
     image: vllm/vllm-openai:latest
@@ -38,6 +41,7 @@ services:
     volumes:
       - open-webui:/app/backend/data
     environment:
+      #- OPENAI_API_BASE_URLS=http://llamacpp:8080/v1
       - OPENAI_API_BASE_URLS=http://vllm:8000/v1
       - OPENAI_API_KEYS=dummy
       - ENABLE_OLLAMA_API=false
