@@ -1,7 +1,14 @@
 ---
 
 # Reasoning: Qwen/Qwen3-14B-AWQ
-# Coding instruct: Qwen/Qwen2.5-14B-Instruct-AWQ
+# Instruct:
+#   - Qwen/Qwen2.5-14B-Instruct-AWQ
+#   - TheBloke/CodeLlama-13B-Instruct-AWQ
+#   - deepseek-ai/deepseek-coder-6.7b-instruct
+# Coding:
+#   - TheBloke/CodeLlama-13B-AWQ
+#   - TheBloke/CodeLlama-13B-Python-AWQ
+#   - Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
 
 services:
   vllm:
@@ -29,6 +36,16 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai-network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_SECURE_COOKIE=false
     restart: unless-stopped
     networks:
       - ai-network
