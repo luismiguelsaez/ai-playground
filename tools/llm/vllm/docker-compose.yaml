@@ -1,14 +1,15 @@
 ---
 
-# Reasoning: Qwen/Qwen3-14B-AWQ
+# Reasoning:
+#   - Qwen/Qwen3-14B-AWQ
 # Instruct:
 #   - Qwen/Qwen2.5-14B-Instruct-AWQ
+#   - Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
 #   - TheBloke/CodeLlama-13B-Instruct-AWQ
 #   - deepseek-ai/deepseek-coder-6.7b-instruct
 # Coding:
 #   - TheBloke/CodeLlama-13B-AWQ
 #   - TheBloke/CodeLlama-13B-Python-AWQ
-#   - Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
 
 services:
   vllm:
