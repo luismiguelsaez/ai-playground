@@ -1,0 +1,24 @@
+---
+
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    ports:
+      - "5678:5678"
+    volumes:
+      - ${HOME}/.docker/volumes/n8n:/home/node/.n8n
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - wf-network
+
+networks:
+  wf-network:
+    driver: bridge
+
