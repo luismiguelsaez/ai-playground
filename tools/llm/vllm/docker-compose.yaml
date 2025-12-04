@@ -39,11 +39,12 @@ services:
     shm_size: 8gb
 
     command:
-      - --model=Qwen/Qwen2.5-Coder-32B-Instruct
+      - --model=Qwen/Qwen2.5-Coder-32B-Instruct-AWQ
       - --host=0.0.0.0
       - --port=8000
+      - --quantization=awq
       # Tensor parallelism across 2 GPUs
-      - --tensor-parallel-size=2
+      #- --tensor-parallel-size=2
       # GPU and memory settings
       - --gpu-memory-utilization=0.90
       - --max-model-len=16384
