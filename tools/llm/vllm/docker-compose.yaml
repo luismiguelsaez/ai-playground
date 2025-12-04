@@ -34,7 +34,7 @@ services:
       - VLLM_WORKER_MULTIPROC_METHOD=spawn
 
     volumes:
-      - $HOME/.docker/volumes/vllm-cache:/root/.cache/huggingface
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
 
     shm_size: 8gb
 
@@ -47,7 +47,7 @@ services:
       #- --tensor-parallel-size=2
       # GPU and memory settings
       - --gpu-memory-utilization=0.90
-      - --max-model-len=16384
+      - --max-model-len=6560
       # Performance optimizations
       - --disable-log-requests
       # API settings
@@ -59,7 +59,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: 2
+              device_ids: ['1']
               capabilities: [gpu]
  
     healthcheck:
@@ -84,7 +84,7 @@ services:
  
     volumes:
       # Cache model downloads
-      - $HOME/.docker/volumes/vllm-cache:/root/.cache/huggingface
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
       # Optional: Mount local model directory if you pre-downloaded
       # - ./local_models:/models
  
