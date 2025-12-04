@@ -2,10 +2,17 @@ name: Autocomplete
 version: 1.0.0
 
 models:
-  - name: Qwen Coder 7B
+  - name: Qwen Coder 7B ( fast )
     provider: openai
-    model: qwen-coder-7b
+    model: qwen-coder
     apiBase: http://192.168.4.178:8000/v1
     roles:
       - autocomplete
+
+  - name: Qwen Coder 32B ( chat )
+    provider: openai
+    model: qwen-coder-32b
+    apiBase: http://192.168.4.178:8001/v1
+    roles:
+      - chat
 

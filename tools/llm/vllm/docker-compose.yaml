@@ -13,9 +13,63 @@
 #   - TheBloke/CodeLlama-13B-Python-AWQ
 
 services:
+  vllm-qwen-coder-chat:
+    image: vllm/vllm-openai:v0.12.0
+    container_name: vllm-qwen-coder-chat
+    restart: unless-stopped
+ 
+    ports:
+      - "8001:8000"
+ 
+    environment:
+      # CRITICAL: Don't set CUDA_VISIBLE_DEVICES - let vLLM see all GPUs
+      # NCCL settings for multi-GPU communication
+      - NCCL_DEBUG=INFO
+      - NCCL_IB_DISABLE=1
+      - NCCL_P2P_LEVEL=NVL
+      - NCCL_SOCKET_IFNAME=lo
+      - NCCL_TIMEOUT=1800
+      # Ray configuration for multi-GPU
+      - RAY_DEDUP_LOGS=0
+      - VLLM_WORKER_MULTIPROC_METHOD=spawn
+
+    volumes:
+      - $HOME/.docker/volumes/vllm-cache:/root/.cache/huggingface
+
+    shm_size: 8gb
+
+    command:
+      - --model=Qwen/Qwen2.5-Coder-32B-Instruct
+      - --host=0.0.0.0
+      - --port=8000
+      # Tensor parallelism across 2 GPUs
+      - --tensor-parallel-size=2
+      # GPU and memory settings
+      - --gpu-memory-utilization=0.90
+      - --max-model-len=16384
+      # Performance optimizations
+      - --disable-log-requests
+      # API settings
+      - --served-model-name=qwen-coder-32b
+      - --trust-remote-code
+  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # Longer startup for larger model
 
   vllm-qwen-coder:
-    image: vllm/vllm-openai:latest
+    image: vllm/vllm-openai:v0.12.0
     container_name: vllm-qwen-coder
     restart: unless-stopped
  
@@ -57,7 +111,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['0']
               capabilities: [gpu]
  
     healthcheck:
