@@ -13,100 +13,61 @@
 #   - TheBloke/CodeLlama-13B-Python-AWQ
 
 services:
-  llamacpp:
-    image: ghcr.io/ggerganov/llama.cpp:server-cuda
-    container_name: llamacpp-server
-    runtime: nvidia
-    environment:
-      - CUDA_VISIBLE_DEVICES=0,1
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./models:/models
-      - ~/.cache/huggingface:/root/.cache/huggingface
-    command: >
-      -m /models/qwen2.5-32b-instruct-q4_k_m.gguf
-      -c 8192
-      -ngl 99
-      -ts 2
-      --host 0.0.0.0
-      --port 8000
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 2
-              capabilities: [gpu]
-    restart: unless-stopped
 
-  vllm:
+  vllm-qwen-coder:
     image: vllm/vllm-openai:latest
-    container_name: vllm
+    container_name: vllm-qwen-coder
+    restart: unless-stopped
+ 
     ports:
       - "8000:8000"
-    volumes:
-      - ~/.cache/huggingface:/root/.cache/huggingface
+ 
     environment:
-      # - HUGGING_FACE_HUB_TOKEN=your_token_here
-      - CUDA_VISIBLE_DEVICES=0,1
-    ipc: host
-    shm_size: 32g
-    command: >
-      --model Qwen/Qwen2.5-32B-Instruct-AWQ
-      --host 0.0.0.0
-      --port 8000
-      --dtype bfloat16
-      --tensor-parallel-size 2 
-      --gpu-memory-utilization 0.90
-      --max-model-len 10000 
-      --distributed-executor-backend mp
+      # Hugging Face token (optional, only if you need private models)
+      # - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+      - NCCL_P2P_DISABLE=1  # Disable P2P for single GPU stability
+ 
+    volumes:
+      # Cache model downloads
+      - $HOME/.docker/volumes/vllm-cache:/root/.cache/huggingface
+      # Optional: Mount local model directory if you pre-downloaded
+      # - ./local_models:/models
+ 
+    command:
+      - --model=Qwen/Qwen2.5-Coder-7B-Instruct
+      - --host=0.0.0.0
+      - --port=8000
+      # GPU and memory settings
+      - --gpu-memory-utilization=0.9
+      - --max-model-len=8192
+      # Performance optimizations for autocompletion
+      - --enable-prefix-caching
+      - --enable-chunked-prefill
+      - --max-num-seqs=32
+      - --max-num-batched-tokens=8192
+      # FIM (Fill-in-Middle) support for code completion
+      - --enable-auto-tool-choice
+      - --tool-call-parser=hermes
+      # API settings
+      - --served-model-name=qwen-coder-7b
+      - --trust-remote-code
+ 
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              count: 2
+              device_ids: ['1']
               capabilities: [gpu]
-    restart: unless-stopped
-    networks:
-      - ai-network
-
-        #n8n:
-        #  image: docker.n8n.io/n8nio/n8n
-        #  ports:
-        #    - "5678:5678"
-        #  environment:
-        #    - N8N_SECURE_COOKIE=false
-        #  restart: unless-stopped
-        #  networks:
-        #    - ai-network
-
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    ports:
-      - "3000:8080"
-    volumes:
-      - open-webui:/app/backend/data
-    environment:
-      #- OPENAI_API_BASE_URLS=http://llamacpp:8080/v1
-      - OPENAI_API_BASE_URLS=http://vllm:8000/v1
-      - OPENAI_API_KEYS=dummy
-      - ENABLE_OLLAMA_API=false
-    depends_on:
-      - vllm
-    restart: unless-stopped
-    networks:
-      - ai-network
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
 volumes:
-  open-webui:
+  models:
     driver: local
-
-networks:
-  ai-network:
-    driver: bridge
 

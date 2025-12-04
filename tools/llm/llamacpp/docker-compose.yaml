@@ -1,13 +1,14 @@
 ---
 
 # Models
-# huggingface-cli download --local-dir /home/luismi/ai/tools/llamacpp/models lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-GGUF Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf
-# huggingface-cli download --local-dir /home/luismi/ai/tools/llamacpp/models TheBloke/CodeLlama-70B-Python-GGUF codellama-70b-python.Q4_K_M.gguf
+# hf download --local-dir /home/luismi/ai/tools/llamacpp/models lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-GGUF Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf
+# hf download --local-dir . lmstudio-community/Olmo-3-32B-Think-GGUF Olmo-3-32B-Think-Q8_0.gguf
+# arcee/Trinity-Mini-Q4_K_M.gguf
+# microsoft/phi-4-gguf phi-4-Q4_K.gguf
 
 services:
-  llamacpp:
-    image: ghcr.io/ggerganov/llama.cpp:server-cuda
-    container_name: llamacpp-server
+  microsoft-phi-4:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
     environment:
       - CUDA_VISIBLE_DEVICES=0,1
@@ -19,7 +20,63 @@ services:
       - /home/luismi/ai/tools/llamacpp/models:/models
       - ~/.cache/huggingface:/root/.cache/huggingface
     command: >
-      -m /models/codellama-70b-python.Q4_K_M.gguf
+      -m /models/phi-4-Q4_K.gguf
+      -c 10000 
+      -ngl 99
+      -ts 1,1
+      --host 0.0.0.0
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  arcee-trinity-mini:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    runtime: nvidia
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8000:8000"
+    volumes:
+      - /home/luismi/ai/tools/llamacpp/models:/models
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: >
+      -m /models/Trinity-Mini-Q4_K_M.gguf
+      -c 10000 
+      -ngl 99
+      -ts 1,1
+      --host 0.0.0.0
+      --port 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  qwen3-coder-instruct:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    runtime: nvidia
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8000:8000"
+    volumes:
+      - /home/luismi/ai/tools/llamacpp/models:/models
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    command: >
+      -m /models/Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf
       -c 10000 
       -ngl 99
       -ts 1,1

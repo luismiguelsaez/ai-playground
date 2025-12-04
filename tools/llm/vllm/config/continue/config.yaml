@@ -1,0 +1,11 @@
+name: Autocomplete
+version: 1.0.0
+
+models:
+  - name: Qwen Coder 7B
+    provider: openai
+    model: qwen-coder-7b
+    apiBase: http://192.168.4.178:8000/v1
+    roles:
+      - autocomplete
+
