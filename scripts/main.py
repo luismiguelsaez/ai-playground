@@ -1,14 +1,17 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
-from colorama import Fore, Back, Style
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer, BitsAndBytesConfig
+from colorama import Fore, Style
 from threading import Thread
 from time import sleep
 
-model_name = "Qwen/Qwen3-0.6B"
+model_name = "Qwen/Qwen3-8B"
+quantization_config = BitsAndBytesConfig(load_in_8bit=True)
 
 # load the tokenizer and the model
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(
-    model_name, dtype="auto", device_map="auto"
+    model_name,
+    dtype="auto",
+    device_map="auto",
 )
 
 messages = []
@@ -47,6 +50,7 @@ while True:
 
     resp = ""
     for text_token in streamer:
+        sleep(0.01)
         print(
             f"{Fore.LIGHTGREEN_EX}{Style.DIM}{text_token}{Style.RESET_ALL}{Fore.RESET}",
             end="",
@@ -54,3 +58,4 @@ while True:
         resp += text_token
 
     messages.append({"role": "assistant", "content": resp})
+
