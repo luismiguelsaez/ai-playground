@@ -7,6 +7,7 @@
 # microsoft/phi-4-gguf phi-4-Q4_K.gguf
 
 services:
+
   completion-qwen-coder-7b:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
@@ -36,6 +37,38 @@ services:
           devices:
             - driver: nvidia
               device_ids: ['0']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  chat-qwen-coder-32b:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8001:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --hf-repo Qwen/Qwen2.5-Coder-32B-Instruct-GGUF
+      --hf-file qwen2.5-coder-32b-instruct-q4_k_m.gguf
+      --alias qwen2.5-coder-32b-instruct
+      -c 10000
+      --gpu-layers -1
+      --tensor-split 1,1
+      --split-mode layer
+      --temp 0.8
+      --top-k 40
+      --top-p 0.9
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']
               capabilities: [gpu]
     restart: unless-stopped
 

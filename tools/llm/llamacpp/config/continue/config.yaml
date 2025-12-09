@@ -11,8 +11,8 @@ models:
 
   - name: Qwen Coder 32B ( chat )
     provider: openai
-    model: qwen-coder-32b
-    apiBase: http://192.168.4.178:8001/v1
+    model: qwen2.5-coder-32b-instruct
+    apiBashe: http://192.168.4.178:8001
     roles:
       - chat
 
