@@ -2,6 +2,7 @@ name: Autocomplete confgiguration
 version: 1.0.0
 
 models:
+
   - name: Qwen Coder 7B ( fast )
     provider: openai
     model: qwen-coder
@@ -11,7 +12,7 @@ models:
 
   - name: Qwen Coder 32B ( chat )
     provider: openai
-    model: qwen2.5-coder-32b-instruct
+    model: qwen3-vl-32b-thinking
     apiBashe: http://192.168.4.178:8001
     roles:
       - chat

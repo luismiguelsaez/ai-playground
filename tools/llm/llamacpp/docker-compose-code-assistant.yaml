@@ -40,7 +40,7 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
 
-  chat-qwen-coder-32b:
+  chat-qwen-32b-thinking:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
     environment:
@@ -53,9 +53,9 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo Qwen/Qwen2.5-Coder-32B-Instruct-GGUF
-      --hf-file qwen2.5-coder-32b-instruct-q4_k_m.gguf
-      --alias qwen2.5-coder-32b-instruct
+      --hf-repo Qwen/Qwen3-VL-32B-Thinking-GGUF
+      --hf-file Qwen3VL-32B-Thinking-Q4_K_M.gguf
+      --alias qwen3-vl-32b-thinking
       -c 10000
       --gpu-layers -1
       --tensor-split 1,1
