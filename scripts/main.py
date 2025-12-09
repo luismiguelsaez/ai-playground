@@ -3,7 +3,7 @@ from colorama import Fore, Style
 from threading import Thread
 from time import sleep
 
-model_name = "Qwen/Qwen3-8B"
+model_name = "Qwen/Qwen3-0.6B"
 quantization_config = BitsAndBytesConfig(load_in_8bit=True)
 
 # load the tokenizer and the model

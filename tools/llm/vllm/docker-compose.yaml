@@ -13,6 +13,118 @@
 #   - TheBloke/CodeLlama-13B-Python-AWQ
 
 services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3000:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-glm-4.6-flash:8000/v1
+    restart: unless-stopped
+
+  vllm-glm-4.6-flash:
+    image: vllm/vllm-openai:nightly
+    restart: unless-stopped
+ 
+    ports:
+      - "8003:8000"
+ 
+    environment:
+      # CRITICAL: Don't set CUDA_VISIBLE_DEVICES - let vLLM see all GPUs
+      # NCCL settings for multi-GPU communication
+      - NCCL_DEBUG=INFO
+      - NCCL_IB_DISABLE=1
+      - NCCL_P2P_LEVEL=NVL
+      - NCCL_SOCKET_IFNAME=lo
+      - NCCL_TIMEOUT=1800
+      # Ray configuration for multi-GPU
+      - RAY_DEDUP_LOGS=0
+      - VLLM_WORKER_MULTIPROC_METHOD=spawn
+
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+
+    shm_size: 8gb
+
+    command:
+      - zai-org/GLM-4.6V-Flash
+      - --host=0.0.0.0
+      - --port=8000
+      - --gpu-memory-utilization=0.90
+      - --disable-log-requests
+      - --served-model-name=glm-4.6-flash
+      - --trust-remote-code
+      - --tokenizer-mode=auto
+  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # Longer startup for larger model
+
+  vllm-rnj-1-instruct:
+    image: vllm/vllm-openai:v0.12.0
+    restart: unless-stopped
+ 
+    ports:
+      - "8002:8000"
+ 
+    environment:
+      # CRITICAL: Don't set CUDA_VISIBLE_DEVICES - let vLLM see all GPUs
+      # NCCL settings for multi-GPU communication
+      - NCCL_DEBUG=INFO
+      - NCCL_IB_DISABLE=1
+      - NCCL_P2P_LEVEL=NVL
+      - NCCL_SOCKET_IFNAME=lo
+      - NCCL_TIMEOUT=1800
+      # Ray configuration for multi-GPU
+      - RAY_DEDUP_LOGS=0
+      - VLLM_WORKER_MULTIPROC_METHOD=spawn
+
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+
+    shm_size: 8gb
+
+    command:
+      - --model=EssentialAI/rnj-1-instruct
+      - --host=0.0.0.0
+      - --port=8000
+      # Tensor parallelism across 2 GPUs
+      #- --tensor-parallel-size=2
+      # GPU and memory settings
+      - --gpu-memory-utilization=0.90
+      - --max-model-len=10000
+      # Performance optimizations
+      - --disable-log-requests
+      # API settings
+      - --served-model-name=rnj-1-instruct
+      - --trust-remote-code
+  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # Longer startup for larger model
+
   vllm-qwen-coder-chat:
     image: vllm/vllm-openai:v0.12.0
     container_name: vllm-qwen-coder-chat
@@ -113,6 +225,59 @@ services:
           devices:
             - driver: nvidia
               device_ids: ['0']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  vllm-qwen3-vl-thinking:
+    image: vllm/vllm-openai:v0.12.0
+    restart: unless-stopped
+ 
+    ports:
+      - "8004:8000"
+ 
+    environment:
+      # Hugging Face token (optional, only if you need private models)
+      # - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+      - NCCL_P2P_DISABLE=1  # Disable P2P for single GPU stability
+ 
+    volumes:
+      # Cache model downloads
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      # Optional: Mount local model directory if you pre-downloaded
+      # - ./local_models:/models
+ 
+    command:
+      - --model=Qwen/Qwen3-VL-30B-A3B-Thinking-FP8
+      - --host=0.0.0.0
+      - --port=8000
+      # GPU and memory settings
+      - --gpu-memory-utilization=0.9
+      - --tensor-parallel-size=2
+      #- --max-model-len=8192
+      # Performance optimizations for autocompletion
+      - --enable-prefix-caching
+      - --enable-chunked-prefill
+      - --max-num-seqs=32
+      - --max-num-batched-tokens=8192
+      # FIM (Fill-in-Middle) support for code completion
+      - --enable-auto-tool-choice
+      - --tool-call-parser=hermes
+      # API settings
+      - --served-model-name=qwen3-vl-thinking
+      - --trust-remote-code
+ 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0', '1']
               capabilities: [gpu]
  
     healthcheck:
