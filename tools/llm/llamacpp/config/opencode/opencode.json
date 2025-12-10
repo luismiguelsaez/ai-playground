@@ -8,6 +8,15 @@
         "@playwright/mcp@latest"
       ],
       "enabled": true
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "kubernetes-mcp-server@latest"
+      ],
+      "enabled": true
     }
   },
   "provider": {
