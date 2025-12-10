@@ -5,10 +5,21 @@ models:
 
   - name: Qwen Coder 7B ( fast )
     provider: openai
-    model: qwen-coder
+    model: qwen2.5-coder-7b-instruct
     apiBase: http://192.168.4.178:8000
     roles:
       - autocomplete
+    requestOptions:
+      extraBodyProperties:
+        think: false
+    autocompleteOptions:
+      disable: false
+      maxPromptTokens: 1024
+      debounceDelay: 250
+      modelTimeout: 150
+      maxSuffixPercentage: 0.2
+      prefixPercentage: 0.3
+      onlyMyCode: true
 
   - name: Qwen Coder 32B ( chat )
     provider: openai
@@ -16,4 +27,6 @@ models:
     apiBase: http://192.168.4.178:8001
     roles:
       - chat
-
+    requestOptions:
+      extraBodyProperties:
+        think: true

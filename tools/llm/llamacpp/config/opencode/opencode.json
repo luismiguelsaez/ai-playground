@@ -1,0 +1,28 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "llama.cpp": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama-server (local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:8001"
+      },
+      "models": {
+        "qwen3-vl-32b-thinking": {
+          "name": "qwen3-vl-32b-thinking"
+          "limit": {
+            "context": 128000,
+            "output": 65536
+          }
+        },
+        "qwen2.5-coder-7b-instruct": {
+          "name": "qwen2.5-coder-7b-instruct",
+          "limit": {
+            "context": 128000,
+            "output": 65536
+          }
+        }
+      }
+    }
+  }
+}
