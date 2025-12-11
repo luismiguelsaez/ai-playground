@@ -7,7 +7,16 @@
         "npx",
         "@playwright/mcp@latest"
       ],
-      "enabled": true
+      "enabled": false 
+    },
+    "websearch": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@mzxrai/mcp-webresearch@latest"
+      ],
+      "enabled": false
     },
     "kubernetes": {
       "type": "local",
@@ -16,7 +25,7 @@
         "-y",
         "kubernetes-mcp-server@latest"
       ],
-      "enabled": true
+      "enabled": false
     }
   },
   "provider": {
