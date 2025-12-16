@@ -1,0 +1,18 @@
+# Chatterbox TTS
+
+## Build
+
+```bash
+docker build -t chatterbox:text .
+```
+
+## Run
+
+```bash
+docker run -it --gpus all \
+  -v $PWD/input:/input -v $PWD/output:/output -v $PWD/code:/code \
+  -v $HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub \
+  -e HF_TOKEN=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 \
+  chatterbox:test python /code/multilingual.py
+```
+
