@@ -9,10 +9,12 @@ docker build -t chatterbox:text .
 ## Run
 
 ```bash
+export HF_TOKEN=""
+
 docker run -it --gpus all \
   -v $PWD/input:/input -v $PWD/output:/output -v $PWD/code:/code \
   -v $HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub \
-  -e HF_TOKEN=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 \
+  -e HF_TOKEN \
   chatterbox:test python /code/multilingual.py
 ```
 
