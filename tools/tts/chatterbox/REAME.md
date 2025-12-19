@@ -15,6 +15,7 @@ docker run -it --gpus all \
   -v $PWD/input:/input -v $PWD/output:/output -v $PWD/code:/code \
   -v $HOME/.cache/huggingface/hub:/root/.cache/huggingface/hub \
   -e HF_TOKEN \
+  -u $(id -u) \
   chatterbox:test python /code/multilingual.py
 ```
 
