@@ -1,0 +1,111 @@
+---
+
+# Reasoning:
+#   - Qwen/Qwen3-14B-AWQ
+# Instruct:
+#   - Qwen/Qwen2.5-14B-Instruct-AWQ
+#   - Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
+#   - TheBloke/CodeLlama-13B-Instruct-AWQ
+#   - deepseek-ai/deepseek-coder-6.7b-instruct
+# Coding:
+#   - Qwen/Qwen2.5-Coder-7B
+#   - TheBloke/CodeLlama-13B-AWQ
+#   - TheBloke/CodeLlama-13B-Python-AWQ
+
+services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3000:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-glm-4.6-flash:8000/v1
+    restart: unless-stopped
+
+  vllm-glm-4.6-flash:
+    image: vllm/vllm-openai:v0.12.0
+    restart: unless-stopped
+ 
+    ports:
+      - "8004:8000"
+ 
+    environment: []
+ 
+    volumes:
+      - $HOME/.cache/huggingface/hub:/root/.cache/huggingface
+ 
+    command:
+      - cyankiwi/GLM-4.6V-Flash-AWQ-4bit
+      - --served-model-name=GLM-4.6V-Flash
+      - --host=0.0.0.0
+      - --port=8000
+      - --quantization=awq
+      - --gpu-memory-utilization=0.90
+      - --max-num-seqs=1
+      - --max-model-len=8000
+      - --tensor-parallel-size=2
+      - --dtype=half
+      - --disable-log-requests
+      - --enable-auto-tool-choice
+      - --tool-call-parser=hermes
+ 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  vllm-qwen3-coder-30b:
+    image: vllm/vllm-openai:v0.12.0
+    restart: unless-stopped
+ 
+    ports:
+      - "8004:8000"
+ 
+    environment: []
+ 
+    volumes:
+      - $HOME/.cache/huggingface/hub:/root/.cache/huggingface
+ 
+    command:
+      - cpatonn/Qwen3-Coder-30B-A3B-Instruct-AWQ-4bit
+      - --served-model-name=Qwen3-Coder-30B-Instruct
+      - --host=0.0.0.0
+      - --port=8000
+      - --gpu-memory-utilization=0.90
+      - --max-num-seqs=1
+      - --max-model-len=8000
+      - --tensor-parallel-size=2
+      - --dtype=half
+      - --disable-log-requests
+      - --enable-auto-tool-choice
+      - --tool-call-parser=hermes
+ 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0', '1']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  models:
+    driver: local
+
