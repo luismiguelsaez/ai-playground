@@ -2,8 +2,8 @@
 
 services:
 
-  # Nvidia Nemotron 3 Nano 
-  thinking-nemotron-3-nano-30b:
+  # Nvidia Nemotron 3 Nano
+  thinking-nemotron-3-nano:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7493
     runtime: nvidia
     environment:
@@ -17,7 +17,7 @@ services:
       --host 0.0.0.0
       --port 8000
       --hf-repo unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q4_K_M
-      --alias nvidia-nemotron-3-nano-30b
+      --alias nvidia-nemotron-3-nano
       --gpu-layers -1
       --tensor-split 1,2
       --split-mode layer

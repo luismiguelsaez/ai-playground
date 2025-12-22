@@ -20,14 +20,18 @@ inputs = tokenizer.apply_chat_template(
     return_tensors="pt",
 ).to(model.device)
 
-print(f"{Fore.GREEN}Input IDs:\n{Fore.RED}{inputs['input_ids']}{Fore.RESET}")
-print(
-    f"{Fore.GREEN}Input IDs shape:\n{Fore.RED}{inputs['input_ids'].shape}{Fore.RESET}"
-)
+print(f"{Fore.GREEN}Input IDs: {Fore.RESET}", end="")
+for t in inputs["input_ids"][0].tolist():
+    print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
+print()
 
 outputs = model.generate(**inputs, max_new_tokens=MAX_NEW_TOKENS)
 
-print(f"{Fore.GREEN}Outputs:\n{Fore.RED}{outputs}{Fore.RESET}")
+print(f"{Fore.GREEN}Output IDs: {Fore.RESET}", end="")
+for t in outputs[0].tolist():
+    print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
+print()
+
 print(
     f"{Fore.GREEN}Outputs decoded:\n{Fore.RED}{tokenizer.decode(outputs[0][inputs['input_ids'].shape[-1] :])}{Fore.RESET}"
 )

@@ -20,8 +20,7 @@ services:
     networks:
       - sd-network
   comfy:
-    #image: yanwk/comfyui-boot:cu128-megapak-20251205
-    image: yanwk/comfyui-boot:cu130-slim-20251215
+    image: yanwk/comfyui-boot:cu130-slim-20251222
     ports:
       - "8188:8188"
     volumes:
