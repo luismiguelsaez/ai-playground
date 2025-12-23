@@ -20,14 +20,15 @@ services:
     networks:
       - sd-network
   comfy:
-    image: yanwk/comfyui-boot:cu130-slim-20251222
+    image: yanwk/comfyui-boot:cu128-slim-20251129
     ports:
       - "8188:8188"
     volumes:
       - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
-      - ${HOME}/.docker/volumes/comfy/input:/root/ComfyUI/input
-      - ${HOME}/.docker/volumes/comfy/output:/root/ComfyUI/output
-      - ${HOME}/.docker/volumes/comfy/workflows:/root/ComfyUI/user/default/workflows
+      - ${HOME}/comfy/ComfyUI/input:/root/ComfyUI/input
+      - ${HOME}/comfy/ComfyUI/output:/root/ComfyUI/output
+      - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
+      - ${HOME}/comfy/ComfyUI/custom_nodes:/root/ComfyUI/custom_nodes
     environment:
       CLI_ARGS: "--disable-xformers"
     deploy:
@@ -35,7 +36,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              count: 1
+              device_ids: ['0','1']
               capabilities: [gpu]
     restart: unless-stopped
     networks:
