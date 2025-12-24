@@ -1,6 +1,7 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from colorama import Fore
 from sys import argv
+
+from colorama import Fore
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MAX_NEW_TOKENS = 10000
 
@@ -38,6 +39,5 @@ for t in outputs[0].tolist():
         print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
 print()
 
-print(
-    f"{Fore.GREEN}Outputs decoded:\n{Fore.RED}{tokenizer.decode(outputs[0][inputs_shape:])}{Fore.RESET}"
-)
+decoded_outputs = tokenizer.decode(outputs[0][inputs_shape:], skip_special_tokens=True)
+print(f"{Fore.GREEN}Outputs decoded:\n{Fore.RED}{decoded_outputs}{Fore.RESET}")
