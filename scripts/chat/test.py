@@ -22,16 +22,22 @@ inputs = tokenizer.apply_chat_template(
 
 print(f"{Fore.GREEN}Input IDs: {Fore.RESET}", end="")
 for t in inputs["input_ids"][0].tolist():
-    print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
+    print(f"{Fore.BLUE}{t}{Fore.RESET}", end=" ")
 print()
 
 outputs = model.generate(**inputs, max_new_tokens=MAX_NEW_TOKENS)
 
 print(f"{Fore.GREEN}Output IDs: {Fore.RESET}", end="")
+inputs_shape = inputs["input_ids"].shape[-1]
+c = 0
 for t in outputs[0].tolist():
-    print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
+    if c < inputs_shape:
+        print(f"{Fore.BLUE}{t}{Fore.RESET}", end=" ")
+        c += 1
+    else:
+        print(f"{Fore.RED}{t}{Fore.RESET}", end=" ")
 print()
 
 print(
-    f"{Fore.GREEN}Outputs decoded:\n{Fore.RED}{tokenizer.decode(outputs[0][inputs['input_ids'].shape[-1] :])}{Fore.RESET}"
+    f"{Fore.GREEN}Outputs decoded:\n{Fore.RED}{tokenizer.decode(outputs[0][inputs_shape:])}{Fore.RESET}"
 )

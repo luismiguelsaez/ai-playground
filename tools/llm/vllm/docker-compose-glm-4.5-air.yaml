@@ -39,7 +39,7 @@ services:
       - --host=0.0.0.0
       - --port=8000
       - --served-model-name=glm-4.5-air
-      - --tensor-parallel-size=8
+      - --tensor-parallel-size=4
       - --speculative-config.method=mtp
       - --speculative-config.num_speculative_tokens=1
       - --tool-call-parser=glm45

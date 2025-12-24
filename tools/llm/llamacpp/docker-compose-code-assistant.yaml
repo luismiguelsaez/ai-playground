@@ -73,6 +73,7 @@ services:
               device_ids: ['0']
               capabilities: [gpu]
     restart: unless-stopped
+
   # Code completion #2
   completion-qwen-coder-7b:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
