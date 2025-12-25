@@ -5,8 +5,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 MAX_NEW_TOKENS = 10000
 
-tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")
-model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-0.6B", device_map="cuda:0")
+checkpoints = ["LiquidAI/LFM2-2.6B-Exp", "Qwen/Qwen3-0.6B"]
+
+tokenizer = AutoTokenizer.from_pretrained(checkpoints[0])
+model = AutoModelForCausalLM.from_pretrained(checkpoints[0], device_map="cuda:3")
 messages = [
     {
         "role": "user",
@@ -26,7 +28,13 @@ for t in inputs["input_ids"][0].tolist():
     print(f"{Fore.BLUE}{t}{Fore.RESET}", end=" ")
 print()
 
-outputs = model.generate(**inputs, max_new_tokens=MAX_NEW_TOKENS)
+outputs = model.generate(
+    **inputs,
+    max_new_tokens=MAX_NEW_TOKENS,
+    temperature=0.7,
+    min_p=0.5,
+    repetition_penalty=1.05,
+)
 
 print(f"{Fore.GREEN}Output IDs: {Fore.RESET}", end="")
 inputs_shape = inputs["input_ids"].shape[-1]
