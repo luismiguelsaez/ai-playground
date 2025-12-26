@@ -49,6 +49,7 @@ services:
       --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF
       --hf-file Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf
       --alias qwen3-coder-30b-instruct
+      --jinja
       --gpu-layers -1
       --tensor-split 1,1
       --split-mode layer
@@ -103,6 +104,6 @@ services:
       - ai
 
 networks:
-  ai-network:
+  ai:
     driver: bridge
 
