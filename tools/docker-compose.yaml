@@ -1,0 +1,108 @@
+---
+
+# Models
+# hf download --local-dir /home/luismi/ai/tools/llamacpp/models lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-GGUF Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf
+# hf download --local-dir . lmstudio-community/Olmo-3-32B-Think-GGUF Olmo-3-32B-Think-Q8_0.gguf
+# arcee/Trinity-Mini-Q4_K_M.gguf
+# microsoft/phi-4-gguf phi-4-Q4_K.gguf
+
+services:
+
+  # ComfyUI
+  comfy:
+    image: yanwk/comfyui-boot:cu128-slim-20251129
+    ports:
+      - "8188:8188"
+    volumes:
+      - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
+      - ${HOME}/comfy/ComfyUI/input:/root/ComfyUI/input
+      - ${HOME}/comfy/ComfyUI/output:/root/ComfyUI/output
+      - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
+      - ${HOME}/comfy/ComfyUI/custom_nodes:/root/ComfyUI/custom_nodes
+    environment:
+      CLI_ARGS: "--disable-xformers"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai 
+
+  # Opencode agent
+  chat-qwen3-coder-30b-instruct:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF
+      --hf-file Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf
+      --alias qwen3-coder-30b-instruct
+      --gpu-layers -1
+      --tensor-split 1,1
+      --split-mode layer
+      --ctx-size 120000 
+      --temp 0.8
+      --top-k 40
+      --top-p 0.9
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1','2']
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai
+
+  # Code completion
+  completion-qwen-coder-7b:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --hf-repo Qwen/Qwen2.5-Coder-7B-Instruct-GGUF
+      --hf-file qwen2.5-coder-7b-instruct-q4_k_m.gguf
+      --alias qwen2.5-coder-7b-instruct
+      --ctx-size 10000
+      --gpu-layers -1
+      --tensor-split 1
+      --split-mode layer
+      --temp 0.8
+      --top-k 40
+      --top-p 0.9
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['3']
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai
+
+networks:
+  ai-network:
+    driver: bridge
+
