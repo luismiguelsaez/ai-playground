@@ -1,0 +1,3 @@
+[submodule "tools/llm/mini-sglang/mini-sglang"]
+	path = tools/llm/mini-sglang/mini-sglang
+	url = https://github.com/sgl-project/mini-sglang.git

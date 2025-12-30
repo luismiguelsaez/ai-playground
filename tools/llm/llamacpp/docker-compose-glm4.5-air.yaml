@@ -16,12 +16,13 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/GLM-4.5-Air-GGUF:Q4_K_M
+      --hf-repo unsloth/GLM-4.5-Air-GGUF:Q5_K_S
       --alias glm-4.5-air 
-      --gpu-layers -1
+      --gpu-layers 38 
       --tensor-split 1,1,1,1
-      --split-mode layer
-      --ctx-size 120000
+      -t 32
+      --n-cpu-moe 10
+      --ctx-size 12000
       --temp 0.8
       --top-k 40
       --top-p 0.9
