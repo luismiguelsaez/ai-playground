@@ -1,0 +1,55 @@
+---
+
+services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://qwen3-next:8000/v1
+    restart: unless-stopped
+
+  qwen3-next:
+    image: vllm/vllm-openai:nightly
+    restart: unless-stopped
+ 
+    ports:
+      - "8003:8000"
+ 
+    environment:
+      - VLLM_MARLIN_USE_ATOMIC_ADD=1
+
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+
+    shm_size: 8gb
+
+    command:
+      - Qwen/Qwen3-Next-80B-A3B-Instruct-FP8
+      - --host=0.0.0.0
+      - --port=8000
+      - --served-model-name=qwen3-next
+      - --tensor-parallel-size=4
+      - --tokenizer-mode=auto
+      - --gpu-memory-utilization=0.8
+ 
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # Longer startup for larger model
+
+volumes:
+  models:
+    driver: local
+

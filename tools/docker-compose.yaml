@@ -33,7 +33,7 @@ services:
       - ai 
 
   # Opencode agent
-  chat-qwen3-coder-30b-instruct:
+  agent:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
     environment:
@@ -46,17 +46,18 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF
-      --hf-file Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf
-      --alias qwen3-coder-30b-instruct
+      --hf-repo unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q4_K_M
+      --alias coding-agent
       --jinja
       --gpu-layers -1
       --tensor-split 1,1
       --split-mode layer
-      --ctx-size 120000 
-      --temp 0.8
+      --ctx-size 32768
+      --max-new-tokens 32768
+      --fit on
+      --temp 0.6
       --top-k 40
-      --top-p 0.9
+      --top-p 0.95
     deploy:
       resources:
         reservations:
@@ -69,7 +70,7 @@ services:
       - ai
 
   # Code completion
-  completion-qwen-coder-7b:
+  completion:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
     environment:
@@ -84,7 +85,7 @@ services:
       --port 8000
       --hf-repo Qwen/Qwen2.5-Coder-7B-Instruct-GGUF
       --hf-file qwen2.5-coder-7b-instruct-q4_k_m.gguf
-      --alias qwen2.5-coder-7b-instruct
+      --alias coding-completion 
       --ctx-size 10000
       --gpu-layers -1
       --tensor-split 1

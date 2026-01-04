@@ -2,7 +2,6 @@ from sys import argv
 
 from colorama import Fore
 from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
-from threading import Thread
 
 MAX_NEW_TOKENS = 10000
 
@@ -25,6 +24,9 @@ inputs = tokenizer.apply_chat_template(
     tokenize=False,
     return_dict=False,
 )
+
+tokens = tokenizer.tokenize(inputs)
+print(f"{Fore.GREEN}Tokens:{Fore.RESET}\n{Fore.BLUE}{tokens}{Fore.RESET}")
 
 print(f"{Fore.GREEN}Inputs:{Fore.RESET}\n{Fore.BLUE}{inputs}{Fore.RESET}")
 input_ids = tokenizer.encode(inputs, return_tensors="pt").to(model.device)

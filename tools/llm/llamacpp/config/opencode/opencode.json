@@ -7,6 +7,11 @@
     "doom_loop": "ask",
     "external_directory": "ask"
   },
+  "lsp": {
+    "pyright": {
+      "disabled": true
+    }
+  },
   "mcp": {
     "playwright": {
       "type": "local",
@@ -14,7 +19,7 @@
         "npx",
         "@playwright/mcp@latest"
       ],
-      "enabled": false 
+      "enabled": false
     },
     "websearch": {
       "type": "local",
@@ -43,15 +48,8 @@
         "baseURL": "http://127.0.0.1:8002"
       }, 
       "models": {
-        "nvidia-nemotron-3-nano-30b": {
-          "name": "nvidia-nemotron-3-nano-30b",
-          "limit": {
-            "context": 128000,
-            "output": 65536
-          }
-        },
-        "qwen3-coder-30b-instruct": {
-          "name": "qwen3-coder-30b-instruct",
+        "coding-agent": {
+          "name": "coding-agent",
           "limit": {
             "context": 128000,
             "output": 65536

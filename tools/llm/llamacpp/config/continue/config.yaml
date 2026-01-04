@@ -1,35 +1,17 @@
-name: Autocomplete confgiguration
+name: Autocomplete
 version: 1.0.0
 
 models:
 
-  - name: Codellama Python 7B ( fast )
-    provider: openai
-    model: codellama-python-7b
-    apiBase: http://192.168.4.178:8000
-    roles:
-      - autocomplete
-    requestOptions:
-      extraBodyProperties:
-        think: false
-    autocompleteOptions:
-      disable: false
-      maxPromptTokens: 1024
-      debounceDelay: 250
-      modelTimeout: 150
-      maxSuffixPercentage: 0.2
-      prefixPercentage: 0.3
-      onlyMyCode: true
-
   - name: Qwen Coder 7B ( fast )
     provider: openai
-    model: qwen2.5-coder-7b-instruct
-    apiBase: http://192.168.4.178:8000
-    roles:
-      - autocomplete
+    model: coding-completion
+    apiBase: http://127.0.0.1:8000
     requestOptions:
       extraBodyProperties:
         think: false
+    roles:
+      - autocomplete
     autocompleteOptions:
       disable: false
       maxPromptTokens: 1024
@@ -39,12 +21,10 @@ models:
       prefixPercentage: 0.3
       onlyMyCode: true
 
-  - name: Qwen Coder 32B ( chat )
+  - name: Qwen thinking 32B ( chat )
     provider: openai
-    model: qwen3-vl-32b-thinking
-    apiBase: http://192.168.4.178:8001
+    model: coding-agent
+    apiBase: http://127.0.0.1:8002
     roles:
       - chat
-    requestOptions:
-      extraBodyProperties:
-        think: true
+

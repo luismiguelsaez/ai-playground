@@ -1,0 +1,44 @@
+---
+
+services:
+
+  # Nvidia Nemotron 3 Nano 
+  agent-glm-4.5.air:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7623
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_NL
+      --alias coding-agent
+      --gpu-layers -1
+      --tensor-split 1,1,1
+      --ctx-size 32678
+      --temp 0.8
+      --top-k 40
+      --top-p 0.9
+      --jinja
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  open-webui:
+    driver: local
+
+networks:
+  ai-network:
+    driver: bridge
+

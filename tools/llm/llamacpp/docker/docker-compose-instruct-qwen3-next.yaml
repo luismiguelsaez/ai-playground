@@ -1,0 +1,46 @@
+---
+
+services:
+
+  qwen3-next:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7493
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      --hf-repo unsloth/Qwen3-Next-80B-A3B-Instruct-GGUF:Q4_K_M
+      --alias qwen3-next
+      --ctx-size 32768
+      --n-predict 32768
+      --no-context-shift
+      --flash-attn on
+      --temp 0.8
+      --top-k 40
+      --top-p 0.9
+      --jinja
+      --tensor-split 1,1,1
+      --gpu-layers -1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  open-webui:
+    driver: local
+
+networks:
+  ai-network:
+    driver: bridge
+
