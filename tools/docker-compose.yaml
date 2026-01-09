@@ -9,6 +9,11 @@
 services:
 
   # ComfyUI GPU
+  # Nodes:
+  # - https://github.com/Comfy-Org/ComfyUI-Manager
+  # - https://github.com/Lightricks/ComfyUI-LTXVideo
+  # - https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
+  # - https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
@@ -19,6 +24,7 @@ services:
       - "label=type:nvidia_container_t"
     volumes:
       - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
+      - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
     deploy:
       resources:
         reservations:
@@ -58,6 +64,8 @@ services:
       - ai 
 
   # Opencode agent
+  # Models:
+  # - unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
   agent:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
@@ -71,7 +79,7 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q5_K_M
+      --hf-repo unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
       --alias coding-agent
       --jinja
       --gpu-layers -1

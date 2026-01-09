@@ -15,11 +15,12 @@ services:
     command: >
       --host 0.0.0.0
       --port 8002
-      --hf-repo Ex0bit/MiniMax-M2.1-PRISM:IQ4_NL
+      --hf-repo Ex0bit/MiniMax-M2.1-PRISM:IQ4_XS
       --alias coding-agent
       --threads 40
-      --ctx-size 32768
-      --n-predict 32768
+      --ctx-size 8192
+      --n-predict 8192
+      --batch-size 512
       --no-context-shift
       --flash-attn on
       --repeat-penalty 1.05
