@@ -4,3 +4,6 @@
 [submodule "tools/comfy/ComfyUI-Docker"]
 	path = tools/comfy/ComfyUI-Docker
 	url = https://github.com/YanWenKun/ComfyUI-Docker
+[submodule "tools/llm/llamacpp/source/llama.cpp"]
+	path = tools/llm/llamacpp/source/llama.cpp
+	url = https://github.com/ggml-org/llama.cpp
