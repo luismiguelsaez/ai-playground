@@ -32,8 +32,8 @@ CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"     
   --top-k 40 \
   --top-p 0.95 \
   --jinja \
-  --cache-type-k q4_0 \
-  --cache-type-v q4_0 \
+  --cache-type-k iq4_nl \
+  --cache-type-v iq4_nl \
   --tensor-split 1,1,1,1 \
   --gpu-layers 999 \
   --override-tensor "blk\.(1|2|3|4|5|6)\.ffn_.*_exps\.weight=CPU" \

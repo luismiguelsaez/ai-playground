@@ -6,14 +6,22 @@ export NVIDIA_VISIBLE_DEVICES=all
 export NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
 CPU_OFFLOAD=".ffn_.*_exps.=CPU"                                                    # Offload all MoE layers
-CPU_OFFLOAD="\.(6|7|8|9|[0-9][0-9]|[0-9][0-9][0-9])\.ffn_(gate|up|down)_exps.=CPU" # Offload gate, up and down MoE layers from 6th layer onwards
 CPU_OFFLOAD=-".ffn_(up)_exps.=CPU"                                                 # Offload only up projection layers
 CPU_OFFLOAD=-".ffn_(up|down)_exps.=CPU"                                            # Offload projection layers
+CPU_OFFLOAD="\.(6|7|8|9|[0-9][0-9]|[0-9][0-9][0-9])\.ffn_(gate|up|down)_exps.=CPU" # Offload gate, up and down MoE layers from 6th layer onwards
+CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"        # Offload gate, up and down MoE layers from 6th layer onwards
+
+# blk.51.ffn_up_exps.weight
+# blk.51.ffn_down_exps.weight
+# blk.51.ffn_gate_exps.weight
+#
+# tensor blk.39.ffn_gate_exps.weight (612 MiB iq4_xs) buffer type overridden to CUDA_Host
 
 ./llama.cpp/build/bin/llama-server \
+  -v \
   --host 0.0.0.0 \
   --port 8002 \
-  --hf-repo unsloth/GLM-4.7-GGUF:IQ4_XS \
+  --model ~/.cache/huggingface/hub/Ex0bit_MiniMax-M2.1-PRISM_MiniMax-M2.1-PRISM-IQ4_NL.gguf \
   --alias coding-agent \
   --threads 40 \
   --ctx-size 196608 \
@@ -32,4 +40,5 @@ CPU_OFFLOAD=-".ffn_(up|down)_exps.=CPU"                                         
   --no-mmap \
   --tensor-split 1,1,1,1 \
   --gpu-layers 999 \
-  --override-tensor "blk\.(1|2|3|4|5|6|7|8|9)\.ffn_.*_exps\.weight=CPU","blk\.(24|25|26|27|28|29|30|31|32)\.ffn_.*_exps\.weight=CPU","blk\.(47|48|49|50|51|52|53|54|55)\.ffn_.*_exps\.weight=CPU","blk\.(70|71|72|73|74|75|76|77|78)\.ffn_.*_exps\.weight=CPU"
+  --override-tensor "blk\.(1|2|3|4|5|6)\.ffn_.*_exps\.weight=CPU","blk\.(17|18|19|20|21|22)\.ffn_.*_exps\.weight=CPU","blk\.(33|34|35|36|37|38)\.ffn_.*_exps\.weight=CPU","blk\.(49|50|51|52|53|54)\.ffn_.*_exps\.weight=CPU" \
+  >/tmp/llamacpp.log 2>&1 &

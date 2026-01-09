@@ -58,7 +58,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1','2','3']
+              device_ids: ['3']
               capabilities: [gpu]
     restart: unless-stopped
     networks:
@@ -86,7 +86,7 @@ services:
       --gpu-layers -1
       --tensor-split 1,1
       --split-mode layer
-      --ctx-size 32768
+      --ctx-size 131072 
       --fit on
       --temp 0.6
       --top-k 40

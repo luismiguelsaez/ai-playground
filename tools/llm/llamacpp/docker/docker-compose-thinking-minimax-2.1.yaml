@@ -14,8 +14,8 @@ services:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
       --host 0.0.0.0
-      --port 8002
-      --hf-repo Ex0bit/MiniMax-M2.1-PRISM:IQ4_XS
+      --port 8000
+      --hf-repo Ex0bit/MiniMax-M2.1-PRISM:IQ4_NL
       --alias coding-agent
       --threads 40
       --ctx-size 8192
@@ -29,20 +29,18 @@ services:
       --min-p 0.0
       --top-p 0.95
       --jinja
+      --fit on
       --reasoning-format auto
       --no-mmap
       --tensor-split 1,1,1,1
       --gpu-layers 999
-      --override-tensor "blk\.(1|2|3|4|5|6)\.ffn_.*_exps\.weight=CPU"
-      --override-tensor "blk\.(17|18|19|20|21|22)\.ffn_.*_exps\.weight=CPU"
-      --override-tensor "blk\.(33|34|35|36|37|38)\.ffn_.*_exps\.weight=CPU"
-      --override-tensor "blk\.(49|50|51|52|53|54)\.ffn_.*_exps\.weight=CPU"
+      --override-tensor "blk\.(1|2|3|4|5|6)\.ffn_.*_exps\.weight=CPU","blk\.(17|18|19|20|21|22)\.ffn_.*_exps\.weight=CPU","blk\.(33|34|35|36|37|38)\.ffn_.*_exps\.weight=CPU","blk\.(49|50|51|52|53|54)\.ffn_.*_exps\.weight=CPU"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['1','2','3']
+              device_ids: ['0','1','2','3']
               capabilities: [gpu]
     restart: unless-stopped
 
