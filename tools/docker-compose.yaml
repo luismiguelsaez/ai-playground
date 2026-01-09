@@ -11,9 +11,13 @@ services:
   # ComfyUI GPU
   # Nodes:
   # - https://github.com/Comfy-Org/ComfyUI-Manager
-  # - https://github.com/Lightricks/ComfyUI-LTXVideo
+  # - https://github.com/rgthree/rgthree-comfy
   # - https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
+  # - https://github.com/Lightricks/ComfyUI-LTXVideo
   # - https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler
+  # - https://github.com/1038lab/ComfyUI-QwenVL
+  # - https://github.com/Fannovel16/comfyui_controlnet_aux
+  # - https://github.com/PGCRT/CRT-Nodes
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
@@ -44,10 +48,7 @@ services:
       - "8189:8188"
     volumes:
       - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
-      - ${HOME}/comfy/ComfyUI/input:/root/ComfyUI/input
-      - ${HOME}/comfy/ComfyUI/output:/root/ComfyUI/output
       - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
-      - ${HOME}/comfy/ComfyUI/custom_nodes:/root/ComfyUI/custom_nodes
     environment:
       CLI_ARGS: "--disable-xformers --novram"
     security_opt:
