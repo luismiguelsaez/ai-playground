@@ -3,7 +3,7 @@
 services:
 
   devstral-2-instruct:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda13-b7623
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7623
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all

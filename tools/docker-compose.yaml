@@ -8,11 +8,34 @@
 
 services:
 
-  # ComfyUI
-  comfy:
-    image: yanwk/comfyui-boot:cu128-slim-20251129
+  # ComfyUI GPU
+  comfy-gpu:
+    #image: yanwk/comfyui-boot:cu128-slim-20260109
+    build:
+      context: comfy/ComfyUI-Docker/cu126-slim
     ports:
       - "8188:8188"
+    security_opt:
+      - "label=type:nvidia_container_t"
+    volumes:
+      - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+    networks:
+      - ai
+
+  # ComfyUI  CPU
+  comfy-cpu:
+    build:
+      context: comfy/ComfyUI-Docker/cu128-slim
+    ports:
+      - "8189:8188"
     volumes:
       - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
       - ${HOME}/comfy/ComfyUI/input:/root/ComfyUI/input
@@ -20,7 +43,9 @@ services:
       - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
       - ${HOME}/comfy/ComfyUI/custom_nodes:/root/ComfyUI/custom_nodes
     environment:
-      CLI_ARGS: "--disable-xformers"
+      CLI_ARGS: "--disable-xformers --novram"
+    security_opt:
+      - "label=type:nvidia_container_t"
     deploy:
       resources:
         reservations:
@@ -46,14 +71,13 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q4_K_M
+      --hf-repo unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q5_K_M
       --alias coding-agent
       --jinja
       --gpu-layers -1
       --tensor-split 1,1
       --split-mode layer
       --ctx-size 32768
-      --max-new-tokens 32768
       --fit on
       --temp 0.6
       --top-k 40

@@ -1,3 +1,6 @@
 [submodule "tools/llm/mini-sglang/mini-sglang"]
 	path = tools/llm/mini-sglang/mini-sglang
 	url = https://github.com/sgl-project/mini-sglang.git
+[submodule "tools/comfy/ComfyUI-Docker"]
+	path = tools/comfy/ComfyUI-Docker
+	url = https://github.com/YanWenKun/ComfyUI-Docker

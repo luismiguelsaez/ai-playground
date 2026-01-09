@@ -14,6 +14,9 @@ def main():
         "--input-audio", type=str, required=True, help="Input audio prompt path"
     )
     parser.add_argument(
+        "--output-audio", type=str, required=True, help="Output audio file path"
+    )
+    parser.add_argument(
         "--text", type=str, required=True, help="Text for generated audio"
     )
     parser.add_argument(
@@ -35,21 +38,16 @@ def main():
 
     model = ChatterboxMultilingualTTS.from_pretrained(device=DEVICE)
 
-    AUDIO_PROMPT_PATH = "/input/hola-paquito.opus"
-
-    text = "Hola Paquito. Que sepas que te deseo una feliz navidad y próspero año nuevo"
-
     wav = model.generate(
         text,
         language_id=language_id,
-        audio_prompt_path=AUDIO_PROMPT_PATH,
-        exaggeration=0.7,
-        cfg_weight=0.3
+        audio_prompt_path=INPUT_AUDIO_PROMPT,
+        exaggeration=2.0,
+        cfg_weight=0.5,
     )
 
-    ta.save("/output/diana-navidad.wav", wav, model.sr)
+    ta.save(args.output_audio, wav, model.sr)
 
 
 if __name__ == "__main__":
     main()
-

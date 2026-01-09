@@ -14,8 +14,13 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 
-if tokenizer.pad_token is None:
-    tokenizer.pad_token = tokenizer.eos_token
+print("Tokenizer summary")
+print(f"pad_token          : {tokenizer.pad_token!r}  (id={tokenizer.pad_token_id})")
+print(f"cls_token          : {tokenizer.cls_token!r}  (id={tokenizer.cls_token_id})")
+print(f"sep_token          : {tokenizer.sep_token!r}  (id={tokenizer.sep_token_id})")
+print(f"bos_token          : {tokenizer.bos_token!r}  (id={tokenizer.bos_token_id})")
+print(f"eos_token          : {tokenizer.eos_token!r}  (id={tokenizer.eos_token_id})")
+print(f"unk_token          : {tokenizer.unk_token!r}  (id={tokenizer.unk_token_id})")
 
 load_end_time = time.perf_counter()
 print(
@@ -33,7 +38,12 @@ while True:
     messages.append({"role": "user", "content": user_message})
 
     inputs = tokenizer.apply_chat_template(
-        messages, add_generation_prompt=True, tokenize=False, return_attention_mask=True
+        messages,
+        add_generation_prompt=True,
+        tokenize=False,
+        return_attention_mask=True,
+        padding=True,
+        truncation=True,
     )
 
     input_ids = tokenizer.encode(inputs, return_tensors="pt").to(model.device)

@@ -5,10 +5,12 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStream
 
 MAX_NEW_TOKENS = 10000
 
-checkpoints = ["LiquidAI/LFM2-2.6B-Exp", "Qwen/Qwen3-0.6B"]
+checkpoints = ["LiquidAI/LFM2-2.6B-Exp", "Qwen/Qwen3-0.6B", "tencent/Youtu-LLM-2B"]
 
-tokenizer = AutoTokenizer.from_pretrained(checkpoints[0])
-model = AutoModelForCausalLM.from_pretrained(checkpoints[0], device_map="cuda:3")
+tokenizer = AutoTokenizer.from_pretrained(checkpoints[2])
+model = AutoModelForCausalLM.from_pretrained(
+    checkpoints[2], device_map="cuda:3", trust_remote_code=True
+)
 
 streamer = TextIteratorStreamer(tokenizer=tokenizer, skip_prompt=True)
 
@@ -37,7 +39,7 @@ for t in input_ids[0].tolist():
 print()
 
 outputs = model.generate(
-    input_ids,
+    inputs=input_ids,
     max_new_tokens=MAX_NEW_TOKENS,
     repetition_penalty=1.05,
 )

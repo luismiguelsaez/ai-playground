@@ -2,8 +2,7 @@
 
 services:
 
-  # Nvidia Nemotron 3 Nano 
-  agent-glm-4.5.air:
+  minimax2.1:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7623
     runtime: nvidia
     environment:
@@ -15,23 +14,34 @@ services:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
       --host 0.0.0.0
-      --port 8000
-      --hf-repo unsloth/GLM-4.5-Air-GGUF:IQ4_NL
+      --port 8002
+      --hf-repo Ex0bit/MiniMax-M2.1-PRISM:IQ4_NL
       --alias coding-agent
-      --gpu-layers -1
+      --threads 40
+      --ctx-size 32768
+      --n-predict 32768
+      --no-context-shift
       --flash-attn on
-      --tensor-split 1,1,1,1
-      --ctx-size 32678
-      --temp 1.0 
+      --repeat-penalty 1.05
+      --temp 1.0
       --top-k 40
+      --min-p 0.0
       --top-p 0.95
       --jinja
+      --reasoning-format auto
+      --no-mmap
+      --tensor-split 1,1,1,1
+      --gpu-layers 999
+      --override-tensor "blk\.(1|2|3|4|5|6)\.ffn_.*_exps\.weight=CPU"
+      --override-tensor "blk\.(17|18|19|20|21|22)\.ffn_.*_exps\.weight=CPU"
+      --override-tensor "blk\.(33|34|35|36|37|38)\.ffn_.*_exps\.weight=CPU"
+      --override-tensor "blk\.(49|50|51|52|53|54)\.ffn_.*_exps\.weight=CPU"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1','2','3']
+              device_ids: ['1','2','3']
               capabilities: [gpu]
     restart: unless-stopped
 

@@ -1,5 +1,9 @@
 # Chatterbox TTS
 
+## Models
+
+- [chatterbox-turbo-ONNX](https://huggingface.co/ResembleAI/chatterbox-turbo-ONNX)
+
 ## Build
 
 ```bash

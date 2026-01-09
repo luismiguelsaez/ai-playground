@@ -5,7 +5,5 @@ RUN apt -y update && apt -y install git
 RUN mkdir /app
 WORKDIR /app
 
-RUN git clone https://github.com/resemble-ai/chatterbox
+RUN pip install git+https://github.com/resemble-ai/chatterbox peft
 
-RUN cd chatterbox \
-  && python -m pip install -e .
