@@ -18,6 +18,7 @@ services:
   # - https://github.com/1038lab/ComfyUI-QwenVL
   # - https://github.com/Fannovel16/comfyui_controlnet_aux
   # - https://github.com/PGCRT/CRT-Nodes
+  # - https://github.com/dreamfast/ComfyUI-LTX2-MultiGPU
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
@@ -86,7 +87,7 @@ services:
       --gpu-layers -1
       --tensor-split 1,1
       --split-mode layer
-      --ctx-size 131072 
+      --ctx-size 131072
       --fit on
       --temp 0.6
       --top-k 40
