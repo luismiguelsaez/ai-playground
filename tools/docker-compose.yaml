@@ -20,6 +20,7 @@ services:
   # - https://github.com/PGCRT/CRT-Nodes
   # - https://github.com/dreamfast/ComfyUI-LTX2-MultiGPU
   # - https://github.com/BennyDaBall930/ComfyUI-Z-Engineer
+  # - https://github.com/jtydhr88/ComfyUI-qwenmultiangle
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
