@@ -21,7 +21,7 @@ services:
       --gpu-layers -1
       --flash-attn on
       --tensor-split 1,1,1,1
-      --ctx-size 32678
+      --ctx-size 120000 
       --temp 1.0 
       --top-k 40
       --top-p 0.95

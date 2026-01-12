@@ -33,6 +33,8 @@ services:
     volumes:
       - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
       - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
+    environment:
+      CLI_ARGS: "--disable-xformers"
     deploy:
       resources:
         reservations:
