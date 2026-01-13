@@ -22,6 +22,7 @@ services:
   # - https://github.com/BennyDaBall930/ComfyUI-Z-Engineer
   # - https://github.com/jtydhr88/ComfyUI-qwenmultiangle
   # - https://github.com/ltdrdata/ComfyUI-Impact-Pack
+  # - https://github.com/yolain/ComfyUI-Easy-Use
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
