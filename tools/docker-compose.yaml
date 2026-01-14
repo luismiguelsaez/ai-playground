@@ -26,9 +26,9 @@ services:
   # - https://github.com/kijai/ComfyUI-KJNodes
   # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
   comfy-gpu:
-    #image: yanwk/comfyui-boot:cu128-slim-20260109
-    build:
-      context: comfy/ComfyUI-Docker/cu126-slim
+    image: yanwk/comfyui-boot:cu126-slim-20260112
+    #build:
+    #  context: comfy/ComfyUI-Docker/cu126-slim
     ports:
       - "8188:8188"
     security_opt:
