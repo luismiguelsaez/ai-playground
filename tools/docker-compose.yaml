@@ -100,7 +100,7 @@ services:
       --temp 0.6
       --top-k 40
       --top-p 0.95
-      --repetition-penalty 1.05
+      --repeat-penalty 1.05
     deploy:
       resources:
         reservations:
