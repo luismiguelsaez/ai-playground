@@ -22,7 +22,7 @@ services:
       --flash-attn on
       --tensor-split 1,1,1,1
       --ctx-size 120000 
-      --temp 1.0 
+      --temp 1.0
       --top-k 40
       --top-p 0.95
       --jinja

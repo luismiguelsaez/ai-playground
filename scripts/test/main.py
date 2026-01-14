@@ -11,6 +11,8 @@ quantization_config = BitsAndBytesConfig(
 )
 
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = "right"
 model = AutoModelForCausalLM.from_pretrained(
     checkpoint, device_map="cuda:3", quantization_config=quantization_config
 )
@@ -31,23 +33,39 @@ while True:
 
     messages.append({"role": "user", "content": user_input})
 
-    inputs = tokenizer.apply_chat_template(
-        messages,
-        return_tensors="pt",
-        return_dict=True,
-        add_generation_prompt=True,
-        tokenize=True,
-    ).to(model.device)
+    try:
+        inputs = tokenizer.apply_chat_template(
+            messages,
+            return_tensors="pt",
+            return_dict=True,
+            add_generation_prompt=True,
+            tokenize=True,
+        ).to(model.device)
 
-    inputs_length = inputs["input_ids"].shape[1]
+        inputs_length = inputs["input_ids"].shape[1]
 
-    outputs = model.generate(**inputs, max_new_tokens=4096)
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=4096,
+            temperature=0.7,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id,
+        )
 
-    decoded_outputs = tokenizer.decode(
-        outputs[0][inputs_length:], skip_special_tokens=True
-    )
+        decoded_outputs = tokenizer.decode(
+            outputs[0][inputs_length:], skip_special_tokens=True
+        )
+    except Exception as e:
+        print(f"Error during generation: {e}")
+        decoded_outputs = "Sorry, I encountered an error processing your request."
 
     print(f"- Assistant: {decoded_outputs}")
     print()
 
     messages.append({"role": "assistant", "content": decoded_outputs})
+
+    del inputs, outputs
+    torch.cuda.empty_cache()
+
+    print(f"- Assistant: {decoded_outputs}")
+    print()
