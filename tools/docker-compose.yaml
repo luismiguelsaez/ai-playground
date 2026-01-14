@@ -23,6 +23,8 @@ services:
   # - https://github.com/jtydhr88/ComfyUI-qwenmultiangle
   # - https://github.com/ltdrdata/ComfyUI-Impact-Pack
   # - https://github.com/yolain/ComfyUI-Easy-Use
+  # - https://github.com/kijai/ComfyUI-KJNodes
+  # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu128-slim-20260109
     build:
