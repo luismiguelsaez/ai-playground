@@ -97,9 +97,9 @@ services:
       --split-mode layer
       --ctx-size 131072
       --fit on
-      --temp 0.6
-      --top-k 40
-      --top-p 0.95
+      --temp 0.7
+      --top-k 20
+      --top-p 0.8
       --repeat-penalty 1.05
     deploy:
       resources:
