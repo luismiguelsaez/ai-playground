@@ -3,7 +3,7 @@
 services:
 
   agent-glm-4.7.air:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda-b7623
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -17,15 +17,19 @@ services:
       --port 8000
       --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q5_K_M
       --alias coding-agent
-      --gpu-layers -1
-      --flash-attn on
-      --tensor-split 1,1
-      --ctx-size 120000 
-      --temp 0.2
-      --top-k 50 
+      --threads -1
+      --parallel 2
+      --flash-attn off
+      --ctx-size 32000
+      --n-gpu-layers 999
+      --prio 3
+      --jinja
+      --cont-batching
+      --temp 0.9
+      --top-k 50
       --top-p 0.95
       --min-p 0.01
-      --dry-multiplier 1.1
+      --dry-multiplier 0.0
     deploy:
       resources:
         reservations:

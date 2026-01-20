@@ -76,7 +76,7 @@ services:
   # Opencode agent
   # Models:
   # - unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
-  # - unsloth/GLM-4.7-Flash-GGUF:Q5_K_M
+  # - unsloth/GLM-4.7-Flash-GGUF:Q5_K_M - https://unsloth.ai/docs/models/glm-4.7-flash
   agent:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     runtime: nvidia
@@ -98,10 +98,11 @@ services:
       --ctx-size 131072
       --fit on
       --temp 0.2
-      --top-k 50 
+      --top-k 50
       --top-p 0.95
       --min-p 0.01
       --dry-multiplier 1.1
+      --jinja
     deploy:
       resources:
         reservations:
