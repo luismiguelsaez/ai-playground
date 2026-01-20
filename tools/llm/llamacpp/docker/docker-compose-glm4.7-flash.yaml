@@ -15,22 +15,23 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/GLM-4.7-Flash-GGUF:IQ4_NL
+      --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q5_K_M
       --alias coding-agent
       --gpu-layers -1
       --flash-attn on
-      --tensor-split 1,1,1,1
+      --tensor-split 1,1
       --ctx-size 120000 
-      --temp 1.0
-      --top-k 40
+      --temp 0.2
+      --top-k 50 
       --top-p 0.95
-      --jinja
+      --min-p 0.01
+      --dry-multiplier 1.1
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1','2','3']
+              device_ids: ['2','3']
               capabilities: [gpu]
     restart: unless-stopped
 
