@@ -16,8 +16,8 @@ CPU_OFFLOAD=-".ffn_(up|down)_exps.=CPU"                                         
   --hf-repo unsloth/GLM-4.7-GGUF:IQ4_XS \
   --alias coding-agent \
   --threads 40 \
-  --ctx-size 196608 \
-  --n-predict 196608 \
+  --ctx-size 27000 \
+  --n-predict 27000 \
   --batch-size 512 \
   --no-context-shift \
   --flash-attn on \

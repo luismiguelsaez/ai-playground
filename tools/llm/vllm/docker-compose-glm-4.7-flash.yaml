@@ -1,0 +1,59 @@
+---
+
+services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-glm-4.5-air:8000/v1
+    restart: unless-stopped
+
+  vllm-glm-4.7-flash:
+    image: vllm/vllm-openai:nightly
+    restart: unless-stopped
+ 
+    ports:
+      - "8004:8000"
+ 
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1,2,3
+
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+
+    shm_size: 8gb
+
+    command:
+      - cyankiwi/GLM-4.7-Flash-AWQ-4bit
+      - --served-model-name=coding-agent
+      - --host=0.0.0.0
+      - --port=8000
+      - --gpu-memory-utilization=0.96
+      - --max-model-len 27348
+      - --tensor-parallel-size=4
+      - --speculative-config.method=mtp
+      - --speculative-config.num_speculative_tokens=1
+      - --tool-call-parser=glm47
+      - --reasoning-parser=glm45
+      - --enable-auto-tool-choice
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+ 
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s  # Longer startup for larger model
+
+volumes:
+  models:
+    driver: local
+
