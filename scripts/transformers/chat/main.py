@@ -16,6 +16,9 @@ class Chat():
             format='%(asctime)s - %(levelname)s - %(message)s'
         )
 
+        self._load_model()
+
+    def _load_model(self):
         if not self.quantize:
             logging.debug("Quantization disabled, not setting quantization config")
             quantization_config = None
@@ -41,6 +44,10 @@ class Chat():
         while True:
             print()
             user_msg = input(colored("User: ", "red"))
+
+            if user_msg == "quit":
+                print(colored("\nBye!", "green"))
+                break
 
             messages.append({
                 "role": "user",
@@ -93,7 +100,13 @@ class Chat():
             
 
 def main():
-    chat = Chat(checkpoint="Qwen/Qwen3-8B", device="cuda:0", quantize=True, max_new_tokens=32000)
+    checkpoint = "Qwen/Qwen3-8B"
+    chat = Chat(
+        checkpoint=checkpoint,
+        device="cuda:0",
+        quantize=True,
+        max_new_tokens=32000
+    )
     chat.start()
 
 if __name__ == "__main__":
