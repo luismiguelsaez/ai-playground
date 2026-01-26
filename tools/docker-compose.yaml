@@ -78,7 +78,7 @@ services:
   # - unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
   # - unsloth/GLM-4.7-Flash-GGUF:Q5_K_M - https://unsloth.ai/docs/models/glm-4.7-flash
   agent:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -90,18 +90,20 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q5_K_M
+      --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q4_K_XL
       --alias coding-agent
-      --gpu-layers -1
-      --tensor-split 1,1
-      --split-mode layer
+      --threads -1
+      --parallel 2
       --ctx-size 131072
-      --fit on
-      --temp 0.2
+      --n-gpu-layers 999
+      --prio 3
+      --cont-batching
+      --temp 0.9
       --top-k 50
       --top-p 0.95
       --min-p 0.01
-      --dry-multiplier 1.1
+      --dry-multiplier 0.0
+      --flash-attn off
       --jinja
     deploy:
       resources:

@@ -25,8 +25,8 @@ CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"     
   --model ~/.cache/huggingface/hub/Ex0bit_MiniMax-M2.1-PRISM_MiniMax-M2.1-PRISM-IQ4_NL.gguf \
   --alias coding-agent \
   --threads 42 \
-  --ctx-size 120000 \
-  --n-predict 120000 \
+  --ctx-size 60000 \
+  --n-predict 60000 \
   --batch-size 512 \
   --no-context-shift \
   --flash-attn on \
@@ -42,7 +42,7 @@ CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"     
   --tensor-split 1,1,1,1 \
   --gpu-layers 99 \
   --split-mode layer \
-  -ot "blk.(1|2|3|4|5|6|7|8|9|10).ffn_.*_exps.weight=CPU","blk.(17|18|19|20|21|22|23|24|25).ffn_.*_exps.weight=CPU","blk.(33|34|35|36|37|38|39|40|41).ffn_.*_exps.weight=CPU","blk.(49|50|51|52|53|54|55|56|57).ffn_.*_exps.weight=CPU"
+  -ot "blk.(1|2|3|4|5|6|7|8).ffn_.*_exps.weight=CPU","blk.(17|18|19|20|21|22|23).ffn_.*_exps.weight=CPU","blk.(33|34|35|36|37|38|39).ffn_.*_exps.weight=CPU","blk.(49|50|51|52|53|54|55).ffn_.*_exps.weight=CPU"
 
 # Memory distribution with abobe configuration
 #

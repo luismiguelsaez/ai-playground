@@ -7,3 +7,6 @@
 [submodule "tools/llm/llamacpp/source/llama.cpp"]
 	path = tools/llm/llamacpp/source/llama.cpp
 	url = https://github.com/ggml-org/llama.cpp
+[submodule "tools/llm/vllm/source/vllm"]
+	path = tools/llm/vllm/source/vllm
+	url = https://github.com/vllm-project/vllm
