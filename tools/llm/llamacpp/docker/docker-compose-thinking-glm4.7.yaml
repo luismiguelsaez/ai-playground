@@ -1,6 +1,7 @@
 ---
 
 # Doc: https://unsloth.ai/docs/models/glm-4.7
+# Model: https://huggingface.co/unsloth/GLM-4.7-REAP-218B-A32B-GGUF
 
 services:
 

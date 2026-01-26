@@ -18,8 +18,8 @@ services:
       -v
       --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:Q4_K_S
       --alias coding-agent
-      --ctx-size 32000
-      --n-predict 32000 
+      --ctx-size 90000 
+      --n-predict 90000
       --batch-size 512
       --no-context-shift
       --flash-attn on
