@@ -1,0 +1,57 @@
+---
+
+# Doc: https://unsloth.ai/docs/models/glm-4.7
+
+services:
+
+  minimax2.1:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      -v
+      --hf-repo unsloth/GLM-4.7-REAP-218B-A32B-GGUF:Q4_K_M
+      --alias coding-agent
+      --threads 40 \
+      --ctx-size 27000 \
+      --n-predict 27000 \
+      --batch-size 512 \
+      --no-context-shift \
+      --flash-attn on \
+      --repeat-penalty 1.05 \
+      --temp 1.0 \
+      --top-k 40 \
+      --min-p 0.0 \
+      --top-p 0.95 \
+      --jinja \
+      --fit on \
+      --reasoning-format auto \
+      --no-mmap \
+      --tensor-split 1,1,1,1 \
+      --gpu-layers 999 \
+      --override-tensor "blk\.(1|2|3|4|5|6|7|8|9)\.ffn_.*_exps\.weight=CPU","blk\.(24|25|26|27|28|29|30|31|32)\.ffn_.*_exps\.weight=CPU","blk\.(47|48|49|50|51|52|53|54|55)\.ffn_.*_exps\.weight=CPU","blk\.(70|71|72|73|74|75|76|77|78)\.ffn_.*_exps\.weight=CPU"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  open-webui:
+    driver: local
+
+networks:
+  ai-network:
+    driver: bridge
+
