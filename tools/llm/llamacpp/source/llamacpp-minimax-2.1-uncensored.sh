@@ -11,6 +11,11 @@ CPU_OFFLOAD=-".ffn_(up|down)_exps.=CPU"                                         
 CPU_OFFLOAD="\.(6|7|8|9|[0-9][0-9]|[0-9][0-9][0-9])\.ffn_(gate|up|down)_exps.=CPU" # Offload gate, up and down MoE layers from 6th layer onwards
 CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"        # Offload gate, up and down MoE layers from 6th layer onwards
 
+CTX_SIZE=32000
+TENSORS_OVERRIDE=$(gguf-tensor-overrider -c $CTX_SIZE -g https://huggingface.co/unsloth/MiniMax-M2.1-GGUF/resolve/main/IQ4_XS/MiniMax-M2.1-IQ4_XS-00001-of-00003.gguf)
+
+echo $TENSORS_OVERRIDE
+
 # blk.51.ffn_up_exps.weight
 # blk.51.ffn_down_exps.weight
 # blk.51.ffn_gate_exps.weight
@@ -25,8 +30,8 @@ CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"     
   --model ~/.cache/huggingface/hub/Ex0bit_MiniMax-M2.1-PRISM_MiniMax-M2.1-PRISM-IQ4_NL.gguf \
   --alias coding-agent \
   --threads 42 \
-  --ctx-size 120000 \
-  --n-predict 120000 \
+  --ctx-size 32000 \
+  --n-predict 32000 \
   --batch-size 512 \
   --no-context-shift \
   --flash-attn on \
@@ -42,7 +47,8 @@ CPU_OFFLOAD="\.(3[0-9]|4[0-9]|5[0-9]|6[0-9])\.ffn_(gate|up|down)_exps.=CPU"     
   --tensor-split 1,1,1,1 \
   --gpu-layers 99 \
   --split-mode layer \
-  -ot "blk.(1|2|3|4|5|6|7|8|9|10).ffn_.*_exps.weight=CPU","blk.(17|18|19|20|21|22|23|24|25).ffn_.*_exps.weight=CPU","blk.(33|34|35|36|37|38|39|40|41).ffn_.*_exps.weight=CPU","blk.(49|50|51|52|53|54|55|56|57).ffn_.*_exps.weight=CPU"
+  $TENSORS_OVERRIDE
+#-ot "blk.(1|2|3|4|5|6|7|8).ffn_.*_exps.weight=CPU","blk.(17|18|19|20|21|22|23).ffn_.*_exps.weight=CPU","blk.(33|34|35|36|37|38|39).ffn_.*_exps.weight=CPU","blk.(49|50|51|52|53|54|55).ffn_.*_exps.weight=CPU"
 
 # Memory distribution with abobe configuration
 #

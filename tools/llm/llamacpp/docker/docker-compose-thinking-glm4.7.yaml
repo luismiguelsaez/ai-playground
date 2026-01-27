@@ -1,8 +1,11 @@
 ---
 
+# Doc: https://unsloth.ai/docs/models/glm-4.7
+# Model: https://huggingface.co/unsloth/GLM-4.7-REAP-218B-A32B-GGUF
+
 services:
 
-  minimax2.1:
+  glm-4.7:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
     runtime: nvidia
     environment:
@@ -16,10 +19,11 @@ services:
       --host 0.0.0.0
       --port 8000
       -v
-      --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:Q4_K_S
+      --hf-repo unsloth/GLM-4.7-REAP-218B-A32B-GGUF:Q4_K_M
       --alias coding-agent
-      --ctx-size 90000 
-      --n-predict 90000
+      --threads 40
+      --ctx-size 10000
+      --n-predict 10000
       --batch-size 512
       --no-context-shift
       --flash-attn on
@@ -34,6 +38,7 @@ services:
       --no-mmap
       --tensor-split 1,1,1,1
       --gpu-layers 999
+      --override-tensor "blk\.(1|2|3|4|5|6|7|8|9)\.ffn_.*_exps\.weight=CPU","blk\.(24|25|26|27|28|29|30|31|32)\.ffn_.*_exps\.weight=CPU","blk\.(47|48|49|50|51|52|53|54|55)\.ffn_.*_exps\.weight=CPU","blk\.(70|71|72|73|74|75|76|77|78)\.ffn_.*_exps\.weight=CPU"
     deploy:
       resources:
         reservations:
