@@ -152,6 +152,47 @@ services:
     networks:
       - ai
 
+  minimax:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      -v
+      --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:Q4_K_S
+      --alias coding-agent
+      --ctx-size 90000
+      --n-predict 90000
+      --batch-size 512
+      --no-context-shift
+      --flash-attn on
+      --repeat-penalty 1.05
+      --temp 1.0
+      --top-k 40
+      --min-p 0.0
+      --top-p 0.95
+      --jinja
+      --fit on
+      --reasoning-format auto
+      --no-mmap
+      --tensor-split 1,1,1,1
+      --gpu-layers 999
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
 networks:
   ai:
     driver: bridge
