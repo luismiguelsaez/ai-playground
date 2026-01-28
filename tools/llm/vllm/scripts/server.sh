@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 
-CHECKPOINT="LiquidAI/LFM2.5-1.2B-Instruct"
-CHECKPOINT="/home/luismi/github/ai-playground/tools/llm/vllm/scripts/LFM2.5-1.2B-Instruct-W4A16-G128"
+# Documentation
+# - Server arguments: https://docs.vllm.ai/en/latest/cli/serve/#arguments
+#
 
-vllm serve --calculate-kv-scales --kv-cache-dtype=fp8 --gpu-memory-utilization=0.75 $CHECKPOINT
+CHECKPOINT="LiquidAI/LFM2.5-1.2B-Instruct"
+
+vllm serve \
+  --model=$CHECKPOINT \
+  --kv-cache-dtype=fp8 \
+  --calculate-kv-scales \
+  --gpu-memory_utilization=0.25 \
+  --max-num_batched_tokens=8192 \
+  --max-num_seqs=256 \
+  --max-model_len=8192 \
+  --cpu-offload_gb=0 \
+  --tensor-parallel_size=1 \
+  --pipeline-parallel_size=1

@@ -25,6 +25,7 @@ services:
   # - https://github.com/yolain/ComfyUI-Easy-Use
   # - https://github.com/kijai/ComfyUI-KJNodes
   # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
+  # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
   comfy-gpu:
     image: yanwk/comfyui-boot:cu126-slim-20260112
     #build:
