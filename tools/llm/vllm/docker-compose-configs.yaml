@@ -28,7 +28,7 @@ services:
 
     command:
       - --config
-      - /configs/lfm.yaml
+      - /configs/${MODEL_CONFIG_FILE:-lfm.yaml}
 
     deploy:
       resources:

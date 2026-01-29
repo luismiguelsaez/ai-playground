@@ -1,0 +1,18 @@
+---
+
+model: cyankiwi/GLM-4.7-Flash-AWQ-4bit
+kv-cache-dtype: fp8
+calculate-kv-scales: True
+gpu-memory_utilization: 0.96
+max-num_batched_tokens: 8192
+max-num_seqs: 1
+max-model_len: 131072
+cpu-offload_gb: 0
+tensor-parallel_size: 4
+pipeline-parallel_size: 1
+enable-auto-tool-choice: True
+tool-call-parser: glm47
+reasoning-parser: glm45
+speculative-config:
+  method: mtp
+  num-speculative-tokens: 1
