@@ -94,19 +94,26 @@ services:
       --port 8000
       --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q6_K
       --alias coding-agent
-      --threads -1
-      --parallel 2
+      --parallel 6
       --ctx-size 131072
+      --batch-size 2048
+      --n-predict 16384
+      --mlock
+      --numa isolate
+      --ubatch-size 512
       --n-gpu-layers 999
       --prio 3
       --cont-batching
       --temp 0.9
       --top-k 50
       --top-p 0.95
-      --min-p 0.01
+      --min-p 0.05
       --dry-multiplier 0.0
-      --flash-attn off
+      --flash-attn on
       --jinja
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --tensor-split 1,1
     deploy:
       resources:
         reservations:
