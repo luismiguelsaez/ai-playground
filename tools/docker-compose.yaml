@@ -26,6 +26,7 @@ services:
   # - https://github.com/kijai/ComfyUI-KJNodes
   # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
   # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
+  # - https://github.com/Lightricks/ComfyUI-LTXVideo
   comfy-gpu:
     image: yanwk/comfyui-boot:cu126-slim-20260112
     #build:
@@ -168,7 +169,7 @@ services:
       --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
       --alias coding-agent
       --ctx-size 64000 
-      --n-predict 4096
+      --n-predict 16384 
       --batch-size 2048
       --parallel 8
       --cont-batching
