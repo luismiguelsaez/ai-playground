@@ -5,7 +5,7 @@
 services:
 
   agent-glm-4.7.air:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all

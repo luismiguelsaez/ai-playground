@@ -13,6 +13,5 @@ pipeline-parallel_size: 1
 enable-auto-tool-choice: True
 tool-call-parser: glm47
 reasoning-parser: glm45
-speculative-config:
-  method: mtp
-  num-speculative-tokens: 1
+speculative-config.method: mtp
+speculative-config.num-speculative-tokens: 1

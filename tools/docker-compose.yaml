@@ -165,25 +165,30 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      -v
-      --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:Q4_K_S
+      --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
       --alias coding-agent
-      --ctx-size 90000
-      --n-predict 90000
-      --batch-size 512
-      --no-context-shift
+      --ctx-size 64000 
+      --n-predict 4096
+      --batch-size 2048
+      --parallel 8
+      --cont-batching
+      --cache-type-k q8_0
+      --cache-type-v q8_0
       --flash-attn on
       --repeat-penalty 1.05
       --temp 1.0
       --top-k 40
-      --min-p 0.0
+      --min-p 0.05
       --top-p 0.95
       --jinja
       --fit on
       --reasoning-format auto
       --no-mmap
+      --mlock
+      --numa isolate
       --tensor-split 1,1,1,1
       --gpu-layers 999
+      --metrics
     deploy:
       resources:
         reservations:
