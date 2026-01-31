@@ -2,6 +2,7 @@ from colorama import Fore, Style
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from time import perf_counter
 
+
 checkpoint = "LiquidAI/LFM2.5-1.2B-Instruct"
 
 print(f"Loading model [{checkpoint}] ...")
