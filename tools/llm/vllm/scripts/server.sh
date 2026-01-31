@@ -4,16 +4,12 @@
 # - Server arguments: https://docs.vllm.ai/en/latest/cli/serve/#arguments
 #
 
-CHECKPOINT="LiquidAI/LFM2.5-1.2B-Instruct"
+CONFIG_DIR=../config/models/
+CONFIG_FILE=${1:-lfm.yaml}
 
-vllm serve --config ./config.yaml
-#  --model=$CHECKPOINT \
-#  --kv-cache-dtype=fp8 \
-#  --calculate-kv-scales \
-#  --gpu-memory_utilization=0.25 \
-#  --max-num_batched_tokens=8192 \
-#  --max-num_seqs=256 \
-#  --max-model_len=8192 \
-#  --cpu-offload_gb=0 \
-#  --tensor-parallel_size=1 \
-#  --pipeline-parallel_size=1
+VLLM_LOG_FILE=/tmp/vllm_serve.log
+OPENWEBUI_LOG_FILE=/tmp/openwebui.log
+
+vllm serve --config ${CONFIG_FILE}${CONFIG_FILE} 2>&1 >${VLLM_LOG_FILE} &
+
+OPENAI_API_BASE_URL=http://localhost:8000/v1 open-webui serve --host 0.0.0.0 --port 8888 2>&1 >${OPENWEBUI_LOG_FILE} &
