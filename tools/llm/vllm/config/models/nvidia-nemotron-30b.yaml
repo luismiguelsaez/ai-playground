@@ -1,0 +1,17 @@
+---
+
+model: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
+kv-cache-dtype: fp8
+calculate-kv-scales: True
+gpu-memory_utilization: 0.90
+max-num_batched_tokens: 8192
+max-num_seqs: 8
+max-model_len: 262144
+trust-remote-code: True
+tensor-parallel_size: 4
+pipeline-parallel_size: 1
+enable-auto-tool-choice: True
+tool-call-parser: qwen3_coder
+reasoning-parser-plugin: nano_v3_reasoning_parser.py
+reasoning-parser: nano_v3
+

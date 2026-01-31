@@ -171,8 +171,8 @@ services:
       --port 8000
       --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
       --alias coding-agent
-      --ctx-size 64000 
-      --n-predict 16384 
+      --ctx-size 64000
+      --n-predict 16384
       --batch-size 2048
       --parallel 8
       --cont-batching

@@ -1,0 +1,15 @@
+---
+
+model: cyankiwi/GLM-4.5-Air-Derestricted-AWQ-4bit
+dtype: float16
+tensor-parallel-size: 4
+pipeline-parallel-size: 2
+enable-expert-parallel: true
+gpu-memory-utilization: 0.92
+max-model-len: 131072
+swap-space: 32
+disable-custom-all-reduce: true
+tool-call-parser: glm45
+reasoning-parser: glm45
+enable-auto-tool-choice: true
+nnodes: 4
