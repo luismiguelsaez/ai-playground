@@ -20,6 +20,13 @@ class Chat():
         while True:
             user_msg = input(f"{Fore.RED}> User: ")
             print(Fore.RESET, end="")
+
+            if user_msg == "quit":
+                break
+            if user_msg == "reset":
+                self.messages = []
+                continue
+
             self.messages.append({"role": "user", "content": user_msg})
 
             print(f"{Style.DIM}Generating inputs ...{Style.RESET_ALL}")
