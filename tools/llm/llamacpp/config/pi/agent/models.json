@@ -1,0 +1,12 @@
+{
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://ai-server.local:8002",
+      "api": "openai-completions",
+      "apiKey": "aa",
+      "models": [
+        { "id": "coding-agent" }
+      ]
+    }
+  }
+}

@@ -33,7 +33,7 @@ services:
       --dry-multiplier 0.0
       --flash-attn off
       --jinja
-      --tensor-split 1,1
+      --tensor-split 2,1 
     deploy:
       resources:
         reservations:
