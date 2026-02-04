@@ -1,4 +1,6 @@
 {
+  "defaultProvider": "llamacpp",
+  "defaultModel": "coding-agent",
   "theme": "dark",
   "compaction": {
     "enabled": true,
