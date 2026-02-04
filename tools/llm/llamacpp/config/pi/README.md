@@ -1,5 +1,9 @@
 # Pi agent configuration
 
+## Git repository
+
+- [Repository](https://github.com/badlogic/pi-mono/tree/main)
+
 ## Install
 
 ```bash
