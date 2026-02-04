@@ -2,6 +2,16 @@
 
 An Ansible role to automate the configuration of SSH tunneling, watchdog daemon, and scheduled reboot on Linux systems.
 
+## Usage
+
+To apply the role to the VPN group, run:
+
+```bash
+ansible-playbook -i inventory.yml apply-ssh-tunnel.yml --ask-pass
+```
+
+This command will prompt you to enter the SSH password for the `pi` user on `raspi-vpn.local`.
+
 ## Requirements
 
 - Ansible 2.9+
