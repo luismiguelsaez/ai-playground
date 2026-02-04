@@ -1,0 +1,11 @@
+---
+all:
+  children:
+    vpn:
+      hosts:
+        raspi-vpn.local:
+          ansible_user: pi
+          ansible_password: krazz83
+          ansible_become_password: krazz83
+      vars:
+        ansible_python_interpreter: /usr/bin/python3

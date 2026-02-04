@@ -1,0 +1,24 @@
+---
+# Default variables for ssh-tunnel-and-watchdog role
+
+# SSH tunnel configuration
+ssh_tunnel_remote_host: tunnel@h4rdl1nk.chickenkiller.com
+ssh_tunnel_remote_port: 2245
+ssh_tunnel_local_forward_ports:
+  - "2222:localhost:22"     # SSH port
+  - "33128:localhost:3128"  # Custom port
+ssh_tunnel_remote_ports: "{{ ssh_tunnel_local_forward_ports }}"
+
+# Systemd user for the tunnel service
+ssh_tunnel_service_user: pi
+
+# Watchdog configuration
+watchdog_device: /dev/watchdog
+watchdog_max_load_1: 24
+watchdog_min_memory: 1
+watchdog_interval: 10
+watchdog_realtime: yes
+watchdog_priority: 1
+
+# Scheduled reboot configuration
+scheduled_reboot_time: "04:00"
