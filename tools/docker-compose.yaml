@@ -78,7 +78,8 @@ services:
   # Opencode agent
   # Models:
   # - unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
-  # - unsloth/GLM-4.7-Flash-GGUF:Q5_K_M - https://unsloth.ai/docs/models/glm-4.7-flash
+  # - unsloth/GLM-4.7-Flash-GGUF:Q6_K - https://unsloth.ai/docs/models/glm-4.7-flash
+  # - DavidAU/GLM-4.7-Flash-Uncensored-Heretic-NEO-CODE-Imatrix-MAX-GGUF:Q4_K_M
   agent:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
     runtime: nvidia
@@ -92,10 +93,10 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo unsloth/GLM-4.7-Flash-GGUF:Q6_K
+      --hf-repo DavidAU/GLM-4.7-Flash-Uncensored-Heretic-NEO-CODE-Imatrix-MAX-GGUF:Q4_K_M
       --alias coding-agent
-      --parallel 4
-      --ctx-size 131072
+      --parallel 2
+      --ctx-size 64000
       --batch-size 2048
       --n-predict 16384
       --ubatch-size 512
@@ -175,10 +176,10 @@ services:
       --port 8000
       --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
       --alias coding-agent
-      --ctx-size 90000
-      --n-predict 90000
+      --ctx-size 120000
+      --n-predict 120000
       --batch-size 2048
-      --parallel 4
+      --parallel 1
       --cont-batching
       --cache-type-k q8_0
       --cache-type-v q8_0

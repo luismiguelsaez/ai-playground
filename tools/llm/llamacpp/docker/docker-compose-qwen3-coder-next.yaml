@@ -1,0 +1,52 @@
+---
+
+# https://unsloth.ai/docs/basics/claude-codex
+
+services:
+
+  agent-qwen3-coder-next:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7903
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M
+      --alias coding-agent
+      --host 0.0.0.0
+      --port 8000
+      --fit on
+      --port 8000
+      --jinja
+      --kv-unified
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+      --batch-size 4096
+      --ubatch-size 1024
+      --ctx-size 131072
+      --temp 1.0
+      --top-p 0.95
+      --min-p 0.01
+      --top-k 40
+      --tensor-split 1,1,1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  open-webui:
+    driver: local
+
+networks:
+  ai-network:
+    driver: bridge
