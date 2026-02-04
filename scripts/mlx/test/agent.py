@@ -65,6 +65,10 @@ class Chat():
 
                 outputs_t_end = perf_counter()
                 outputs_t_elapsed = outputs_t_end - outputs_t_start
+                outputs_len = len(system_msg)
+                print(
+                    f"{Style.DIM}Generated outputs[{outputs_len}][{outputs_t_elapsed:.5f}]{Style.RESET_ALL}"
+                )
                 self.messages.append({"role": "system", "content": system_msg})
             else:
                 generation_config = inputs
