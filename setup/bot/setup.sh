@@ -16,17 +16,17 @@ echo ""
 
 # Check if running as root
 if [ "$EUID" -ne 0 ] && [ "$(whoami)" != "root" ]; then
-    echo "Please run this script as root or with sudo"
-    exit 1
+  echo "Please run this script as root or with sudo"
+  exit 1
 fi
 
 # Check if bot user exists, create if not
 echo "[0/6] Checking for bot user..."
 if ! id "bot" &>/dev/null; then
-    echo "[0/6] Creating bot user..."
-    useradd --system --no-create-home --shell /usr/sbin/nologin bot
+  echo "[0/6] Creating bot user..."
+  useradd --system --no-create-home --shell /usr/sbin/nologin bot
 else
-    echo "[0/6] Bot user already exists"
+  echo "[0/6] Bot user already exists"
 fi
 
 # Create bot directory
@@ -40,7 +40,7 @@ python3 -m venv "$BOT_DIR/venv"
 # Install required packages
 echo "[1.6/6] Installing required packages..."
 "$BOT_DIR/venv/bin/pip" install --upgrade pip
-"$BOT_DIR/venv/bin/pip" install python-telegram-bot
+"$BOT_DIR/venv/bin/pip" install python-telegram-bot dotenv
 
 # Copy the bot script
 echo "[2/6] Copying bot script..."
@@ -53,7 +53,7 @@ mkdir -p "$CONFIG_DIR"
 
 # Create the systemd service file
 echo "[3/6] Creating systemd service file..."
-cat > "/etc/systemd/system/$SERVICE_FILE" << EOF
+cat >"/etc/systemd/system/$SERVICE_FILE" <<EOF
 [Unit]
 Description=Telegram Bot - System Status Reporter
 After=network.target
@@ -98,3 +98,4 @@ echo "To check status: systemctl status $SERVICE_NAME"
 echo "To view logs: journalctl -u $SERVICE_NAME -f"
 echo ""
 echo "IMPORTANT: After first boot, send /start to @esp_lmsm_bot to add your chat ID"
+

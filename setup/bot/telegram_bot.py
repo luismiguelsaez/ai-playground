@@ -13,9 +13,14 @@ import urllib.request
 from telegram import Bot, Update
 from telegram.error import TelegramError
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from dotenv import load_dotenv
+
+# Load environment variables from .env file in the script's directory
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(SCRIPT_DIR, ".env"))
 
 # Configuration
-TELEGRAM_TOKEN = "7411509635:AAEpYvGl3PF_W0mNrQicmy8SvCLahfImMLQ"
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CONFIG_DIR = os.path.expanduser("~/.config/telegram-bot")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.ini")
 
