@@ -1,96 +1,42 @@
-from colorama import Fore, Style
-from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
-from time import perf_counter
-from threading import Thread
+from requests import get
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-class Chat():
-    def __init__(self, checkpoint: str, stream: bool = True, max_new_tokens: int = 512):
-        self.checkpoint = checkpoint
-        self.stream = stream
-        self.max_new_tokens = max_new_tokens
-        self.messages = []
-
-    def _load_model(self):
-        self.model = AutoModelForCausalLM.from_pretrained(self.checkpoint, device_map="mps")
-        self.tokenizer = AutoTokenizer.from_pretrained(self.checkpoint, skip_special_tokens=True)
-
-    def start(self):
-        self._load_model()
-        while True:
-            user_msg = input(f"{Fore.RED}> User: ")
-            print(Fore.RESET, end="")
-
-            if user_msg == "quit":
-                break
-            if user_msg == "reset":
-                self.messages = []
-                continue
-
-            self.messages.append({"role": "user", "content": user_msg})
-
-            print(f"{Style.DIM}Generating inputs ...{Style.RESET_ALL}")
-            inputs_t_start = perf_counter()
-            inputs = self.tokenizer.apply_chat_template(
-                self.messages,
-                return_dict=True,
-                tokenize=True,
-                return_tensors="pt",
-                add_generation_prompt=True,
-            ).to(self.model.device)
-            inputs_t_end = perf_counter()
-            inputs_t_elapsed = inputs_t_end - inputs_t_start
-            inputs_len = inputs["input_ids"].shape[-1]
-            print(
-                f"{Style.DIM}Generated inputs[{inputs_len}][{inputs_t_elapsed:.5f}]: {inputs['input_ids'].tolist()}{Style.RESET_ALL}"
-            )
-
-            print(f"{Style.DIM}Generating outputs ...{Style.RESET_ALL}")
-            outputs_t_start = perf_counter()
-
-            if self.stream:
-                streamer = TextIteratorStreamer(tokenizer=self.tokenizer, skip_prompt=True, skip_special_tokens=True)
-                generation_config = inputs
-                generation_config['streamer'] = streamer
-                generation_config['max_new_tokens'] = self.max_new_tokens
-                tread = Thread(target=self.model.generate, kwargs=generation_config)
-                tread.start()
-
-                system_msg = ""
-                print(f"{Fore.BLUE}> System: ", end="")
-                for t in streamer:
-                    print(t, end="", flush=True)
-                    system_msg += t
-                print()
-
-                outputs_t_end = perf_counter()
-                outputs_t_elapsed = outputs_t_end - outputs_t_start
-                outputs_len = len(system_msg)
-                print(
-                    f"{Style.DIM}Generated outputs[{outputs_len}][{outputs_t_elapsed:.5f}]{Style.RESET_ALL}"
-                )
-                self.messages.append({"role": "system", "content": system_msg})
-            else:
-                generation_config = inputs
-                generation_config['streamer'] = None
-                generation_config['max_new_tokens'] = self.max_new_tokens
-                outputs = self.model.generate(**generation_config)
-                outputs_t_end = perf_counter()
-                outputs_t_elapsed = outputs_t_end - outputs_t_start
-                outputs_len = len(outputs[0])
-                print(
-                    f"{Style.DIM}Generated outputs[{outputs_len}][{outputs_t_elapsed:.5f}]: {outputs[0][inputs_len:].tolist()}{Style.RESET_ALL}"
-                )
-                decoded_outputs = self.tokenizer.decode(
-                    outputs[0][inputs_len:], skip_special_tokens=True
-                )
-                print(f"{Fore.BLUE}> System: {decoded_outputs}")
-                self.messages.append({"role": "system", "content": decoded_outputs})
+def get_external_ip() -> str:
+    """
+    This is a tool that returns the system external IP, no arguments needed.
+    """
+    res = get(url="https://ifconfig.co")
+    return res.text
 
 
-def main():
-    chat = Chat(checkpoint="LiquidAI/LFM2.5-1.2B-Instruct", stream=True, max_new_tokens=2048)
-    chat.start()
+tools = [get_external_ip]
+checkpoint = "LiquidAI/LFM2.5-1.2B-Instruct"
+model = AutoModelForCausalLM.from_pretrained(checkpoint, device_map="mps")
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)
 
-if __name__ == "__main__":
-    main()
+
+messages = [
+    {"role": "system", "content": "You are an agent which executes tools"},
+    {"role": "user", "content": "Get the system external IP"},
+]
+
+input = tokenizer.apply_chat_template(
+    messages, tokenize=False, tools=[get_external_ip], add_generation_prompt=True
+)
+print(input)
+
+input_ids = tokenizer.encode(input, return_tensors="pt").to(model.device)
+print(input_ids)
+
+generation_args = dict(
+    input_ids=input_ids,
+    max_new_tokens=1024,
+)
+
+
+output = model.generate(**generation_args)
+print(output)
+
+output_text = tokenizer.decode(output[0], skip_special_tokens=False)
+print(output_text)
