@@ -1,0 +1,93 @@
+# docker-compose.yml
+#
+services:
+  # -------------------------------------------------
+  # Prometheus
+  # -------------------------------------------------
+  prometheus:
+    image: prom/prometheus:v3.8.1
+    container_name: prometheus
+    restart: unless-stopped
+    user: "0:0"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./data/prometheus:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules.yml:/etc/prometheus/rules.yml:ro          # optional
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-admin-api'
+      - '--log.level=info'
+    depends_on:
+      - node-exporter
+      - dcgm-exporter
+    networks:
+      - promnet
+
+  # -------------------------------------------------
+  # Node exporter – privileged
+  # -------------------------------------------------
+  node-exporter:
+    image: prom/node-exporter:v1.10.2
+    container_name: node-exporter
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /dev:/host/dev:ro
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      - promnet
+
+  # -------------------------------------------------
+  # DCGM Exporter – GPU metrics
+  # -------------------------------------------------
+  dcgm-exporter:
+    image: nvidia/dcgm-exporter:4.4.2-4.7.1-ubuntu22.04
+    container_name: dcgm-exporter
+    restart: unless-stopped
+    # Device request – works with Docker Engine ≥20.10 and Compose v3.8+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 4
+              capabilities: [gpu]
+    ports:
+      - "9400:9400"
+    networks:
+      - promnet
+
+  # -------------------------------------------------
+  # Grafana
+  # -------------------------------------------------
+  grafana:
+    image: grafana/grafana:12.4.0-20447603318
+    container_name: grafana
+    restart: unless-stopped
+    user: "0:0"
+    ports:
+      - "3000:3000"                     # UI
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin   # change to a strong password in prod
+      - GF_USERS_ALLOW_SIGN_UP=false       # disable sign‑ups (optional)
+    volumes:
+      - ./data/grafana:/var/lib/grafana   # persists dashboards, users, etc.
+      - ./data/grafana/provisioning:/etc/grafana/provisioning   # provisioning files
+      - ./data/grafana/dashboards:/var/lib/grafana/dashboards   # user‑added dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - promnet
+
+networks:
+  promnet:
+    driver: bridge
+

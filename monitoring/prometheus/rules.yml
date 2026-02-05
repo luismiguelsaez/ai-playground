@@ -1,0 +1,13 @@
+# prometheus/rules.yml
+groups:
+  - name: gpu-health
+    rules:
+      - alert: GPUUtilizationHigh
+        expr: avg by (instance) (nvidia_gpu_utilization) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "GPU {{ $labels.instance }} is >80% utilized"
+          description: "Average GPU utilization over the last 5 minutes is {{ $value }}%."
+
