@@ -27,8 +27,9 @@ services:
   # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
   # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
   # - https://github.com/Lightricks/ComfyUI-LTXVideo
+  # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
   comfy-gpu:
-    image: yanwk/comfyui-boot:cu126-slim-20260112
+    image: yanwk/comfyui-boot:cu126-slim-20260202
     #build:
     #  context: comfy/ComfyUI-Docker/cu126-slim
     ports:
