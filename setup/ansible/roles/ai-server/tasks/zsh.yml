@@ -1,0 +1,71 @@
+---
+# Zsh configuration tasks
+- name: Check if user exists
+  getent:
+    database: passwd
+    key: "{{ zsh_user }}"
+  become: true
+  changed_when: false
+  when: ai_server_install_zsh
+
+- name: Create Oh My Zsh custom directory
+  file:
+    path: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh/custom"
+    state: directory
+    owner: "{{ zsh_user }}"
+    group: "{{ zsh_user }}"
+    mode: '0755'
+  become: true
+  when: ai_server_install_zsh
+
+- name: Install Oh My Zsh
+  command: sh -c "{{ item }}"
+  args:
+    creates: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh/oh-my-zsh.sh"
+  loop:
+    - curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
+  environment:
+    ZSH: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh"
+  become: true
+  become_user: "{{ zsh_user }}"
+  when: ai_server_install_zsh
+
+- name: Install zsh-autosuggestions plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    force: true
+  become: true
+  become_user: "{{ zsh_user }}"
+  when: ai_server_install_zsh and ('zsh-autosuggestions' in zsh_plugins)
+
+- name: Install eza (modern ls replacement)
+  apt:
+    name: eza
+    state: present
+  become: true
+  when: ai_server_install_zsh and ('eza' in zsh_plugins)
+
+- name: Install bat (cat replacement)
+  apt:
+    name: bat
+    state: present
+  become: true
+  when: ai_server_install_zsh and ('cat' in zsh_aliases)
+
+- name: Install zoxide (cd replacement)
+  apt:
+    name: zoxide
+    state: present
+  become: true
+  when: ai_server_install_zsh and ('zoxide' in zsh_plugins)
+
+- name: Copy zshrc to user home
+  template:
+    src: .zshrc.j2
+    dest: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.zshrc"
+    owner: "{{ zsh_user }}"
+    group: "{{ zsh_user }}"
+    mode: '0644'
+  become: true
+  when: ai_server_install_zsh

@@ -1,0 +1,127 @@
+---
+# Tasks for ai-server role
+
+- name: Update apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Install prerequisite packages for adding repositories
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - software-properties-common
+    state: present
+  become: true
+
+- name: Add NVIDIA GPG key
+  apt_key:
+    url: https://nvidia.github.io/nvidia-docker/gpgkey
+    state: present
+  become: true
+  when: ai_server_install_nvidia_driver or ai_server_install_nvidia_toolkit
+  ignore_errors: true
+
+- name: Add Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  become: true
+  when: ai_server_install_docker
+
+- name: Add NVIDIA Docker repository
+  apt_repository:
+    repo: "deb https://nvidia.github.io/nvidia-docker/ubuntu{{ ansible_distribution_version | regex_replace('\\..*', '') }}/{{ ansible_distribution_release }}/amd64 /"
+    state: present
+    filename: nvidia-docker
+  become: true
+  ignore_errors: true
+
+- name: Add Docker repository
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+    filename: docker
+  become: true
+  when: ai_server_install_docker
+
+- name: Install NVIDIA driver packages
+  apt:
+    name:
+      - nvidia-driver-535
+    state: present
+  become: true
+  when: ai_server_install_nvidia_driver
+  notify: reboot if needed
+
+- name: Install Docker CE
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+  become: true
+  when: ai_server_install_docker
+
+- name: Install NVIDIA Container Toolkit
+  apt:
+    name:
+      - nvidia-container-toolkit
+    state: present
+  become: true
+  when: ai_server_install_nvidia_toolkit
+  notify: restart docker
+
+- name: Configure Docker to use NVIDIA Container Toolkit
+  block:
+    - name: Check if nvidia-ctk is available
+      command: which nvidia-ctk
+      register: nvidia_ctk_path
+      changed_when: false
+      failed_when: false
+      when: ai_server_install_nvidia_toolkit
+
+    - name: Configure NVIDIA Container Toolkit runtime
+      command: nvidia-ctk config --set runtime=docker
+      become: true
+      changed_when: false
+      when:
+        - ai_server_install_nvidia_toolkit
+        - nvidia_ctk_path.rc == 0
+      notify: restart docker
+  when: ai_server_install_nvidia_toolkit
+
+- name: Create docker group
+  group:
+    name: docker
+    state: present
+  become: true
+  when: ai_server_install_docker
+
+- name: Add user to docker group
+  user:
+    name: "{{ docker_user }}"
+    groups: docker
+    append: true
+  become: true
+  when: ai_server_install_docker and docker_enable_user
+
+- name: Start and enable Docker service
+  service:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+  when: ai_server_install_docker
+
+- name: Include Zsh configuration tasks
+  include_tasks: zsh.yml
+  when: ai_server_install_zsh

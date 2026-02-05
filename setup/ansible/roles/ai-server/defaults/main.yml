@@ -1,0 +1,28 @@
+---
+# Default variables for ai-server role
+ai_server_system: "ubuntu-24"
+ai_server_install_nvidia_driver: true
+ai_server_install_docker: true
+ai_server_install_nvidia_toolkit: true
+ai_server_install_zsh: true
+
+# Zsh configuration
+zsh_user: "{{ docker_user | default('luismi') }}"
+zsh_theme: "robbyrussell"
+zsh_plugins:
+  - git
+  - zsh-autosuggestions
+  - eza
+  - fzf
+  - docker
+  - zoxide
+
+# Custom aliases
+zsh_aliases:
+  la: "eza -al --icons"
+  ll: "eza -l --sort=modified --group-directories-first --icons"
+  cat: "bat"
+
+# Docker configuration
+docker_user: "{{ ansible_env.SUDO_USER | default(ansible_env.USER) }}"
+docker_enable_user: true

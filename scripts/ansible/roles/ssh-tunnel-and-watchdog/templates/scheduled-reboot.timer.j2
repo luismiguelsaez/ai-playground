@@ -1,9 +1,0 @@
-[Unit]
-Description=Scheduled reboot
-
-[Timer]
-OnCalendar=*-*-* {{ scheduled_reboot_time }}
-Persistent=true
-
-[Install]
-WantedBy=timers.target

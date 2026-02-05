@@ -1,0 +1,13 @@
+---
+# Handlers for ai-server role
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+  become: true
+
+- name: reboot if needed
+  reboot:
+    reboot_command: shutdown -r now
+    reboot_timeout: 300
+  become: true

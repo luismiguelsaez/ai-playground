@@ -1,6 +1,0 @@
----
-- name: Apply ssh-tunnel-and-watchdog role
-  hosts: vpn
-  become: true
-  roles:
-    - role: ../roles/ssh-tunnel-and-watchdog
