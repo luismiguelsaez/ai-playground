@@ -10,4 +10,9 @@ dependencies = [
     "langchain>=1.2.7",
     "torch>=2.10.0",
     "transformers>=4.0",
+    "mlx-lm>=0.29.1",
+    "bitsandbytes",
+    "smolagents>=1.24.0",
+    "ddgs>=9.10.0",
+    "huggingface-hub>=0.36.1",
 ]
