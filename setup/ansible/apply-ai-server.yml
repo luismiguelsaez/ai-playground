@@ -1,0 +1,9 @@
+---
+- name: Apply ai-server role
+  hosts: ai
+  become: true
+  vars:
+    ansible_password: krazz83
+    ansible_become_password: krazz83
+  roles:
+    - role: ai-server

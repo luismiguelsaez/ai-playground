@@ -6,6 +6,17 @@
     state: restarted
   become: true
 
+- name: restart watchdog service
+  systemd:
+    name: watchdog
+    state: restarted
+  become: true
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  become: true
+
 - name: reboot if needed
   reboot:
     reboot_command: shutdown -r now

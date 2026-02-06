@@ -1,0 +1,27 @@
+[Unit]
+Description=Persistent SSH Tunnel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ ssh_tunnel_service_user }}
+
+# Autossh settings
+Environment="AUTOSSH_GATETIME=0"
+Environment="AUTOSSH_FIRST_POLL=30"
+Environment="AUTOSSH_POLL=60"
+
+ExecStart=/usr/bin/autossh -M 0 \
+    -o "ServerAliveInterval 15" \
+    -o "ServerAliveCountMax 3" \
+    -o "ConnectTimeout 10" \
+    -o "ExitOnForwardFailure yes" \
+    -N {{ ssh_tunnel_remote_ports | map('regex_replace', '(.+):(.+)', '-R \\1:\\2') | map('regex_replace', '(.+)', '-R \\1') | join(' ') }} \
+    -p {{ ssh_tunnel_remote_port }} -vvv {{ ssh_tunnel_remote_host }}
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

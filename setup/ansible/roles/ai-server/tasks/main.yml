@@ -53,7 +53,7 @@
 - name: Install NVIDIA driver packages
   apt:
     name:
-      - nvidia-driver-535
+      - nvidia-driver-580
     state: present
   become: true
   when: ai_server_install_nvidia_driver
@@ -125,3 +125,7 @@
 - name: Include Zsh configuration tasks
   include_tasks: zsh.yml
   when: ai_server_install_zsh
+
+- name: Include watchdog tasks
+  include_tasks: watchdog.yml
+  when: ai_server_enable_watchdog

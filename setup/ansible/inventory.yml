@@ -1,0 +1,16 @@
+---
+all:
+  children:
+    vpn:
+      hosts:
+        raspi-vpn.local:
+          ansible_user: pi
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+    
+    ai:
+      hosts:
+        ai-server.local:
+          ansible_user: luismi
+      vars:
+        ansible_python_interpreter: /usr/bin/python3

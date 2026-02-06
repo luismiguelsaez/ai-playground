@@ -6,6 +6,16 @@ ai_server_install_docker: true
 ai_server_install_nvidia_toolkit: true
 ai_server_install_zsh: true
 
+# Watchdog configuration for system stability
+ai_server_enable_watchdog: true
+watchdog_device: /dev/watchdog
+watchdog_max_load_1: 24
+watchdog_min_memory: 1
+watchdog_interval: 10
+watchdog_realtime: yes
+watchdog_priority: 1
+scheduled_reboot_time: "04:00"
+
 # Zsh configuration
 zsh_user: "{{ docker_user | default('luismi') }}"
 zsh_theme: "robbyrussell"

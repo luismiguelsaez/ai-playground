@@ -1,0 +1,54 @@
+---
+# Watchdog tasks for ai-server role
+
+- name: Install watchdog package
+  apt:
+    name: watchdog
+    state: present
+    update_cache: yes
+  become: true
+  when: ai_server_enable_watchdog
+
+- name: Copy watchdog configuration
+  template:
+    src: watchdog.conf.j2
+    dest: /etc/watchdog.conf
+    mode: '0644'
+  become: true
+  when: ai_server_enable_watchdog
+  notify: restart watchdog service
+
+- name: Enable and start watchdog service
+  systemd:
+    name: watchdog
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  become: true
+  when: ai_server_enable_watchdog
+
+- name: Copy scheduled reboot service file
+  template:
+    src: scheduled-reboot.service.j2
+    dest: /etc/systemd/system/scheduled-reboot.service
+    mode: '0644'
+  become: true
+  when: ai_server_enable_watchdog
+  notify: Reload systemd
+
+- name: Copy scheduled reboot timer file
+  template:
+    src: scheduled-reboot.timer.j2
+    dest: /etc/systemd/system/scheduled-reboot.timer
+    mode: '0644'
+  become: true
+  when: ai_server_enable_watchdog
+  notify: Reload systemd
+
+- name: Enable and start scheduled reboot timer
+  systemd:
+    name: scheduled-reboot.timer
+    enabled: yes
+    state: started
+  become: true
+  when: ai_server_enable_watchdog
