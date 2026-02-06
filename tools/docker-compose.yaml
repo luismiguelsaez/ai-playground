@@ -180,7 +180,7 @@ services:
       --ctx-size 120000
       --n-predict 120000
       --batch-size 2048
-      --parallel 1
+      --parallel 4 
       --cont-batching
       --cache-type-k q8_0
       --cache-type-v q8_0
@@ -227,10 +227,7 @@ services:
       --port 8000
       --jinja
       --kv-unified
-      --cache-type-k q8_0
-      --cache-type-v q8_0
       --flash-attn on
-      --batch-size 4096
       --ubatch-size 1024
       --ctx-size 131072
       --temp 1.0
@@ -238,6 +235,9 @@ services:
       --min-p 0.01
       --top-k 40
       --tensor-split 1,1,1
+      --cont-batching
+      --batch-size 512
+      --ubatch-size 128
     deploy:
       resources:
         reservations:
