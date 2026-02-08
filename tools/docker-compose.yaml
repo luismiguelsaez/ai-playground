@@ -228,7 +228,6 @@ services:
       --jinja
       --kv-unified
       --flash-attn on
-      --ubatch-size 1024
       --ctx-size 131072
       --temp 1.0
       --top-p 0.95
