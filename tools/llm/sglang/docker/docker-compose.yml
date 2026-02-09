@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  sglang:
+    image: lmsysorg/sglang:latest
+    ipc: host
+    shm_size: 32g
+    ports:
+      - 30000:30000
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    command:
+      - python3
+      - -m
+      - sglang.launch_server
+      - --model-path
+      - Qwen/Qwen3-0.6B
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "30000"

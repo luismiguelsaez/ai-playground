@@ -5,7 +5,12 @@
       "api": "openai-completions",
       "apiKey": "aa",
       "models": [
-        { "id": "coding-agent" }
+        {
+          "id": "coding-agent",
+          "reasoning": "true",
+          "contextWindow": "131072",
+          "maxTokens": "25536"
+        }
       ]
     }
   }
