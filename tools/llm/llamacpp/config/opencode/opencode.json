@@ -55,6 +55,7 @@
       "models": {
         "coding-agent": {
           "name": "coding-agent",
+          "reasoning": "true",
           "limit": {
             "context": 128000,
             "output": 65536
