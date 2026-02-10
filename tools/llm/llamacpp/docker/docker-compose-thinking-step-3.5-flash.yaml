@@ -1,0 +1,56 @@
+---
+
+# Doc: https://unsloth.ai/docs/models/glm-4.7
+# Model: https://huggingface.co/unsloth/GLM-4.7-REAP-218B-A32B-GGUF
+
+services:
+
+  glm-4.7:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --host 0.0.0.0
+      --port 8000
+      -v
+      --hf-repo stepfun-ai/Step-3.5-Flash-GGUF-Q4_K_S:Q4_K_S
+      --alias coding-agent
+      --ctx-size 32768 
+      --n-predict 16384 
+      --batch-size 2048
+      --u-batch-size 2048
+      --cont-batching
+      --parallel 1
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+      --temp 1.0
+      --jinja
+      --fit on
+      --tensor-split 1,1,1,1
+      --gpu-layers 999
+      --threads 40
+      --override-tensor "blk\.(1|2|3|4|5|6|7|8|9)\.ffn_.*_exps\.weight=CPU","blk\.(24|25|26|27|28|29|30|31|32)\.ffn_.*_exps\.weight=CPU","blk\.(47|48|49|50|51|52|53|54|55)\.ffn_.*_exps\.weight=CPU","blk\.(70|71|72|73|74|75|76|77|78)\.ffn_.*_exps\.weight=CPU"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1','2','3']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+volumes:
+  open-webui:
+    driver: local
+
+networks:
+  ai-network:
+    driver: bridge
+

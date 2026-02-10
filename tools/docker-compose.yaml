@@ -209,7 +209,7 @@ services:
     restart: unless-stopped
 
   qwen3-coder-next:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7903
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7973
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -219,20 +219,20 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q4_K_M
+      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q5_K_M
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
       --fit on
       --jinja
-      --kv-unified
+      -ngl 999
       --flash-attn on
-      --ctx-size 131072
+      --ctx-size 262144 
       --temp 1.0
       --top-p 0.95
       --min-p 0.01
       --top-k 40
-      --tensor-split 1,1,1
+      --tensor-split 1,1,1,1
       --cont-batching
       --batch-size 512
       --ubatch-size 128
@@ -241,7 +241,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['1','2','3']
+              device_ids: ['0','1','2','3']
               capabilities: [gpu]
     restart: unless-stopped
 
