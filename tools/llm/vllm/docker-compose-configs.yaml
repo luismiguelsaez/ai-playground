@@ -28,7 +28,7 @@ services:
 
     command:
       - --config
-      - /configs/glm4.7-flash.yaml
+      - /configs/lfm.yaml
 
     deploy:
       resources:
