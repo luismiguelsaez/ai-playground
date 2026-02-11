@@ -5,8 +5,8 @@
 
 services:
 
-  glm-4.7:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+  step-3.5-flash:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7981
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -24,7 +24,7 @@ services:
       --ctx-size 32768 
       --n-predict 16384 
       --batch-size 2048
-      --u-batch-size 2048
+      --ubatch-size 2048
       --cont-batching
       --parallel 1
       --cache-type-k q8_0
@@ -33,10 +33,7 @@ services:
       --temp 1.0
       --jinja
       --fit on
-      --tensor-split 1,1,1,1
-      --gpu-layers 999
       --threads 40
-      --override-tensor "blk\.(1|2|3|4|5|6|7|8|9)\.ffn_.*_exps\.weight=CPU","blk\.(24|25|26|27|28|29|30|31|32)\.ffn_.*_exps\.weight=CPU","blk\.(47|48|49|50|51|52|53|54|55)\.ffn_.*_exps\.weight=CPU","blk\.(70|71|72|73|74|75|76|77|78)\.ffn_.*_exps\.weight=CPU"
     deploy:
       resources:
         reservations:

@@ -15,7 +15,7 @@ python3 -m vllm.entrypoints.openai.api_server --model=Qwen/Qwen2.5-Coder-32B-Ins
   --host=0.0.0.0 \
   --port=8000 \
   --tensor-parallel-size=2 \
-  --gpu-memory-utilization=0.90 \
+  --gpu-memory-utilization=0.75 \
   --max-model-len=16384 \
   --disable-log-requests \
   --served-model-name=qwen-coder-32b \

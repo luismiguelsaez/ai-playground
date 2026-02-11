@@ -3,7 +3,7 @@ from threading import Thread
 from termcolor import colored
 import logging
 from torch import bfloat16
-import time
+from torch.cuda import is_available
 
 
 class Chat:
@@ -54,7 +54,6 @@ class Chat:
         )
 
         messages = []
-        start_time = None
 
         while True:
             print()
@@ -84,8 +83,10 @@ class Chat:
                 streamer=streamer,
                 do_sample=True,  # Whether or not to use sampling ; use greedy decoding otherwise.
                 max_new_tokens=self.max_new_tokens,  # The maximum numbers of tokens to generate, ignoring the number of tokens in the prompt.
+                use_cache=True,
                 # temperature = 0.6,                    # The value used to module the next token probabilities. This value is set in a model's generation_config.json file. If it isn't set, the default value is 1.0
                 # top_p = 0.95,                         # If set to float < 1, only the smallest set of most probable tokens with probabilities that add up to top_p or higher are kept for generation. This value is set in a model's generation_config.json file. If it isn't set, the default value is 1.0
+                # use_cache = True,
                 # top_k = 20,                           # The number of highest probability vocabulary tokens to keep for top-k-filtering. This value is set in a model's generation_config.json file. If it isn't set, the default value is 50.
                 # min_p = 0,                            # Minimum token probability, which will be scaled by the probability of the most likely token. It must be a value between 0 and 1. Typical values are in the 0.01-0.2 range, comparably selective as setting top_p in the 0.99-0.8 range (use the opposite of normal top_p values).
             )
@@ -121,8 +122,11 @@ class Chat:
 
 def main():
     checkpoint = "Qwen/Qwen3-8B"
+    checkpoint = "LiquidAI/LFM2.5-1.2B-Instruct"
+    checkpoint = "Qwen/Qwen3-4B-Instruct-2507"
+    device = "cuda:0" if is_available() else "cpu"
     chat = Chat(
-        checkpoint=checkpoint, device="cuda:0", quantize=True, max_new_tokens=32000
+        checkpoint=checkpoint, device=device, quantize=True, max_new_tokens=32000
     )
     chat.start()
 
