@@ -1,0 +1,17 @@
+{
+  "providers": {
+    "llamacpp": {
+      "baseUrl": "http://ai-server.local:8002",
+      "api": "openai-completions",
+      "apiKey": "aa",
+      "models": [
+        {
+          "id": "coding-agent",
+          "reasoning": true,
+          "contextWindow": 131072,
+          "maxTokens": 25536
+        }
+      ]
+    }
+  }
+}
