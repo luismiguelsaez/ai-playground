@@ -39,7 +39,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Load models
-chat = Chat(quantization=True, device="cuda:0")
+chat = Chat(
+    quantization=True,
+    device="cuda:0",
+    max_new_tokens=1024,
+    system_msg="You are an assistant that provide concise responses to fit a mobile phone chat, usually using markdown to enrich the text",
+)
 chat.load_model()
 
 transcriber = Transcriber(device="cuda:0")
