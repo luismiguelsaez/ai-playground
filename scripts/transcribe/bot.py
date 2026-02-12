@@ -17,8 +17,8 @@ from typing import Final
 import io
 import numpy as np
 import soundfile as sf
-
 import torch
+
 from qwen_asr import Qwen3ASRModel
 
 from telegram import Update, Voice
@@ -34,7 +34,12 @@ from telegram.ext import (
 TOKEN: Final = "425033555:AAFYf2UU2b7PLJYwPS0q6-jpEkmpUeFPq3M"
 DEFAULT_DOWNLOAD_FOLDER: Final = "/tmp"
 
-# Import conversion utility
+# Enable logging first before any other logging calls
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+)
+logger = logging.getLogger(__name__)
 
 
 def _read_wav_from_bytes(audio_bytes: bytes) -> tuple[np.ndarray, int]:
@@ -59,12 +64,8 @@ def load_asr_model() -> Qwen3ASRModel:
     return model
 
 
-# Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
-)
-logger = logging.getLogger(__name__)
+# Load ASR model during startup - this blocks until model is loaded
+asr_model = load_asr_model()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -73,11 +74,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Hi! I'm your voice recording bot.\n\n"
         "Please send me a voice recording, and I'll save it to disk."
     )
-
-    # Load the ASR model if not already loaded
-    logger.info("Loading ASR model")
-    if "asr_model" not in context.bot_data:
-        context.bot_data["asr_model"] = load_asr_model()
 
 
 async def handle_voice_message(
@@ -115,18 +111,12 @@ async def handle_voice_message(
         wav_path = convert_ogg_to_wav(file_path, download_folder)
         logger.info(f"Converted to WAV: {wav_path}")
 
-        # Send confirmation that conversion is in progress
-        await update.message.reply_text(
-            f"✅ Voice recording saved successfully!\n"
-            f"📁 Location: {file_path}\n\n"
-            f"🔄 Converting to text..."
-        )
+        # Get the ASR model (loaded at startup)
+        model = asr_model
 
         # Send the converted wav file
-        await update.message.reply_document(wav_path)
+        # await update.message.reply_document(wav_path)
 
-        # Get the ASR model from context
-        model = context.bot_data.get("asr_model")
         if model:
             # Read the wav file and transcribe
             wav_bytes = wav_path.read_bytes()
@@ -140,17 +130,12 @@ async def handle_voice_message(
 
             # Send the transcribed text
             transcribed_text = results[0].text
+            transcribed_lang = results[0].language
             await update.message.reply_text(
-                f"✅ Voice recording converted to WAV!\n"
-                f"📝 Transcribed text:\n"
-                f"{transcribed_text}"
+                f"📝 Transcribed text ({transcribed_lang}):\n{transcribed_text}"
             )
         else:
-            await update.message.reply_text(
-                f"✅ Voice recording converted to WAV!\n"
-                f"📁 Location: {wav_path}\n\n"
-                f"⚠️ ASR model not loaded yet."
-            )
+            logger.warning("ASR model not loaded")
     except Exception as e:
         logger.error(f"Processing failed: {e}")
         await update.message.reply_text(f"⚠️ An error occurred: {str(e)}")
@@ -176,4 +161,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
