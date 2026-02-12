@@ -8,18 +8,13 @@ This bot:
 - Saves recorded audio to a configured folder with timestamp as filename
 """
 
-from utils import convert_ogg_to_wav
+from utils import convert_ogg_to_wav, read_wav_from_bytes
+from models import load_asr_model, Chat
 
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Final
-import io
-import numpy as np
-import soundfile as sf
-import torch
-
-from qwen_asr import Qwen3ASRModel
 
 from telegram import Update, Voice
 from telegram.ext import (
@@ -29,10 +24,13 @@ from telegram.ext import (
     filters,
     ContextTypes,
 )
+from dotenv import dotenv_values
+
+env = dotenv_values(dotenv_path=".env")
 
 # Configuration
-TOKEN: Final = "425033555:AAFYf2UU2b7PLJYwPS0q6-jpEkmpUeFPq3M"
-DEFAULT_DOWNLOAD_FOLDER: Final = "/tmp"
+TOKEN: Final = env.get("TELEGRAM_TOKEN")
+DEFAULT_DOWNLOAD_FOLDER: Final = env.get("DOWNLOAD_FOLDER")
 
 # Enable logging first before any other logging calls
 logging.basicConfig(
@@ -41,31 +39,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-def _read_wav_from_bytes(audio_bytes: bytes) -> tuple[np.ndarray, int]:
-    """Read WAV audio data from bytes."""
-    with io.BytesIO(audio_bytes) as f:
-        wav, sr = sf.read(f, dtype="float32", always_2d=False)
-    return np.asarray(wav, dtype=np.float32), int(sr)
-
-
-def load_asr_model() -> Qwen3ASRModel:
-    """Load the Qwen3 ASR model."""
-    logger.info("Loading Qwen3 ASR model...")
-    model = Qwen3ASRModel.from_pretrained(
-        "Qwen/Qwen3-ASR-1.7B",
-        dtype=torch.bfloat16,
-        device_map="cuda:0",
-        attn_implementation="flash_attention_2",
-        max_inference_batch_size=32,
-        max_new_tokens=256,
-    )
-    logger.info("Qwen3 ASR model loaded successfully.")
-    return model
-
-
-# Load ASR model during startup - this blocks until model is loaded
+# Load models
 asr_model = load_asr_model()
+chat = Chat(quantization=True, device="cuda:0")
+chat.load_model()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -118,22 +95,42 @@ async def handle_voice_message(
         # await update.message.reply_document(wav_path)
 
         if model:
-            # Read the wav file and transcribe
-            wav_bytes = wav_path.read_bytes()
-            audio_data, sample_rate = _read_wav_from_bytes(wav_bytes)
+            try:
+                # Read the wav file and transcribe
+                wav_bytes = wav_path.read_bytes()
+                audio_data, sample_rate = read_wav_from_bytes(wav_bytes)
 
-            # Transcribe the audio
-            results = model.transcribe(
-                audio=(audio_data, sample_rate),
-                language=None,
-            )
+                # Transcribe the audio
+                results = model.transcribe(
+                    audio=(audio_data, sample_rate),
+                    language=None,
+                )
 
-            # Send the transcribed text
-            transcribed_text = results[0].text
-            transcribed_lang = results[0].language
-            await update.message.reply_text(
-                f"📝 Transcribed text ({transcribed_lang}):\n{transcribed_text}"
-            )
+                # Send the transcribed text
+                transcribed_text = results[0].text
+                transcribed_lang = results[0].language
+                await update.message.reply_text(
+                    f"📝 Transcribed text ({transcribed_lang}):\n{transcribed_text}"
+                )
+                model_msg = chat.generate(transcribed_text)
+                await update.message.reply_text(f"Bot response:\n{model_msg}")
+            finally:
+                # Clean up audio files after processing (whether successful or failed)
+                try:
+                    file_path.unlink()  # Delete .ogg file
+                    logger.info(f"Cleaned up .ogg file: {file_path}")
+                except FileNotFoundError:
+                    logger.warning(
+                        f"Could not clean up .ogg file: {file_path} - not found"
+                    )
+
+                try:
+                    wav_path.unlink()  # Delete .wav file
+                    logger.info(f"Cleaned up .wav file: {wav_path}")
+                except FileNotFoundError:
+                    logger.warning(
+                        f"Could not clean up .wav file: {wav_path} - not found"
+                    )
         else:
             logger.warning("ASR model not loaded")
     except Exception as e:

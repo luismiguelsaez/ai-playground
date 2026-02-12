@@ -3,8 +3,17 @@ Utility functions for the Telegram bot application.
 """
 
 from pathlib import Path
-
+import soundfile as sf
+import numpy as np
+import io
 from pydub import AudioSegment
+
+
+def read_wav_from_bytes(audio_bytes: bytes) -> tuple[np.ndarray, int]:
+    """Read WAV audio data from bytes."""
+    with io.BytesIO(audio_bytes) as f:
+        wav, sr = sf.read(f, dtype="float32", always_2d=False)
+    return np.asarray(wav, dtype=np.float32), int(sr)
 
 
 def convert_ogg_to_wav(ogg_path: Path, output_dir: Path) -> Path:
