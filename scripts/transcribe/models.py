@@ -23,13 +23,15 @@ class Chat:
         max_new_tokens: int = 512,
         quantization: bool = False,
         device: str = "auto",
+        system_msg: str = "You are a chat bot that responds using markdown syntax",
     ):
         self.checkpoint = checkpoint
         self.stream = stream
         self.max_new_tokens = max_new_tokens
         self.quantization = quantization
         self.device = device
-        self.messages = []
+        self.system_msg = system_msg
+        self.messages = [{"role": "system", "content": self.system_msg}]
 
     def load_model(self):
         if self.quantization and self.device != "mps":
@@ -46,7 +48,7 @@ class Chat:
         )
 
     def clear(self):
-        self.messages = []
+        self.messages = [{"role": "system", "content": self.system_msg}]
 
     def generate(self, message: str):
         user_msg = message

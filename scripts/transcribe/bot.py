@@ -113,7 +113,9 @@ async def handle_voice_message(
                     f"📝 Transcribed text ({transcribed_lang}):\n{transcribed_text}"
                 )
                 model_msg = chat.generate(transcribed_text)
-                await update.message.reply_text(f"Bot response:\n{model_msg}")
+                await update.message.reply_markdown(
+                    text=model_msg,
+                )
             finally:
                 # Clean up audio files after processing (whether successful or failed)
                 try:
