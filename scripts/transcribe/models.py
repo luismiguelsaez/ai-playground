@@ -2,6 +2,13 @@ from qwen_asr import Qwen3ASRModel
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 import torch
 
+from pathlib import Path
+import soundfile as sf
+import numpy as np
+import io
+from pydub import AudioSegment
+from typing import AnyStr, Tuple
+
 
 def load_asr_model() -> Qwen3ASRModel:
     model = Qwen3ASRModel.from_pretrained(
@@ -13,6 +20,66 @@ def load_asr_model() -> Qwen3ASRModel:
         max_new_tokens=256,
     )
     return model
+
+
+class Transcriber:
+    def __init__(
+        self,
+        checkpoint: str = "Qwen/Qwen3-ASR-1.7B",
+        device: str = "auto",
+    ):
+        self.checkpoint = checkpoint
+        self.device = device
+
+    def _read_wav_from_bytes(self, audio_bytes: bytes) -> tuple[np.ndarray, int]:
+        """Read WAV audio data from bytes."""
+        with io.BytesIO(audio_bytes) as f:
+            wav, sr = sf.read(f, dtype="float32", always_2d=False)
+        return np.asarray(wav, dtype=np.float32), int(sr)
+
+    def _convert_ogg_to_wav(self, ogg_path: Path, output_dir: Path) -> Path:
+        """
+        Convert an .ogg file to .wav format.
+
+        Args:
+            ogg_path: Path to the source .ogg file
+            output_dir: Directory where the .wav file will be saved
+
+        Returns:
+            Path to the converted .wav file
+        """
+        # Load the ogg file
+        audio = AudioSegment.from_ogg(ogg_path)
+
+        # Generate output filename with .wav extension
+        wav_filename = ogg_path.stem + ".wav"
+        wav_path = output_dir / wav_filename
+
+        # Export as wav
+        audio.export(wav_path, format="wav")
+
+        return wav_path
+
+    def load_model(self):
+        self.model = Qwen3ASRModel.from_pretrained(
+            "Qwen/Qwen3-ASR-1.7B",
+            dtype=torch.bfloat16,
+            device_map="cuda:0",
+            attn_implementation="flash_attention_2",
+            max_inference_batch_size=32,
+            max_new_tokens=256,
+        )
+
+    def transcribe(self, data: bytes) -> Tuple[AnyStr, AnyStr]:
+        results = self.model.transcribe(
+            audio=self._read_wav_from_bytes(data),
+            language=None,
+        )
+
+        transcribed_lang = results[0].language
+        transcribed_text = results[0].text
+
+        return transcribed_lang, transcribed_text
 
 
 class Chat:

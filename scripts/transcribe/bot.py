@@ -9,7 +9,7 @@ This bot:
 """
 
 from utils import convert_ogg_to_wav, read_wav_from_bytes
-from models import load_asr_model, Chat
+from models import load_asr_model, Chat, Transcriber
 
 import logging
 from datetime import datetime
@@ -40,9 +40,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Load models
-asr_model = load_asr_model()
 chat = Chat(quantization=True, device="cuda:0")
 chat.load_model()
+
+transcriber = Transcriber(device="cuda:0")
+transcriber.load_model()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -85,30 +87,21 @@ async def handle_voice_message(
 
     # Convert ogg to wav
     try:
-        wav_path = convert_ogg_to_wav(file_path, download_folder)
+        wav_path = transcriber._convert_ogg_to_wav(
+            ogg_path=file_path, output_dir=download_folder
+        )
         logger.info(f"Converted to WAV: {wav_path}")
-
-        # Get the ASR model (loaded at startup)
-        model = asr_model
 
         # Send the converted wav file
         # await update.message.reply_document(wav_path)
 
-        if model:
+        if transcriber.model:
             try:
                 # Read the wav file and transcribe
                 wav_bytes = wav_path.read_bytes()
-                audio_data, sample_rate = read_wav_from_bytes(wav_bytes)
-
-                # Transcribe the audio
-                results = model.transcribe(
-                    audio=(audio_data, sample_rate),
-                    language=None,
-                )
+                transcribed_lang, transcribed_text = transcriber.transcribe(wav_bytes)
 
                 # Send the transcribed text
-                transcribed_text = results[0].text
-                transcribed_lang = results[0].language
                 await update.message.reply_text(
                     f"📝 Transcribed text ({transcribed_lang}):\n{transcribed_text}"
                 )
