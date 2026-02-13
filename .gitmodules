@@ -1,3 +1,6 @@
 [submodule "scripts/transcribe/Qwen3-ASR"]
 	path = scripts/transcribe/Qwen3-ASR
 	url = https://github.com/QwenLM/Qwen3-ASR.git
+[submodule "scripts/transcribe/flash-linear-attention"]
+	path = scripts/transcribe/flash-linear-attention
+	url = https://github.com/fla-org/flash-linear-attention

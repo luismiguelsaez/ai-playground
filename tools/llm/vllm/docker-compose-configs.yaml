@@ -28,7 +28,7 @@ services:
 
     command:
       - --config
-      - /configs/lfm.yaml
+      - /configs/minicpm-sala.yaml
 
     deploy:
       resources:

@@ -7,3 +7,5 @@ source .venv/bin/activate
 
 cd vllm
 VLLM_USE_PRECOMPILED=1 uv pip install --editable .
+
+python3 -m pip install -U flash-linear-attention

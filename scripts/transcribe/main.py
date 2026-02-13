@@ -137,6 +137,10 @@ async def handle_voice_message(
         await update.message.reply_text(f"⚠️ An error occurred: {str(e)}")
 
 
+async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    chat.clear()
+
+
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token
@@ -149,6 +153,7 @@ def main() -> None:
     application.add_handler(
         MessageHandler(filters.VOICE & ~filters.COMMAND, handle_voice_message)
     )
+    application.add_handler(CommandHandler("clear", clear))
 
     # Run the bot until the user presses Ctrl-C
     logger.info("Bot started. Press Ctrl-C to stop.")

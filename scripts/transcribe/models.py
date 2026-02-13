@@ -109,6 +109,7 @@ class Chat:
             self.checkpoint,
             device_map=self.device,
             quantization_config=quantization_config,
+            trust_remote_code=True,
         )
         self.tokenizer = AutoTokenizer.from_pretrained(
             self.checkpoint, skip_special_tokens=True
@@ -134,6 +135,7 @@ class Chat:
 
         generation_config = inputs
         generation_config["max_new_tokens"] = self.max_new_tokens
+        generation_config["use_cache"] = True
 
         outputs = self.model.generate(**generation_config)
         decoded_outputs = self.tokenizer.decode(

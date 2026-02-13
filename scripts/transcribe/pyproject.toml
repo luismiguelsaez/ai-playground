@@ -10,6 +10,7 @@ dependencies = [
     "flash-attn>=2.8.3",
     "python-telegram-bot>=22.6",
     "qwen-asr",
+    "flash-linear-attention",
     "soundfile>=0.13.1",
     "torch>=2.9.1",
 ]
@@ -22,7 +23,9 @@ dev-dependencies = [
 [tool.uv.workspace]
 members = [
     "Qwen3-ASR",
+    "flash-linear-attention",
 ]
 
 [tool.uv.sources]
 qwen-asr = { workspace = true, editable = true }
+flash-linear-attention = { workspace = true, editable = true }
