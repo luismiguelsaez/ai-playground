@@ -8,7 +8,7 @@ This bot:
 - Saves recorded audio to a configured folder with timestamp as filename
 """
 
-from models import Chat, Transcriber
+from models import Chat, Transcriber, Diffuser
 
 import logging
 from datetime import datetime
@@ -49,6 +49,9 @@ chat.load_model()
 
 transcriber = Transcriber(device="cuda:0")
 transcriber.load_model()
+
+diffuser = Diffuser(device="cuda:0")
+diffuser.load_model()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -141,6 +144,51 @@ async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     chat.clear()
 
 
+async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Generate an image from the user's prompt and send it back to the chat."""
+    try:
+        # Load diffuser model if not already loaded
+        if not diffuser._model_loaded:
+            await update.message.reply_text("📨 Loading diffusion model... (this may take a moment)")
+            diffuser.load_model()
+
+        # Get the text prompt from user
+        prompt = update.message.text.strip()
+        
+        # Remove the /image command from the prompt if present
+        if prompt.lower().startswith("/image"):
+            prompt = prompt[6:].strip()  # Remove "/image" and any leading space
+        
+        if not prompt:
+            await update.message.reply_text(
+                "Please provide a text prompt after /image, e.g:\n"
+                "/image A cat holding a sign that says hello world"
+            )
+            return
+
+        await update.message.reply_text("🪩 Generating image... (this may take a moment)")
+
+        # Generate filename with timestamp in /tmp folder
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_path = f"/tmp/{timestamp}.png"
+
+        # Generate the image using diffuser
+        diffuser.generate(
+            prompt=prompt,
+            image_path=output_path,
+            height=1024,
+            width=1024,
+        )
+
+        await update.message.reply_document(document=output_path)
+        logger.info(f"Image generated and sent to user: {output_path}")
+
+    except Exception as e:
+        logger.error(f"Image generation failed: {e}")
+        await update.message.reply_text(f"⚻️ Image generation failed: {str(e)}")
+
+
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token
@@ -154,6 +202,7 @@ def main() -> None:
         MessageHandler(filters.VOICE & ~filters.COMMAND, handle_voice_message)
     )
     application.add_handler(CommandHandler("clear", clear))
+    application.add_handler(CommandHandler("image", generate_image))
 
     # Run the bot until the user presses Ctrl-C
     logger.info("Bot started. Press Ctrl-C to stop.")

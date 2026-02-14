@@ -1,5 +1,6 @@
 from qwen_asr import Qwen3ASRModel
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from diffusers import AutoPipelineForText2Image
 import torch
 
 from pathlib import Path
@@ -10,16 +11,38 @@ from pydub import AudioSegment
 from typing import AnyStr, Tuple
 
 
-def load_asr_model() -> Qwen3ASRModel:
-    model = Qwen3ASRModel.from_pretrained(
-        "Qwen/Qwen3-ASR-1.7B",
-        dtype=torch.bfloat16,
-        device_map="cuda:0",
-        attn_implementation="flash_attention_2",
-        max_inference_batch_size=32,
-        max_new_tokens=256,
-    )
-    return model
+class Diffuser:
+    def __init__(
+        self,
+        # checkpoint: str = "black-forest-labs/FLUX.2-klein-4B",
+        checkpoint: str = "stabilityai/stable-diffusion-xl-base-1.0",
+        device: str = "auto",
+    ):
+        self.checkpoint = checkpoint
+        self.device = device
+        self.dtype = torch.bfloat16
+        self._model_loaded = False
+
+    def load_model(self):
+        # self.pipe = Flux2KleinPipeline.from_pretrained(
+        self.pipe = AutoPipelineForText2Image.from_pretrained(
+            self.checkpoint, torch_dtype=self.dtype
+        )
+        self._model_loaded = True
+
+    def generate(
+        self, prompt: str, image_path: str, height: int = 1024, width: int = 1024
+    ):
+        self.pipe.enable_model_cpu_offload()
+        self.image = self.pipe(
+            prompt,
+            height=height,
+            width=width,
+            guidance_scale=4.0,
+            num_inference_steps=4,
+            generator=torch.Generator(device=self.device).manual_seed(0),
+        ).images[0]
+        self.image.save(image_path)
 
 
 class Transcriber:
