@@ -82,7 +82,7 @@ services:
   # - unsloth/GLM-4.7-Flash-GGUF:Q6_K - https://unsloth.ai/docs/models/glm-4.7-flash
   # - DavidAU/GLM-4.7-Flash-Uncensored-Heretic-NEO-CODE-Imatrix-MAX-GGUF:Q4_K_M
   agent:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -163,7 +163,7 @@ services:
   # - mradermacher/MiniMax-M2.1-REAP-50-i1-GGUF:i1-Q4_K_S
   # - mradermacher/MiniMax-M2.1-REAP-50-i-1GGUF:IQ3_M
   minimax:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7801
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -209,7 +209,7 @@ services:
     restart: unless-stopped
 
   qwen3-coder-next:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b7973
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all

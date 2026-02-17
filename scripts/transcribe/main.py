@@ -149,16 +149,18 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     try:
         # Load diffuser model if not already loaded
         if not diffuser._model_loaded:
-            await update.message.reply_text("📨 Loading diffusion model... (this may take a moment)")
+            await update.message.reply_text(
+                "📨 Loading diffusion model... (this may take a moment)"
+            )
             diffuser.load_model()
 
         # Get the text prompt from user
         prompt = update.message.text.strip()
-        
+
         # Remove the /image command from the prompt if present
         if prompt.lower().startswith("/image"):
             prompt = prompt[6:].strip()  # Remove "/image" and any leading space
-        
+
         if not prompt:
             await update.message.reply_text(
                 "Please provide a text prompt after /image, e.g:\n"
@@ -166,10 +168,13 @@ async def generate_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             )
             return
 
-        await update.message.reply_text("🪩 Generating image... (this may take a moment)")
+        await update.message.reply_text(
+            "🪩 Generating image... (this may take a moment)"
+        )
 
         # Generate filename with timestamp in /tmp folder
         from datetime import datetime
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = f"/tmp/{timestamp}.png"
 
