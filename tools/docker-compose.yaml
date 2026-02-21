@@ -219,7 +219,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q5_K_M
+      --hf-repo Qwen/Qwen3-Coder-Next-GGUF:Q6_K
       --alias coding-agent
       --host 0.0.0.0
       --port 8000

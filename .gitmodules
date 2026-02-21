@@ -4,3 +4,6 @@
 [submodule "scripts/transcribe/flash-linear-attention"]
 	path = scripts/transcribe/flash-linear-attention
 	url = https://github.com/fla-org/flash-linear-attention
+[submodule "scripts/transcribe/transformers"]
+	path = scripts/transcribe/transformers
+	url = https://github.com/huggingface/transformers
