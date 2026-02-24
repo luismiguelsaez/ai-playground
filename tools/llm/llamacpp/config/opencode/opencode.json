@@ -2,11 +2,10 @@
   "$schema": "https://opencode.ai/config.json",
   "permission": {
     "*": "ask",
-    "edit": "ask",
     "bash": "allow",
-    "webfetch": "ask",
-    "doom_loop": "ask",
-    "external_directory": "ask"
+    "read": "allow",
+    "glob": "allow",
+    "doom_loop": "allow"
   },
   "lsp": {
     "pyright": {
