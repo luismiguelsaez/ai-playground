@@ -17,8 +17,7 @@ services:
     ports:
       - "8004:8000"
  
-    environment:
-      - CUDA_VISIBLE_DEVICES=0,1,2,3
+    environment: []
 
     volumes:
       - $HOME/.cache/huggingface:/root/.cache/huggingface
@@ -28,14 +27,14 @@ services:
 
     command:
       - --config
-      - /configs/minicpm-sala.yaml
+      - /configs/qwen3-thinking.yaml
 
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1','2','3']
+              device_ids: ['3']
               capabilities: [gpu]
  
     healthcheck:

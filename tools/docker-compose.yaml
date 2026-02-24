@@ -29,7 +29,8 @@ services:
   # - https://github.com/Lightricks/ComfyUI-LTXVideo
   # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
   comfy-gpu:
-    image: yanwk/comfyui-boot:cu126-slim-20260202
+    #image: yanwk/comfyui-boot:cu126-slim-20260202
+    image: yanwk/comfyui-boot:cu130-slim-20260223
     #build:
     #  context: comfy/ComfyUI-Docker/cu126-slim
     ports:
@@ -46,7 +47,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1','2','3']
+              device_ids: ['3']
               capabilities: [gpu]
     restart: unless-stopped
     networks:
@@ -175,12 +176,12 @@ services:
     command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
+      --hf-repo unsloth/MiniMax-M2.5-GGUF:Q4_K_M
       --alias coding-agent
-      --ctx-size 120000
-      --n-predict 120000
+      --n-predict 200000
+      --ctx-size 200000
       --batch-size 2048
-      --parallel 4 
+      --parallel 1 
       --cont-batching
       --cache-type-k q8_0
       --cache-type-v q8_0
@@ -196,7 +197,6 @@ services:
       --no-mmap
       --mlock
       --numa isolate
-      --tensor-split 1,1,1,1
       --gpu-layers 999
       --metrics
     deploy:
@@ -209,7 +209,7 @@ services:
     restart: unless-stopped
 
   qwen3-coder-next:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8132
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -219,7 +219,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo Qwen/Qwen3-Coder-Next-GGUF:Q6_K
+      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q6_K
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -232,7 +232,6 @@ services:
       --top-p 0.95
       --min-p 0.01
       --top-k 40
-      --tensor-split 1,1,1,1
       --cont-batching
       --batch-size 512
       --ubatch-size 128
