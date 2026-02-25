@@ -50,7 +50,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "llama-server (local)",
       "options": {
-        "baseURL": "http://127.0.0.1:8002"
+        "baseURL": "http://ai-server.local:8002"
       }, 
       "models": {
         "coding-agent": {
@@ -60,6 +60,18 @@
             "context": 128000,
             "output": 65536
           }
+        }
+      }
+    },
+    "vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "vLLM (local)",
+      "options": {
+        "baseURL": "http://ai-server.local:8000/v1"
+      },
+      "models": {
+        "model": {
+          "name": "model",
         }
       }
     }

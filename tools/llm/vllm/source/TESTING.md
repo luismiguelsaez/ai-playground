@@ -23,7 +23,7 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 ```
 
 
-## Qwen 2.5 35B AWQ 4bit
+## Qwen 2.5 35B AWQ 4bit ( [Recipe](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3.5.html) )
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
@@ -36,6 +36,8 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --enable-auto-tool-choice \
   --tool-call-parser qwen3_coder \
   --reasoning-parser qwen3 \
-  --kv-cache-dtype fp8
+  --kv-cache-dtype fp8 \
+  --language-model-only \
+  --enable-prefix-caching
 ```
 
