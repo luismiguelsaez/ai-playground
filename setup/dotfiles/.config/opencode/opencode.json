@@ -72,6 +72,9 @@
       "models": {
         "model": {
           "name": "model",
+          "limit": {
+            "context": 128000,
+          }
         }
       }
     }
