@@ -57,7 +57,7 @@
           "name": "coding-agent",
           "reasoning": true,
           "limit": {
-            "context": 128000,
+            "context": 131072,
             "output": 65536
           }
         }
@@ -73,7 +73,8 @@
         "model": {
           "name": "model",
           "limit": {
-            "context": 128000,
+            "context": 131072,
+            "output": 65536
           }
         }
       }
