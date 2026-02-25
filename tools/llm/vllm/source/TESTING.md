@@ -1,5 +1,6 @@
 # Testing
 
+
 ## Nvidia Nemotron 3 Nano 30B NVFP4
 
 ```bash
@@ -8,11 +9,11 @@
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
 CUDA_VISIBLE_DEVICES=3 \
 vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
+  --port 8000 \
   --served-model-name model \
   --max-num-seqs 8 \
   --tensor-parallel-size 1 \
   --max-model-len 262144 \
-  --port 8000 \
   --trust-remote-code \
   --enable-auto-tool-choice \
   --tool-call-parser qwen3_coder \
@@ -20,3 +21,21 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
   --reasoning-parser nano_v3 \
   --kv-cache-dtype fp8
 ```
+
+
+## Qwen 2.5 35B AWQ 4bit
+
+```bash
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=3 \
+vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
+  --port 8000 \
+  --served-model-name model \
+  --tensor-parallel-size 1 \
+  --max-model-len 262144 \
+  --enable-auto-tool-choice \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3 \
+  --kv-cache-dtype fp8
+```
+
