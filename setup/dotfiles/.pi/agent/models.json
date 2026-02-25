@@ -12,6 +12,19 @@
           "maxTokens": 25536
         }
       ]
+    },
+    "vllm": {
+      "baseUrl": "http://ai-server.local:8000/v1",
+      "api": "openai-completions",
+      "apiKey": "aa",
+      "models": [
+        {
+          "id": "model",
+          "reasoning": true,
+          "contextWindow": 131072,
+          "maxTokens": 25536
+        }
+      ]
     }
   }
 }
