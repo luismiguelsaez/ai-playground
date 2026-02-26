@@ -24,9 +24,9 @@ services:
       --port 8000
       --fit on
       --jinja
-      --kv-unified
       --cache-type-k q8_0
       --cache-type-v q8_0
+      --ctx-size 400000
       --flash-attn on
       --batch-size 4096
       --ubatch-size 1024

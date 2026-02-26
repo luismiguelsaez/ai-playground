@@ -30,10 +30,12 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
   - `Sehyo/Qwen3.5-122B-A10B-NVFP4`
   - `Sehyo/Qwen3.5-35B-A3B-NVFP4`
 
+### 1 x RTX Pro 6000
+
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
 CUDA_VISIBLE_DEVICES=3 \
-vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
+vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
   --port 8000 \
   --served-model-name model \
   --tensor-parallel-size 1 \
@@ -45,5 +47,25 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --language-model-only \
   --enable-prefix-caching \
   --gpu-memory-utilization 0.5
+```
+
+
+### 4 x RTX 3090 
+
+```bash
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=0,1 \
+vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
+  --port 8000 \
+  --served-model-name model \
+  --tensor-parallel-size 2 \
+  --max-model-len 48000 \
+  --enable-auto-tool-choice \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3 \
+  --kv-cache-dtype fp8 \
+  --language-model-only \
+  --enable-prefix-caching \
+  --gpu-memory-utilization 0.95
 ```
 
