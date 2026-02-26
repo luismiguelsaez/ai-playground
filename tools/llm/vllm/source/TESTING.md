@@ -26,8 +26,9 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 ## Qwen 2.5 35B/122B AWQ/NVFP4 4bit ( [Recipe](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3.5.html) )
 
 - Models
-  - `cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit`
+  - `cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit` - OK
   - `Sehyo/Qwen3.5-122B-A10B-NVFP4`
+  - `Sehyo/Qwen3.5-35B-A3B-NVFP4`
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
