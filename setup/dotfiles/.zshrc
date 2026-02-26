@@ -73,7 +73,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions eza fzf git docker zoxide)
+plugins=(git zsh-autosuggestions eza fzf git docker zoxide kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -110,6 +110,8 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#555555'
 alias la="eza -al --icons"
 alias ll="eza -l --sort=modified --group-directories-first --icons"
 alias cat="bat"
+alias kctx="kubectx"
+alias kns="kubens"
 
 eval "$(zoxide init zsh)"
 
@@ -126,4 +128,3 @@ add-zsh-hook chpwd auto_venv
 
 # Also check when shell starts
 auto_venv
-
