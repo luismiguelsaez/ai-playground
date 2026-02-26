@@ -7,7 +7,7 @@
 #VLLM_FLASHINFER_MOE_BACKEND=throughput \
 #VLLM_USE_FLASHINFER_MOE_FP4=1 \
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=3 \
+CUDA_VISIBLE_DEVICES=0 \
 vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
   --port 8000 \
   --served-model-name model \
@@ -34,7 +34,7 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=3 \
+CUDA_VISIBLE_DEVICES=0 \
 vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
   --port 8000 \
   --served-model-name model \
@@ -54,7 +54,7 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=0,1 \
+CUDA_VISIBLE_DEVICES=1,2 \
 vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
