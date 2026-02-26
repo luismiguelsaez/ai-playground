@@ -73,7 +73,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions eza fzf git docker zoxide)
+plugins=(git zsh-autosuggestions eza fzf git docker zoxide kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,11 +107,29 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#555555'
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias la="eza -al --icons"
-alias ll="eza -l --sort=modified --group-directories-first --icons"
-alias cat="bat"
 
-eval "$(zoxide init zsh)"
+# Conditional aliases for eza, bat, and zoxide
+if command -v eza >/dev/null 2>&1; then
+    alias la="eza -al --icons"
+    alias ll="eza -l --sort=modified --group-directories-first --icons"
+fi
+
+if command -v bat >/dev/null 2>&1; then
+    alias cat="bat"
+fi
+
+if command -v zoxide >/dev/null 2>&1; then
+    alias cd="z"
+    eval "$(zoxide init zsh)"
+fi
+
+if command -v kubectx >/dev/null 2>&1; then
+    alias kctx="kubectx"
+fi
+
+if command -v kubens >/dev/null 2>&1; then
+    alias kns="kubens"
+fi
 
 # Automatically activate Python venv when entering a directory
 function auto_venv() {
@@ -126,4 +144,3 @@ add-zsh-hook chpwd auto_venv
 
 # Also check when shell starts
 auto_venv
-
