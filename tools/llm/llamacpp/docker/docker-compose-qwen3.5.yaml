@@ -13,6 +13,7 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - LLAMA_CACHE=/root/.cache/llama.cpp
     ports:
       - "8002:8000"
     volumes:
@@ -26,7 +27,7 @@ services:
       --jinja
       --cache-type-k q8_0
       --cache-type-v q8_0
-      --ctx-size 400000
+      --ctx-size 500000
       --flash-attn on
       --batch-size 4096
       --ubatch-size 1024
@@ -38,12 +39,13 @@ services:
       --presence-penalty 0.0
       --repeat-penalty 1.0
       --tensor-split 1,1
+      --chat-template-kwargs "{\"enable_thinking\": false}"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1']
+              device_ids: ['1','2']
               capabilities: [gpu]
     restart: unless-stopped
 

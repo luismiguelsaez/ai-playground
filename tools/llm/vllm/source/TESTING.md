@@ -59,13 +59,12 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
   --tensor-parallel-size 2 \
-  --max-model-len 48000 \
+  --max-model-len 20000 \
   --enable-auto-tool-choice \
   --tool-call-parser qwen3_coder \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --enable-prefix-caching \
-  --gpu-memory-utilization 0.95
+  --gpu-memory-utilization 0.9
 ```
 
