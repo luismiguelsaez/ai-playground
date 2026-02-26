@@ -112,6 +112,7 @@ alias ll="eza -l --sort=modified --group-directories-first --icons"
 alias cat="bat"
 alias kctx="kubectx"
 alias kns="kubens"
+alias cd="z"
 
 eval "$(zoxide init zsh)"
 
