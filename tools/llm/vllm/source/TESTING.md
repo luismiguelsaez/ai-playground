@@ -43,6 +43,7 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --enable-prefix-caching
+  --enable-prefix-caching \
+  --gpu-memory-utilization 0.5
 ```
 
