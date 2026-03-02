@@ -50,7 +50,7 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 ```
 
 
-### 4 x RTX 3090 
+### 2 x RTX 3090
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
