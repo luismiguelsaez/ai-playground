@@ -250,9 +250,9 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
 
-  agent-qwen3.5:
+  qwen3.5:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8184
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility

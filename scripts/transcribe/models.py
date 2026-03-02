@@ -33,7 +33,7 @@ class Diffuser:
     ):
         self.pipe.enable_model_cpu_offload()
         self.image = self.pipe(
-            prompt,
+            prompt=prompt,
             height=height,
             width=width,
             guidance_scale=4.0,
