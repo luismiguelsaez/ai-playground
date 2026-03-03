@@ -34,7 +34,7 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=1 \
 vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
   --port 8000 \
   --served-model-name model \
@@ -50,14 +50,15 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 ```
 
 
-### 1 x RTX 3090
+### 2 x RTX 3090
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=2,3 \
 vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
+  --tensor-parallel-size 2 \
   --enable-auto-tool-choice \
   --no-enforce-eager \
   --language-model-only \
@@ -65,6 +66,6 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --gpu-memory-utilization 0.95
+  --gpu-memory-utilization 0.75 
 ```
 
