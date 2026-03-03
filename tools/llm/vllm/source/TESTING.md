@@ -50,21 +50,21 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 ```
 
 
-### 2 x RTX 3090
+### 1 x RTX 3090
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=1,2 \
+CUDA_VISIBLE_DEVICES=0 \
 vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
-  --tensor-parallel-size 2 \
-  --max-model-len 20000 \
   --enable-auto-tool-choice \
+  --no-enforce-eager \
+  --language-model-only \
   --tool-call-parser qwen3_coder \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --gpu-memory-utilization 0.9
+  --gpu-memory-utilization 0.95
 ```
 
