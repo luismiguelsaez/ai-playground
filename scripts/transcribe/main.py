@@ -40,7 +40,8 @@ logger = logging.getLogger(__name__)
 
 # Load models
 chat = Chat(
-    quantization=True,
+    checkpoint="Qwen/Qwen3.5-0.8B",
+    quantization=False,
     device="cuda:0",
     max_new_tokens=1024,
     system_msg="You are an assistant that provide concise responses to fit a mobile phone chat, usually using markdown to enrich the text",

@@ -14,7 +14,7 @@ dependencies = [
     "soundfile>=0.13.1",
     "torch>=2.9.1",
     "diffusers @ git+https://github.com/huggingface/diffusers.git",
-    "transformers>=4.57.6",
+    "transformers @ git+https://github.com/huggingface/transformers.git",
 ]
 
 [dependency-groups]
