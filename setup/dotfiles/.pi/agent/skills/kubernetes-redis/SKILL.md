@@ -1,6 +1,6 @@
 ---
 name: kubernetes-redis
-description: Kubernetes Redis deployment description. Use this skill whenever you are troubleshooting an issue related to `Redis` or are asked to perform some test over the cluster
+description: Kubernetes Redis deployment description. Use this skill whenever you are troubleshooting an issue or execute a testing procedure related to `Redis` or are asked to perform some test over the cluster. This applies to different modes, like `Cluster` and `Sentinel`, which are high availability options for `Redis`
 ---
 
 # Kubernetes Redis
@@ -73,6 +73,12 @@ kubectl exec -it redis-cluster-leader-0 -- redis-cli -a $REDIS_PASSWORD --cluste
 ```
 
 ### Sentinel mode
+
+- Retrieve the password from the secret in the namespace that is needed to execute `kubectl exec`
+
+```bash
+REDIS_PASSWORD=$(kubectl get secret redis-sentinel -o jsonpath="{.data.password}" | base64 -d
+```
 
 - Check current master
 
@@ -162,6 +168,12 @@ kubectl logs -n redis-operator -l name=redis-operator
 ```
 
 ### Sentinel mode
+
+- Retrieve the password from the secret in the namespace that is needed to execute `kubectl exec`
+
+```bash
+REDIS_PASSWORD=$(kubectl get secret redis-sentinel -o jsonpath="{.data.password}" | base64 -d
+```
 
 - Check current master
 
