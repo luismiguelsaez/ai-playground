@@ -131,6 +131,10 @@ if command -v kubens >/dev/null 2>&1; then
     alias kns="kubens"
 fi
 
+if command -v zellij >/dev/null 2>&1; then
+  alias zellij='zellij --layout .config/zellij/layouts/custom.kdl'
+fi
+
 # Automatically activate Python venv when entering a directory
 function auto_venv() {
     if [[ -d .venv ]]; then

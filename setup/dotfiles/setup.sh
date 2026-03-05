@@ -41,25 +41,18 @@ copy_to_home() {
 # Copy dotfiles from current directory
 echo "Copying dotfiles..."
 
-# Copy .zshrc
-if [ -f "$SCRIPT_DIR/.zshrc" ]; then
-	copy_to_home "$SCRIPT_DIR/.zshrc" ".zshrc"
-fi
-
-# Copy .config directory
-	if [ -d "$SCRIPT_DIR/.config" ]; then
-		for item in "$SCRIPT_DIR/.config"/*; do
-			if [ -d "$item" ]; then
-				item_name=$(basename "$item")
-				copy_to_home "$item" ".config"
-			fi
-		done
-	fi
-
-# Copy .pi directory
-if [ -d "$SCRIPT_DIR/.pi" ]; then
-	copy_to_home "$SCRIPT_DIR/.pi" ".pi"
-fi
+# Copy all dotfiles and directories from current directory to home
+for item in "$SCRIPT_DIR"/.* "$SCRIPT_DIR"/*; do
+	# Skip . and ..
+	item_name=$(basename "$item")
+	[ "$item_name" = "." ] || [ "$item_name" = ".." ] && continue
+	
+	# Skip setup.sh itself
+	[ "$item_name" = "setup.sh" ] && continue
+	
+	# Copy the file/directory
+	copy_to_home "$item" ".$item_name"
+done
 
 echo ""
 echo "=== Setup Complete ==="
