@@ -19,7 +19,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:UD-MXFP4_MOE
+      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:Q8_0
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -27,7 +27,7 @@ services:
       --jinja
       --cache-type-k q8_0
       --cache-type-v q8_0
-      --ctx-size 262144
+      --ctx-size 525288
       --flash-attn on
       -np 1
       --temp 0.6
@@ -36,14 +36,14 @@ services:
       --top-k 20
       --presence-penalty 0.0
       --repeat-penalty 1.0
-      --tensor-split 1
+      --tensor-split 1,1
       --chat-template-kwargs "{\"enable_thinking\": true}"
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['3']
+              device_ids: ['2','3']
               capabilities: [gpu]
     restart: unless-stopped
 

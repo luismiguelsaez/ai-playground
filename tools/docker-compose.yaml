@@ -38,8 +38,9 @@ services:
     security_opt:
       - "label=type:nvidia_container_t"
     volumes:
-      - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
-      - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
+      - /data/models/comfy/models:/root/ComfyUI/models
+      - /data/models/comfy/workflows:/root/ComfyUI/user/default/workflows
+      - /data/models/comfy/custom_nodes:/root/ComfyUI/custom_nodes
     environment:
       CLI_ARGS: "--disable-xformers"
     deploy:
@@ -262,7 +263,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:UD-MXFP4_MOE
+      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:MXFP4_MOE
       --alias coding-agent
       --host 0.0.0.0
       --port 8000

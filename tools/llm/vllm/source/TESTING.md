@@ -54,11 +54,11 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=2,3 \
+CUDA_VISIBLE_DEVICES=3 \
 vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
-  --tensor-parallel-size 2 \
+  --tensor-parallel-size 1 \
   --enable-auto-tool-choice \
   --no-enforce-eager \
   --language-model-only \
@@ -66,6 +66,6 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --gpu-memory-utilization 0.75 
+  --gpu-memory-utilization 0.90
 ```
 

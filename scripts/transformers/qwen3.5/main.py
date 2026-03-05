@@ -11,7 +11,8 @@ quantization_config = BitsAndBytesConfig(load_in_8_bit=True)
 
 processor = AutoProcessor.from_pretrained("Qwen/Qwen3.5-9B")
 model = AutoModelForImageTextToText.from_pretrained(
-    "Qwen/Qwen3.5-9B", device_map="cuda:1", quantization_config=quantization_config
+    "Qwen/Qwen3.5-2B",
+    device_map="cuda:1",
 )
 streamer = TextIteratorStreamer(tokenizer=processor, skip_prompt=True)
 messages = [
