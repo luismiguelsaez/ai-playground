@@ -53,7 +53,7 @@ curl -sL https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-temporal
 curl -sL https://huggingface.co/Comfy-Org/ltx-2/resolve/main/split_files/text_encoders/gemma_3_12B_it_fp8_scaled.safetensors -o $MODELS_PATH/text_encoders/gemma_3_12B_it_fp8_scaled.safetensors
 curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/text_encoders/ltx-2.3_text_projection_bf16.safetensors -o $MODELS_PATH/text_encoders/ltx-2.3_text_projection_bf16.safetensors
 # VAE
-curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/blob/main/vae/LTX23_video_vae_bf16.safetensors -o $MODELS_PATH/vae/LTX23_video_vae_bf16.safetensors
-curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/blob/main/vae/LTX23_audio_vae_bf16.safetensors -o $MODELS_PATH/vae/LTX23_audio_vae_bf16.safetensors
+curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_video_vae_bf16.safetensors -o $MODELS_PATH/vae/LTX23_video_vae_bf16.safetensors
+curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_audio_vae_bf16.safetensors -o $MODELS_PATH/vae/LTX23_audio_vae_bf16.safetensors
 ```
 ```
