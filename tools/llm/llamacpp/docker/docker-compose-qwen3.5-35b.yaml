@@ -37,7 +37,7 @@ services:
       --presence-penalty 0.0
       --repeat-penalty 1.0
       --tensor-split 1,1
-      --chat-template-kwargs "{\"enable_thinking\": true}"
+      --chat-template-kwargs "{\"enable_thinking\": false}"
     deploy:
       resources:
         reservations:

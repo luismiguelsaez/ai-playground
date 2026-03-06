@@ -19,14 +19,14 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q8_0
+      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_S
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
       --fit on
       --jinja
-      --cache-type-k q8_0
-      --cache-type-v q8_0
+      --cache-type-k q4_0
+      --cache-type-v q4_0
       --ctx-size 262144
       --flash-attn on
       -np 1
@@ -37,7 +37,7 @@ services:
       --presence-penalty 0.0
       --repeat-penalty 1.0
       --tensor-split 1,1
-      --chat-template-kwargs "{\"enable_thinking\": true}"
+      --chat-template-kwargs "{\"enable_thinking\": false}"
     deploy:
       resources:
         reservations:

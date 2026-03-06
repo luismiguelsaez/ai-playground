@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 # Load models
 chat = Chat(
-    checkpoint="Qwen/Qwen3.5-0.8B",
+    # checkpoint="Qwen/Qwen3.5-0.8B", - requires transformers upgrade
     quantization=False,
     device="cuda:0",
     max_new_tokens=1024,
