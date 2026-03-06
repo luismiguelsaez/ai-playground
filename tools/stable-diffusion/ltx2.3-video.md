@@ -5,6 +5,8 @@
 - [ComfyUI Node](https://github.com/Lightricks/ComfyUI-LTXVideo)
 - [Text Encoder](https://huggingface.co/google/gemma-3-12b-it-qat-q4_0-unquantized)
 - [Model](https://huggingface.co/Lightricks/LTX-2.3)
+- [Howto](https://docs.ltx.video/open-source-model/integration-tools/comfy-ui)
+- [Workflows](https://huggingface.co/RuneXX/LTX-2.3-Workflows)
 
 ## Install
 
@@ -25,7 +27,9 @@ MODELS_PATH="/data/models/comfy/models/diffusion_models"
 
 curl -sL https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled.safetensors -o $MODELS_PATH/checkpoints/ltx-2.3-22b-distilled.safetensors
 curl -sL https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-22b-distilled-lora-384.safetensors -o $MODELS_PATH/loras/ltx-2.3-22b-distilled-lora-384.safetensors
+curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/blob/main/vae/LTX23_video_vae_bf16.safetensors -o $MODELS_PATH/LTX23_video_vae_bf16.safetensors
+curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/blob/main/vae/LTX23_audio_vae_bf16.safetensors -o $MODELS_PATH/LTX23_audio_vae_bf16.safetensors
 curl -sL https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-spatial-upscaler-x2-1.0.safetensors -o ltx-2.3-spatial-upscaler-x2-1.0.safetensor
 curl -sL https://huggingface.co/Lightricks/LTX-2.3/resolve/main/ltx-2.3-temporal-upscaler-x2-1.0.safetensors -o ltx-2.3-temporal-upscaler-x2-1.0.safetensors
-hf download google/gemma-3-12b-it-qat-q4_0-unquantized --local-dir gemma-3-12b-it-qat-q4_0-unquantized
+hf download google/gemma-3-12b-it-qat-q4_0-unquantized --local-dir $MODELS_PATH/text_encoders/gemma-3-12b-it-qat-q4_0-unquantized
 ```
