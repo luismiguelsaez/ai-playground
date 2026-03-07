@@ -38,7 +38,6 @@ hf download google/gemma-3-12b-it-qat-q4_0-unquantized --local-dir $MODELS_PATH/
 
 #### Rune workflow
 
-
 ```bash
 MODELS_PATH="/data/models/comfy/models/diffusion_models"
 
@@ -57,3 +56,4 @@ curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_video_
 curl -sL https://huggingface.co/Kijai/LTX2.3_comfy/resolve/main/vae/LTX23_audio_vae_bf16.safetensors -o $MODELS_PATH/vae/LTX23_audio_vae_bf16.safetensors
 ```
 ```
+

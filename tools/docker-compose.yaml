@@ -30,7 +30,7 @@ services:
   # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
   comfy-gpu:
     #image: yanwk/comfyui-boot:cu126-slim-20260202
-    image: yanwk/comfyui-boot:cu130-slim-20260223
+    image: yanwk/comfyui-boot:cu130-slim-20260306
     #build:
     #  context: comfy/ComfyUI-Docker/cu126-slim
     ports:
