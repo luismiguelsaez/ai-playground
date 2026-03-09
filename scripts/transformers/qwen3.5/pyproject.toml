@@ -10,17 +10,16 @@ dependencies = [
     "pillow>=12.1.1",
     "torch>=2.10.0",
     "torchvision>=0.25.0",
-    "transformers",
-    "flash-linear-attention",
     "einops>=0.8.2",
     "ninja>=1.13.0",
     "datasets>=4.6.1",
     "numpy>=2.4.2",
+    "transformers",
+    "flash-linear-attention",
     "causal-conv1d",
 ]
 
 [tool.uv.sources]
-transformers = { git = "https://github.com/huggingface/transformers.git" }
-flash-linear-attention = { git = "https://github.com/fla-org/flash-linear-attention" }
-causal-conv1d = { git = "https://github.com/Dao-AILab/causal-conv1d" }
-
+transformers           = { git = "https://github.com/huggingface/transformers.git",   tag = "v5.3.0" }
+flash-linear-attention = { git = "https://github.com/fla-org/flash-linear-attention", tag = "v0.4.1" }
+causal-conv1d          = { git = "https://github.com/Dao-AILab/causal-conv1d",        tag = "v1.6.0" }
