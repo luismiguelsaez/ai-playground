@@ -54,7 +54,7 @@ vllm serve Sehyo/Qwen3.5-35B-A3B-NVFP4 \
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=3 \
+CUDA_VISIBLE_DEVICES=2,3 \
 vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --port 8000 \
   --served-model-name model \
@@ -66,6 +66,31 @@ vllm serve cyankiwi/Qwen3.5-35B-A3B-AWQ-4bit \
   --reasoning-parser qwen3 \
   --kv-cache-dtype fp8 \
   --language-model-only \
-  --gpu-memory-utilization 0.90
+  --gpu-memory-utilization 0.80
+```
+
+
+## Qwen 3.5 27B NVFP4
+
+- Models
+  - `cyankiwi/Qwen3.5-27B-AWQ-4bit`
+
+### 2 x RTX 3090
+
+```bash
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=2,3 \
+vllm serve cyankiwi/Qwen3.5-27B-AWQ-4bit \
+  --port 8000 \
+  --served-model-name model \
+  --tensor-parallel-size 2 \
+  --enable-auto-tool-choice \
+  --enable-prefix-caching \
+  --language-model-only \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3 \
+  --kv-cache-dtype fp8 \
+  --language-model-only \
+  --gpu-memory-utilization 0.80
 ```
 
