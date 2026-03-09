@@ -1,35 +1,30 @@
 from colorama import Fore
-from mlx_lm import load, stream_generate
-from mlx_lm.sample_utils import make_sampler
+from mlx_vlm import load, stream_generate
+from mlx_vlm.utils import load_config
+from mlx_vlm.prompt_utils import apply_chat_template
 
-model, tokenizer = load("LiquidAI/LFM2.5-1.2B-Instruct")
-modelv, tokenizerv = load("Qwen/Qwen3-0.6B")
-
-sampler = make_sampler(
-    top_p=0.1,
-    top_k=50,
-    min_p=0.01,
-    temp=0.1,
-)
+model, processor = load("mlx-community/Qwen3.5-0.8B-MLX-8bit")
+config = load_config("mlx-community/Qwen3.5-0.8B-MLX-8bit")
 
 messages = []
 
 while True:
     user_input = input(f"{Fore.BLUE}User: ")
 
-    messages.append({"role": "user", "content": user_input})
-    prompt = tokenizer.apply_chat_template(
-        messages,
-        add_generation_prompt=True,
+    prompt = apply_chat_template(
+        processor=processor,
+        prompt="What is a virus?",
+        num_images=0,
+        config=config,
     )
 
     system = ""
     print(f"{Fore.RED}System: ", end="")
     for response in stream_generate(
-        model, tokenizer, prompt, sampler=sampler, max_tokens=2048
+        model=model,
+        processor=processor,
+        prompt=prompt,
     ):
         print(f"{Fore.RED}{response.text}", end="", flush=True)
         system += response.text
     print()
-
-    messages.append({"role": "assistant", "content": system})
