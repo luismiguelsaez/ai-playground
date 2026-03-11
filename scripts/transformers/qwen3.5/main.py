@@ -10,10 +10,12 @@ import re
 quantization_config = BitsAndBytesConfig(load_in_8_bit=True)
 
 checkpoint = "Qwen/Qwen3.5-0.8B"
+checkpoint = "llmfan46/Qwen3.5-9B-ultra-heretic"
 processor = AutoProcessor.from_pretrained(checkpoint)
 model = AutoModelForImageTextToText.from_pretrained(
     checkpoint,
-    device_map="auto",
+    quantization_config=quantization_config,
+    device_map="cuda:3",
 )
 streamer = TextIteratorStreamer(tokenizer=processor, skip_prompt=True)
 messages = [
