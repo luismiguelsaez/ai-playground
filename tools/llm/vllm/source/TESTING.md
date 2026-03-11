@@ -94,3 +94,26 @@ vllm serve cyankiwi/Qwen3.5-27B-AWQ-4bit \
   --gpu-memory-utilization 0.80
 ```
 
+
+## Qwen 3.5 122B NVFP4
+
+### 1 x RTX Pro 6000
+
+```bash
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=1 \
+vllm serve Sehyo/Qwen3.5-122B-A10B-NVFP4 \
+  --port 8000 \
+  --served-model-name model \
+  --enable-auto-tool-choice \
+  --enable-prefix-caching \
+  --language-model-only \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3 \
+  --kv-cache-dtype fp8 \
+  --language-model-only \
+  --gpu-memory-utilization 0.95
+```
+
+*Out of memory*
+
