@@ -9,19 +9,25 @@ import re
 
 quantization_config = BitsAndBytesConfig(load_in_8_bit=True)
 
-<<<<<<< HEAD
-checkpoint = "Qwen/Qwen3.5-0.8B"
-checkpoint = "llmfan46/Qwen3.5-9B-ultra-heretic"
-=======
 checkpoint = "z-lab/Qwen3.5-2B-PARO"
->>>>>>> 677b918749e165f53397334733b9ebdcfe982d53
 processor = AutoProcessor.from_pretrained(checkpoint)
 model = AutoModelForImageTextToText.from_pretrained(
     checkpoint,
-    quantization_config=quantization_config,
-    device_map="cuda:3",
+    device_map="auto",
 )
 streamer = TextIteratorStreamer(tokenizer=processor, skip_prompt=True)
+messages = [
+    {
+        "role": "user",
+        "content": [
+            {
+                "type": "image",
+                "image": "candy.jpg",
+            },
+            {"type": "text", "text": "What animal is on the candy?"},
+        ],
+    },
+]
 
 messages = []
 while True:

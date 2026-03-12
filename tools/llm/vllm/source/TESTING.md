@@ -22,6 +22,30 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
   --kv-cache-dtype fp8
 ```
 
+## Nvidia Nemotron 3 Super 120B A12B NVFP4 ( [cookbook](https://github.com/NVIDIA-NeMo/Nemotron/blob/main/usage-cookbook/Nemotron-3-Super/vllm_cookbook.ipynb) )
+
+```bash
+# curl -sL https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4/resolve/main/super_v3_reasoning_parser.py -o config/plugins/reasoning/super_v3_reasoning_parser.py
+VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=0 \
+vllm serve nvidia/NVIDIA-Nemotron-3-Nano-120B-A12B-NVFP4 \
+  --port 8000 \
+  --async-scheduling \
+  --served-model-name model \
+  --kv-cache-dtype fp8 \
+  --tensor-parallel-size 1 \
+  --swap-space 0 \
+  --trust-remote-code \
+  --attention-backend TRITON_ATTN \
+  --gpu-memory-utilization 0.9 \
+  --enable-chunked-prefill \
+  --max-num-seqs 512 \
+  --enable-auto-tool-choice \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser-plugin config/plugins/reasoning/super_v3_reasoning_parser.py" \
+  --reasoning-parser super_v3
+```
 
 ## Qwen 2.5 35B/122B AWQ/NVFP4 4bit ( [Recipe](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3.5.html) )
 
