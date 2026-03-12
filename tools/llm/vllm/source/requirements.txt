@@ -1,2 +1,4 @@
 -e ./vllm
 transformers
+#git+https://github.com/vllm-project/vllm.git@v0.17.1
+#git+https://github.com/huggingface/transformers.git@v5.3.0

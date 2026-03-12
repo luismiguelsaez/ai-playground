@@ -24,12 +24,14 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 
 ## Nvidia Nemotron 3 Super 120B A12B NVFP4 ( [cookbook](https://github.com/NVIDIA-NeMo/Nemotron/blob/main/usage-cookbook/Nemotron-3-Super/vllm_cookbook.ipynb) )
 
+- VRAM: `88.051Gi`
+
 ```bash
 # curl -sL https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4/resolve/main/super_v3_reasoning_parser.py -o config/plugins/reasoning/super_v3_reasoning_parser.py
 VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
 CUDA_VISIBLE_DEVICES=0 \
-vllm serve nvidia/NVIDIA-Nemotron-3-Nano-120B-A12B-NVFP4 \
+vllm serve nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 \
   --port 8000 \
   --async-scheduling \
   --served-model-name model \
@@ -43,7 +45,7 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-120B-A12B-NVFP4 \
   --max-num-seqs 512 \
   --enable-auto-tool-choice \
   --tool-call-parser qwen3_coder \
-  --reasoning-parser-plugin config/plugins/reasoning/super_v3_reasoning_parser.py" \
+  --reasoning-parser-plugin config/plugins/reasoning/super_v3_reasoning_parser.py \
   --reasoning-parser super_v3
 ```
 
