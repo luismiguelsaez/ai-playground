@@ -23,6 +23,7 @@ services:
       --max-model-len 1000000
       --reasoning-parser-plugin /config/plugins/reasoning/super_v3_reasoning_parser.py
       --reasoning-parser super_v3
+      --chat-template-kwargs "{\"enable_thinking\": true}"
     ports:
       - "8000:8000"
     volumes:
