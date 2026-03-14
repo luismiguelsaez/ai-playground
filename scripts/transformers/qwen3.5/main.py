@@ -9,17 +9,12 @@ import re
 
 quantization_config = BitsAndBytesConfig(load_in_8_bit=True)
 
-<<<<<<< HEAD
-checkpoint = "Qwen/Qwen3.5-0.8B"
 checkpoint = "llmfan46/Qwen3.5-9B-ultra-heretic"
-=======
-checkpoint = "z-lab/Qwen3.5-2B-PARO"
->>>>>>> 677b918749e165f53397334733b9ebdcfe982d53
 processor = AutoProcessor.from_pretrained(checkpoint)
 model = AutoModelForImageTextToText.from_pretrained(
     checkpoint,
     quantization_config=quantization_config,
-    device_map="cuda:3",
+    device_map="cuda:0",
 )
 streamer = TextIteratorStreamer(tokenizer=processor, skip_prompt=True)
 
@@ -58,8 +53,9 @@ while True:
     ).to(model.device)
 
     generation_arguments = inputs
-    generation_arguments["max_new_tokens"] = 2048
+    generation_arguments["max_new_tokens"] = 4096
     generation_arguments["streamer"] = streamer
+    generation_arguments["use_cache"] = True
 
     # outputs = model.generate(**inputs, max_new_tokens=1024, streamer=streamer)
     generation_thread = Thread(target=model.generate, kwargs=generation_arguments)
