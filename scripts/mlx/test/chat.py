@@ -1,6 +1,5 @@
 from threading import Thread
 from time import perf_counter
-from typing import AnyStr
 
 from colorama import Fore, Style
 from transformers import (
@@ -128,22 +127,11 @@ class Chat:
 
 def main():
     chat = Chat(
-        checkpoint="LiquidAI/LFM2.5-1.2B-Instruct",
+        checkpoint="mlx-community/Nanbeige4.1-3B-8bit",
         stream=True,
         max_new_tokens=2048,
-        quantization=True,
+        quantization=False,
         device="mps",
-    )
-    chat.start()
-
-
-if __name__ == "__main__":
-    main()
-
-
-def main():
-    chat = Chat(
-        checkpoint="LiquidAI/LFM2.5-1.2B-Instruct", stream=True, max_new_tokens=2048
     )
     chat.start()
 
