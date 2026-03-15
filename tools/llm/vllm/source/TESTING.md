@@ -152,22 +152,17 @@ CUDA_DEVICE_ORDER=PCI_BUS_ID \
 CUDA_VISIBLE_DEVICES=0,1 \
 HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
-VLLM_WORKER_MULTIPROC_METHOD=spawn \
-SAFETENSORS_FAST_GPU=1 \
-VLLM_NVFP4_GEMM_BACKEND=cutlass \
 VLLM_USE_FLASHINFER_MOE_FP4=0 \
-NCCL_IB_DISABLE=1 \
-OMP_NUM_THREADS=8 \
-VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
-vllm serve lukealonso/MiniMax-M2.5-NVFP4 \
-  --port 8000 \
-  --served-model-name model \
-  --reasoning-parser minimax \
-  --tool-call-parser minimax-m2 \
-  --enable-torch-compile \
+vllm serve mconcat/MiniMax-M2.5-NVFP4 \
+  --quantization modelopt \
   --trust-remote-code \
-  --tp 2 --ep 2 \
-  --max-running-requests 16 \
-  --kv-cache-dtype fp8_e4m3
+  --tensor-parallel-size 2 \
+  --max-model-len 4096 \
+  --max-num-seqs 64 \
+  --enforce-eager \
+  --gpu-memory-utilization 0.90 \
+  --enable-auto-tool-choice \
+  --tool-call-parser minimax_m2 \
+  --reasoning-parser minimax_m2_append_think \
 ```
 
