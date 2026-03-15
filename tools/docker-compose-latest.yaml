@@ -15,7 +15,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - LLAMA_CACHE=/root/.cache/llama.cpp
     ports:
-      - "8002:8000"
+      - "8001:8000"
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
