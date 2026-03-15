@@ -11,3 +11,9 @@ nvidia-smi
 echo "options nvidia_drm modeset=0" | sudo tee /etc/modprobe.d/nvidia-drm-nomodeset.conf
 sudo update-initramfs -u
 sudo reboot
+
+## Install container toolkit
+
+- [Install guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+
