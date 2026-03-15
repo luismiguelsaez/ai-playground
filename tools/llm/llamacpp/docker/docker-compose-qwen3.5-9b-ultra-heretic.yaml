@@ -1,0 +1,50 @@
+---
+
+# Models
+# - unsloth/Qwen3.5-122B-A10B-GGUF:IQ4_XS - 4 GPUs
+# - unsloth/Qwen3.5-35B-A3B-GGUF:Q4_K_M - 1GPU
+# - unsloth/Qwen3.5-35B-A3B-GGUF:Q6_K - 2GPU
+
+services:
+
+  agent-qwen3.5:
+    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
+    runtime: nvidia
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - LLAMA_CACHE=/root/.cache/llama.cpp
+    ports:
+      - "8001:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --hf-repo llmfan46/Qwen3.5-9B-ultra-heretic-GGUF:Q8_0
+      --alias coding-agent
+      --host 0.0.0.0
+      --port 8000
+      -ngl 99
+      -c 524288
+      -np 1
+      --jinja
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+      --temp 0.6
+      --top-p 0.95
+      --min-p 0.0
+      --top-k 20
+      --presence-penalty 0.0
+      --repeat-penalty 1.0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+networks:
+  ai-network:
+    driver: bridge
