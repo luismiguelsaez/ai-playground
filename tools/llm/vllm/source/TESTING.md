@@ -49,6 +49,27 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 \
   --reasoning-parser super_v3
 ```
 
+## Qwen 2.5 27b AWQ 4bit
+
+### 1 x RTX 3090
+
+```bash
+CUDA_DEVICE_ORDER=PCI_BUS_ID \
+CUDA_VISIBLE_DEVICES=0 \
+vllm serve cyankiwi/Qwen3.5-27B-AWQ-4bit \
+  --port 8000 \
+  --served-model-name model \
+  --max-model-len 262144 \
+  --language-model-only \
+  --enable-auto-tool-choice \
+  --tool-call-parser qwen3_coder \
+  --reasoning-parser qwen3 \
+  --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.93 \
+  --max-num-seqs 2 \
+  --max-num-batched-tokens 512
+```
+
 ## Qwen 2.5 35B/122B AWQ/NVFP4 4bit ( [Recipe](https://docs.vllm.ai/projects/recipes/en/latest/Qwen/Qwen3.5.html) )
 
 - Models
