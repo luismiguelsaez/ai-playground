@@ -57,7 +57,24 @@
           "name": "coding-agent",
           "reasoning": true,
           "limit": {
-            "context": 131072,
+            "context": 262144,
+            "output": 65536
+          }
+        }
+      }
+    },
+    "llama.cpp-small": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "llama-server (local)",
+      "options": {
+        "baseURL": "http://ai-server.local:8001"
+      }, 
+      "models": {
+        "coding-agent": {
+          "name": "coding-agent",
+          "reasoning": true,
+          "limit": {
+            "context": 262144,
             "output": 65536
           }
         }
@@ -73,7 +90,7 @@
         "model": {
           "name": "model",
           "limit": {
-            "context": 131072,
+            "context": 262144,
             "output": 65536
           }
         }
