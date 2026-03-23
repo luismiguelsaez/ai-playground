@@ -86,9 +86,10 @@ services:
 
   vllm-qwen3.5-27b:
     image: vllm/vllm-openai:nightly
+    pull_policy: always
     command: >
-      --model cyankiwi/Qwen3.5-27B-AWQ-4bit \
-      --port 8000 \
+      --model cyankiwi/Qwen3.5-27B-AWQ-4bit
+      --port 8000
       --served-model-name model
       --max-model-len 262144
       --language-model-only
@@ -111,6 +112,6 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-              device_ids: ["1"]
+              device_ids: ["0"]
     environment: []
 
