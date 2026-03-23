@@ -30,7 +30,7 @@ vllm serve nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-NVFP4 \
 # curl -sL https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4/resolve/main/super_v3_reasoning_parser.py -o config/plugins/reasoning/super_v3_reasoning_parser.py
 VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES=2 \
 vllm serve nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4 \
   --port 8000 \
   --async-scheduling \
@@ -143,26 +143,25 @@ vllm serve Sehyo/Qwen3.5-122B-A10B-NVFP4 \
 
 *Out of memory*
 
-## Minimax M2.5 NVFP4
+## Minimax M2.5 AWQ
 
 ### 1 x RTX Pro 6000
 
 ```bash
 CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=0,1 \
+CUDA_VISIBLE_DEVICES=1,2 \
 HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
-VLLM_USE_FLASHINFER_MOE_FP4=0 \
-vllm serve mconcat/MiniMax-M2.5-NVFP4 \
+PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512 \
+VLLM_SLEEP_WHEN_IDLE=1 \
+vllm serve mratsim/MiniMax-M2.5-FP8-INT4-AWQ \
+  --served-model-name model \
   --quantization modelopt \
   --trust-remote-code \
   --tensor-parallel-size 2 \
-  --max-model-len 4096 \
-  --max-num-seqs 64 \
-  --enforce-eager \
-  --gpu-memory-utilization 0.90 \
   --enable-auto-tool-choice \
+  --override-generation-config '{"temperature": 1, "top_p": 0.95, "top_k": 40, "repetition_penalty": 1.1, "frequency_penalty": 0.40}' \
   --tool-call-parser minimax_m2 \
-  --reasoning-parser minimax_m2_append_think \
+  --reasoning-parser minimax_m2
 ```
 

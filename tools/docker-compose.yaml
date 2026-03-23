@@ -50,7 +50,7 @@ services:
             - driver: nvidia
               device_ids: ['1']
               capabilities: [gpu]
-    restart: unless-stopped
+    restart: always
     networks:
       - ai
 
@@ -207,7 +207,7 @@ services:
             - driver: nvidia
               device_ids: ['1','2']
               capabilities: [gpu]
-    restart: unless-stopped
+    restart: always
 
   qwen3-coder-next:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8132
