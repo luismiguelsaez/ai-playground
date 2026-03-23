@@ -19,42 +19,37 @@ services:
       - openclaw
 
   llm:
-    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
-    runtime: nvidia
-    environment:
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - LLAMA_CACHE=/root/.cache/llama.cpp
-    ports:
-      - "8001:8000"
-    volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    image: vllm/vllm-openai:nightly
+    pull_policy: always
     command: >
-      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_S
-      --alias agent
-      --host 0.0.0.0
+      --model cyankiwi/Qwen3.5-27B-AWQ-4bit
       --port 8000
-      -ngl 99
-      -c 262144
-      -np 1
-      --jinja
-      --cache-type-k q4_0
-      --cache-type-v q4_0
-      --flash-attn on
-      --temp 0.6
-      --top-p 0.95
-      --min-p 0.0
-      --top-k 20
-      --presence-penalty 0.0
-      --repeat-penalty 1.0
+      --served-model-name model
+      --max-model-len 262144
+      --language-model-only
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --kv-cache-dtype fp8
+      --gpu-memory-utilization 0.93
+      --max-num-seqs 2
+      --max-num-batched-tokens 512
+      --default-chat-template-kwargs '{"enable_thinking": false}'
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
+    runtime: nvidia
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
               capabilities: [gpu]
-    restart: unless-stopped
+              device_ids: ["0"]
+    environment: []
+    restart: always
     networks:
       - openclaw
 
