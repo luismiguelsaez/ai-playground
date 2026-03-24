@@ -1,170 +1,53 @@
 ---
 
-# Models
-# hf download --local-dir /home/luismi/ai/tools/llamacpp/models lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-GGUF Qwen3-Coder-30B-A3B-Instruct-Q8_0.gguf
-# hf download --local-dir . lmstudio-community/Olmo-3-32B-Think-GGUF Olmo-3-32B-Think-Q8_0.gguf
-# arcee/Trinity-Mini-Q4_K_M.gguf
-# microsoft/phi-4-gguf phi-4-Q4_K.gguf
-
 services:
 
-  # ComfyUI GPU
-  # Nodes:
-  # - https://github.com/Comfy-Org/ComfyUI-Manager
-  # - https://github.com/rgthree/rgthree-comfy
-  # - https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
-  # - https://github.com/Lightricks/ComfyUI-LTXVideo
-  # - https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler
-  # - https://github.com/1038lab/ComfyUI-QwenVL
-  # - https://github.com/Fannovel16/comfyui_controlnet_aux
-  # - https://github.com/PGCRT/CRT-Nodes
-  # - https://github.com/dreamfast/ComfyUI-LTX2-MultiGPU
-  # - https://github.com/BennyDaBall930/ComfyUI-Z-Engineer
-  # - https://github.com/jtydhr88/ComfyUI-qwenmultiangle
-  # - https://github.com/ltdrdata/ComfyUI-Impact-Pack
-  # - https://github.com/yolain/ComfyUI-Easy-Use
-  # - https://github.com/kijai/ComfyUI-KJNodes
-  # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
-  # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
-  # - https://github.com/Lightricks/ComfyUI-LTXVideo
-  # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
-  comfy-gpu:
-    #image: yanwk/comfyui-boot:cu126-slim-20260202
-    image: yanwk/comfyui-boot:cu130-slim-20260306
-    #build:
-    #  context: comfy/ComfyUI-Docker/cu126-slim
-    ports:
-      - "8188:8188"
-    security_opt:
-      - "label=type:nvidia_container_t"
-    volumes:
-      - /data/models/comfy/models:/root/ComfyUI/models
-      - /data/models/comfy/workflows:/root/ComfyUI/user/default/workflows
-      - /data/models/comfy/custom_nodes:/root/ComfyUI/custom_nodes
-    environment:
-      CLI_ARGS: "--disable-xformers"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['1']
-              capabilities: [gpu]
-    restart: always
-    networks:
-      - ai
-
-  # ComfyUI  CPU
-  comfy-cpu:
-    build:
-      context: comfy/ComfyUI-Docker/cu128-slim
-    ports:
-      - "8189:8188"
-    volumes:
-      - ${HOME}/comfy/ComfyUI/models:/root/ComfyUI/models
-      - ${HOME}/comfy/ComfyUI/user/default/workflows:/root/ComfyUI/user/default/workflows
-    environment:
-      CLI_ARGS: "--disable-xformers --novram"
-    security_opt:
-      - "label=type:nvidia_container_t"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['3']
-              capabilities: [gpu]
-    restart: unless-stopped
-    networks:
-      - ai 
-
-  # Opencode agent
-  # Models:
-  # - unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q5_K_M
-  # - unsloth/GLM-4.7-Flash-GGUF:Q6_K - https://unsloth.ai/docs/models/glm-4.7-flash
-  # - DavidAU/GLM-4.7-Flash-Uncensored-Heretic-NEO-CODE-Imatrix-MAX-GGUF:Q4_K_M
-  agent:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
+  # Qwen3.5 27b
+  # Size: 27B
+  # HF: https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
+  llamacpp-qwen3.5-27b:
+    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8477
     runtime: nvidia
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - LLAMA_CACHE=/root/.cache/llama.cpp
     ports:
-      - "8002:8000"
+      - "8001:8000"
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --host 0.0.0.0
-      --port 8000
-      --hf-repo DavidAU/GLM-4.7-Flash-Uncensored-Heretic-NEO-CODE-Imatrix-MAX-GGUF:Q4_K_M
+      --hf-repo Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
       --alias coding-agent
-      --parallel 2
-      --ctx-size 64000
-      --batch-size 2048
-      --n-predict 16384
-      --ubatch-size 512
-      --n-gpu-layers 999
-      --prio 3
-      --cont-batching
-      --temp 0.9
-      --top-k 50
-      --top-p 0.95
-      --min-p 0.01
-      --dry-multiplier 0.0
-      --flash-attn off
-      --jinja
-      --tensor-split 1,1
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['2','3']
-              capabilities: [gpu]
-    restart: unless-stopped
-    networks:
-      - ai
-
-  # Code completion
-  completion:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    ports:
-      - "8000:8000"
-    volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
-    command: >
       --host 0.0.0.0
       --port 8000
-      --hf-repo Qwen/Qwen2.5-Coder-7B-Instruct-GGUF
-      --hf-file qwen2.5-coder-7b-instruct-q4_k_m.gguf
-      --alias coding-completion 
-      --ctx-size 10000
-      --gpu-layers -1
-      --tensor-split 1
-      --split-mode layer
-      --temp 0.8
-      --top-k 40
-      --top-p 0.9
+      -ngl 99
+      -c 262144
+      -np 1
+      --jinja
+      --cache-type-k q4_0
+      --cache-type-v q4_0
+      --flash-attn on
+      --temp 0.6
+      --top-p 0.95
+      --min-p 0.0
+      --top-k 20
+      --presence-penalty 0.0
+      --repeat-penalty 1.0
+      --chat-template-kwargs '{"enable_thinking": false}'
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['3']
+              device_ids: ['0']
               capabilities: [gpu]
     restart: unless-stopped
-    networks:
-      - ai
 
-  # MiniMax 2.1 REAP
-  # - mradermacher/MiniMax-M2.1-REAP-50-GGUF:IQ4_XS
-  # - mradermacher/MiniMax-M2.1-REAP-50-i1-GGUF:i1-Q4_K_S
-  # - mradermacher/MiniMax-M2.1-REAP-50-i-1GGUF:IQ3_M
-  minimax:
+  # Minimax M2.5
+  # Size: 229B
+  # HF: https://huggingface.co/unsloth/MiniMax-M2.5-GGUF
+  llamacpp-minimax:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
     runtime: nvidia
     environment:
@@ -182,7 +65,7 @@ services:
       --n-predict 196608
       --ctx-size 196608
       --batch-size 2048
-      --parallel 1 
+      --parallel 1
       --cont-batching
       --cache-type-k q8_0
       --cache-type-v q8_0
@@ -207,91 +90,124 @@ services:
             - driver: nvidia
               device_ids: ['0','1']
               capabilities: [gpu]
+    restart: unless-stopped
+
+  # Nemotron 3 Super
+  # Size: 120B - 12B active
+  # HF: https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+  vllm-nvidia-nemotron-3-super:
+    image: vllm/vllm-openai:nightly
+    command: >
+      --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+      --port 8000
+      --served-model-name model
+      --tensor-parallel-size 1
+      --enable-auto-tool-choice
+      --enable-prefix-caching
+      --language-model-only
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --kv-cache-dtype fp8
+      --gpu-memory-utilization 0.9
+      --async-scheduling
+      --trust-remote-code
+      --attention-backend TRITON_ATTN
+      --enable-chunked-prefill
+      --max-num-seqs 8
+      --max-num-batched-tokens 4096
+      --max-model-len 500000
+      --reasoning-parser-plugin /config/plugins/reasoning/super_v3_reasoning_parser.py
+      --reasoning-parser super_v3
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["1"]
+    environment:
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+    restart: unless-stopped
+
+  # Qwen3.5 27b
+  # Size: 27B
+  # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
+  vllm-qwen3.5-27b:
+    image: vllm/vllm-openai:nightly v0.17.1-cu130
+    pull_policy: always
+    command: >
+      --model cyankiwi/Qwen3.5-27B-AWQ-4bit
+      --port 8000
+      --served-model-name model
+      --max-model-len 262144 
+      --language-model-only
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --kv-cache-dtype fp8
+      --gpu-memory-utilization 0.95
+      --max-num-seqs 2
+      --max-num-batched-tokens 512
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0"]
+    environment: []
+    restart: unless-stopped
+
+  # ComfyUI GPU
+  # Nodes:
+  # - https://github.com/Comfy-Org/ComfyUI-Manager
+  # - https://github.com/rgthree/rgthree-comfy
+  # - https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
+  # - https://github.com/Lightricks/ComfyUI-LTXVideo
+  # - https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler
+  # - https://github.com/1038lab/ComfyUI-QwenVL
+  # - https://github.com/Fannovel16/comfyui_controlnet_aux
+  # - https://github.com/PGCRT/CRT-Nodes
+  # - https://github.com/dreamfast/ComfyUI-LTX2-MultiGPU
+  # - https://github.com/BennyDaBall930/ComfyUI-Z-Engineer
+  # - https://github.com/jtydhr88/ComfyUI-qwenmultiangle
+  # - https://github.com/ltdrdata/ComfyUI-Impact-Pack
+  # - https://github.com/yolain/ComfyUI-Easy-Use
+  # - https://github.com/kijai/ComfyUI-KJNodes
+  # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
+  # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
+  # - https://github.com/Lightricks/ComfyUI-LTXVideo
+  # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
+  comfy-gpu:
+    image: yanwk/comfyui-boot:cu130-slim-20260306
+    ports:
+      - "8188:8188"
+    security_opt:
+      - "label=type:nvidia_container_t"
+    volumes:
+      - /data/models/comfy/models:/root/ComfyUI/models
+      - /data/models/comfy/workflows:/root/ComfyUI/user/default/workflows
+      - /data/models/comfy/custom_nodes:/root/ComfyUI/custom_nodes
+    environment:
+      CLI_ARGS: "--disable-xformers"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
     restart: always
-
-  qwen3-coder-next:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8132
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-    ports:
-      - "8002:8000"
-    volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
-    command: >
-      --hf-repo unsloth/Qwen3-Coder-Next-GGUF:Q6_K
-      --alias coding-agent
-      --host 0.0.0.0
-      --port 8000
-      --fit on
-      --jinja
-      -ngl 999
-      --flash-attn on
-      --ctx-size 262144 
-      --temp 1.0
-      --top-p 0.95
-      --min-p 0.01
-      --top-k 40
-      --cont-batching
-      --batch-size 512
-      --ubatch-size 128
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['0','1','2','3']
-              capabilities: [gpu]
-    restart: unless-stopped
-
-  qwen3.5:
-    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8184
-    runtime: nvidia
-    environment:
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - LLAMA_CACHE=/root/.cache/llama.cpp
-    ports:
-      - "8002:8000"
-    volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
-    command: >
-      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:MXFP4_MOE
-      --alias coding-agent
-      --host 0.0.0.0
-      --port 8000
-      --fit on
-      --jinja
-      --cache-type-k q8_0
-      --cache-type-v q8_0
-      --ctx-size 262144
-      --flash-attn on
-      -np 1
-      --temp 0.6
-      --top-p 0.95
-      --min-p 0.0
-      --top-k 20
-      --presence-penalty 0.0
-      --repeat-penalty 1.0
-      --tensor-split 1
-      --chat-template-kwargs "{\"enable_thinking\": true}"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['3']
-              capabilities: [gpu]
-    restart: unless-stopped
-
-networks:
-  ai:
-    driver: bridge
 
