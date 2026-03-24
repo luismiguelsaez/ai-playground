@@ -51,7 +51,7 @@ for item in "$SCRIPT_DIR"/.* "$SCRIPT_DIR"/*; do
 	[ "$item_name" = "setup.sh" ] && continue
 	
 	# Copy the file/directory
-	copy_to_home "$item" ".$item_name"
+	copy_to_home "$item" "$item_name"
 done
 
 echo ""
