@@ -166,23 +166,30 @@ vllm serve Sehyo/Qwen3.5-122B-A10B-NVFP4 \
 
 ## Minimax M2.5 AWQ
 
-### 1 x RTX Pro 6000
+### 2 x RTX Pro 6000
 
 ```bash
-CUDA_DEVICE_ORDER=PCI_BUS_ID \
-CUDA_VISIBLE_DEVICES=1,2 \
 HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
-PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512 \
-VLLM_SLEEP_WHEN_IDLE=1 \
-vllm serve mratsim/MiniMax-M2.5-FP8-INT4-AWQ \
+NCCL_IB_DISABLE=1 \
+NCCL_P2P_LEVEL=PHB \
+NCCL_ALLOC_P2P_NET_LL_BUFFERS=1 \
+NCCL_MIN_NCHANNELS=8 \
+OMP_NUM_THREADS=8 \
+SAFETENSORS_FAST_GPU=1 \
+vllm serve lukealonso/MiniMax-M2.5-NVFP4 \
   --served-model-name model \
   --quantization modelopt \
   --trust-remote-code \
   --tensor-parallel-size 2 \
+  --kv-cache-dtype fp8_e4m3 \
+  --quantization modelopt_fp4 \
+  --attention-backend flashinfer \
+  --disable-custom-all-reduce \
   --enable-auto-tool-choice \
-  --override-generation-config '{"temperature": 1, "top_p": 0.95, "top_k": 40, "repetition_penalty": 1.1, "frequency_penalty": 0.40}' \
   --tool-call-parser minimax_m2 \
-  --reasoning-parser minimax_m2
+  --reasoning-parser minimax_m2 \
+  --max-num-seqs 2 \
+  --max-num-batched-tokens 512
 ```
 

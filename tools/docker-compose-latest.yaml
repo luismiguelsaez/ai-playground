@@ -65,8 +65,9 @@ services:
       --trust-remote-code
       --attention-backend TRITON_ATTN
       --enable-chunked-prefill
-      --max-num-seqs 512
-      --max-model-len 1000000
+      --max-num-seqs 8
+      --max-num-batched-tokens 4096
+      --max-model-len 500000
       --reasoning-parser-plugin /config/plugins/reasoning/super_v3_reasoning_parser.py
       --reasoning-parser super_v3
     ports:
@@ -86,7 +87,7 @@ services:
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
 
   vllm-qwen3.5-27b:
-    image: vllm/vllm-openai:v0.17.1-cu130
+    image: vllm/vllm-openai:nightly v0.17.1-cu130
     pull_policy: always
     command: >
       --model cyankiwi/Qwen3.5-27B-AWQ-4bit
