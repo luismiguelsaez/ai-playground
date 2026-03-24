@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 #export TERM=xterm-256color
-export PATH=$PATH:$HOME/.opencode/bin
+export PATH=$PATH:$HOME/.opencode/bin:/usr/local/cuda/bin
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

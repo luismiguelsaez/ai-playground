@@ -10,7 +10,7 @@ services:
 
   llamacpp-qwen3.5-27b:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8477
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -92,7 +92,7 @@ services:
       --model cyankiwi/Qwen3.5-27B-AWQ-4bit
       --port 8000
       --served-model-name model
-      --max-model-len 131072
+      --max-model-len 262144 
       --language-model-only
       --enable-auto-tool-choice
       --tool-call-parser qwen3_coder

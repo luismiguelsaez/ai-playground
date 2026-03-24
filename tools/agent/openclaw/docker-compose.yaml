@@ -22,7 +22,7 @@ services:
     # docker compose exec openclaw openclaw config
     #    Custom Provider > http://llm:8000 > agent
     # docker compose exec openclaw openclaw pairing approve telegram K6ARSZRB
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8477
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility

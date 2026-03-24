@@ -7,3 +7,6 @@
 [submodule "scripts/transcribe/transformers"]
 	path = scripts/transcribe/transformers
 	url = https://github.com/huggingface/transformers
+[submodule "tools/llm/llamacpp/source/ik_llama.cpp"]
+	path = tools/llm/llamacpp/source/ik_llama.cpp
+	url = https://github.com/ikawrakow/ik_llama.cpp
