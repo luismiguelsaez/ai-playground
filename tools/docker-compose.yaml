@@ -179,6 +179,8 @@ services:
     restart: unless-stopped
 
   # ComfyUI GPU
+  # Setup:
+  # - docker compose exec comfy-gpu git clone https://github.com/Comfy-Org/ComfyUI-Manager ComfyUI/custom_nodes/ComfyUI-Manager
   # Nodes:
   # - https://github.com/Comfy-Org/ComfyUI-Manager
   # - https://github.com/rgthree/rgthree-comfy
