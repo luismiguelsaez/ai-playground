@@ -4,20 +4,22 @@ services:
 
   # Qwen3.5 27b
   # Size: 27B
-  # HF: https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
+  # HF:
+  #  - https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
+  #  - https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF
   llamacpp-qwen3.5-27b:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8477
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - LLAMA_CACHE=/root/.cache/llama.cpp
     ports:
-      - "8001:8000"
+      - "8002:8000"
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
+      --hf-repo Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF:Q4_K_M
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -147,7 +149,7 @@ services:
   # Size: 27B
   # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
   vllm-qwen3.5-27b:
-    image: vllm/vllm-openai:nightly v0.17.1-cu130
+    image: vllm/vllm-openai:v0.17.1-cu130
     pull_policy: always
     command: >
       --model cyankiwi/Qwen3.5-27B-AWQ-4bit
@@ -219,5 +221,5 @@ services:
             - driver: nvidia
               device_ids: ['0']
               capabilities: [gpu]
-    restart: always
+    restart: unless-stopped 
 
