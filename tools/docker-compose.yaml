@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   # Minimax M2.5
-  # Size: 229B
+  # Size: 229B - 10B active
   # HF: https://huggingface.co/unsloth/MiniMax-M2.5-GGUF
   llamacpp-minimax:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
@@ -95,6 +95,14 @@ services:
   # Nemotron 3 Super
   # Size: 120B - 12B active
   # HF: https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+  vllm-open-webui-nvidia-nemotron-3-super:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-nvidia-nemotron-3-super:8000/v1
+    restart: unless-stopped
+
   vllm-nvidia-nemotron-3-super:
     image: vllm/vllm-openai:nightly
     command: >
