@@ -5,6 +5,7 @@ services:
   # Qwen3.5 27b
   # Size: 27B
   # HF:
+  #  - https://huggingface.co/unsloth/Qwen3.5-27B-GGUF ( Q4_K_M )
   #  - https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
   #  - https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF
   llamacpp-qwen3.5-27b:
@@ -19,7 +20,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF:Q4_K_M
+      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_M
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -42,7 +43,48 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0']
+              device_ids: ['1']
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # Qwen3.5 35b
+  # Size: 35B
+  # HF:
+  #  - https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF
+  llamacpp-qwen3.5-35b:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
+    runtime: nvidia
+    environment:
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - LLAMA_CACHE=/root/.cache/llama.cpp
+    ports:
+      - "8002:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:Q4_K_S
+      --alias coding-agent
+      --host 0.0.0.0
+      --port 8000
+      -ngl 99
+      -c 262144
+      -np 1
+      --jinja
+      --cache-type-k q4_0
+      --cache-type-v q4_0
+      --flash-attn on
+      --temp 0.6
+      --top-p 0.95
+      --min-p 0.0
+      --top-k 20
+      --presence-penalty 0.0
+      --repeat-penalty 1.0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['1']
               capabilities: [gpu]
     restart: unless-stopped
 
@@ -108,7 +150,7 @@ services:
   vllm-nvidia-nemotron-3-super:
     image: vllm/vllm-openai:nightly
     command: >
-      --model nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+      nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
       --port 8000
       --served-model-name model
       --tensor-parallel-size 1
@@ -149,10 +191,10 @@ services:
   # Size: 27B
   # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
   vllm-qwen3.5-27b:
-    image: vllm/vllm-openai:v0.17.1-cu130
+    image: vllm/vllm-openai:v0.18.0-cu130
     pull_policy: always
     command: >
-      --model cyankiwi/Qwen3.5-27B-AWQ-4bit
+      cyankiwi/Qwen3.5-27B-AWQ-4bit
       --port 8000
       --served-model-name model
       --max-model-len 262144 
@@ -161,8 +203,8 @@ services:
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
       --kv-cache-dtype fp8
-      --gpu-memory-utilization 0.95
-      --max-num-seqs 2
+      --gpu-memory-utilization 0.96
+      --max-num-seqs 1
       --max-num-batched-tokens 512
     ports:
       - "8000:8000"
