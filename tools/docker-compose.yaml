@@ -5,7 +5,9 @@ services:
   # Qwen3.5 27b
   # Size: 27B
   # HF:
-  #  - https://huggingface.co/unsloth/Qwen3.5-27B-GGUF ( Q4_K_M )
+  #  - https://huggingface.co/unsloth/Qwen3.5-27B-GGUF
+  #    - Q4_K_M
+  #    - UD-Q4_K_XL - 23.06Gi
   #  - https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
   #  - https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF
   llamacpp-qwen3.5-27b:
@@ -20,7 +22,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_M
+      --hf-repo unsloth/Qwen3.5-27B-GGUF:UD-Q4_K_XL
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
