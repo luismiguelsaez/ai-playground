@@ -2,6 +2,8 @@
 
 services:
 
+  ## llama.cpp ##
+
   # Qwen3.5 27b
   # Size: 27B
   # HF:
@@ -10,6 +12,7 @@ services:
   #    - UD-Q4_K_XL - 23.06Gi
   #  - https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
   #  - https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF
+  # GPU(s): 1 x RTX 3090
   llamacpp-qwen3.5-27b:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
@@ -53,6 +56,7 @@ services:
   # Size: 35B
   # HF:
   #  - https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF
+  # GPU(s): 1 x RTX 3090
   llamacpp-qwen3.5-35b:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
     runtime: nvidia
@@ -93,6 +97,7 @@ services:
   # Minimax M2.5
   # Size: 229B - 10B active
   # HF: https://huggingface.co/unsloth/MiniMax-M2.5-GGUF
+  # GPU(s): 2 x RTX 6000 Pro
   llamacpp-minimax:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
     runtime: nvidia
@@ -138,9 +143,8 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
 
-  # Nemotron 3 Super
-  # Size: 120B - 12B active
-  # HF: https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+  ## VLLM ##
+
   vllm-open-webui-nvidia-nemotron-3-super:
     image: ghcr.io/open-webui/open-webui:latest
     ports:
@@ -149,6 +153,10 @@ services:
       - OPENAI_API_BASE_URL=http://vllm-nvidia-nemotron-3-super:8000/v1
     restart: unless-stopped
 
+  # Nemotron 3 Super
+  # Size: 120B - 12B active
+  # HF: https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
+  # GPU(s): 1 x RTX 6000 Pro
   vllm-nvidia-nemotron-3-super:
     image: vllm/vllm-openai:nightly
     command: >
@@ -189,9 +197,49 @@ services:
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
     restart: unless-stopped
 
+  # Nemotron Cascade 2
+  # Size: 30B - 2B active
+  # HF:
+  #  - https://huggingface.co/nvidia/Nemotron-Cascade-2-30B-A3B
+  #  - https://huggingface.co/chankhavu/Nemotron-Cascade-2-30B-A3B-AWQ-INT4
+  # GPU(s): 1 x RTX 3090
+  vllm-nvidia-nemotron-cascade-2:
+    image: vllm/vllm-openai:v0.18.0
+    command: >
+      chankhavu/Nemotron-Cascade-2-30B-A3B-AWQ-INT4
+      --port 8000
+      --served-model-name model
+      --tensor-parallel-size 1
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+      --reasoning-parser nemotron_v3
+      --mamba-ssm-cache-dtype float32
+      --max-model-len 262144
+      --max-num-seqs 1
+      --max-num-batched-tokens 512
+      --gpu-memory-utilization 0.9
+      --trust-remote-code
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["1"]
+    environment:
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+    restart: unless-stopped
+
   # Qwen3.5 27b
   # Size: 27B
   # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
+  # GPU(s): 1 x RTX 3090 
   vllm-qwen3.5-27b:
     image: vllm/vllm-openai:v0.18.0-cu130
     pull_policy: always
