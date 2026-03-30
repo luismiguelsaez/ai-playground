@@ -177,7 +177,7 @@ NCCL_ALLOC_P2P_NET_LL_BUFFERS=1 \
 NCCL_MIN_NCHANNELS=8 \
 OMP_NUM_THREADS=8 \
 SAFETENSORS_FAST_GPU=1 \
-vllm serve lukealonso/MiniMax-M2.5-NVFP4 \
+vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --served-model-name model \
   --quantization modelopt \
   --trust-remote-code \
