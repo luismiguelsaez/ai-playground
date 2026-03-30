@@ -269,6 +269,9 @@ services:
     environment:
       - SAFETENSORS_FAST_GPU=1
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+      - NCCL_P2P_DISABLE=1      # no direct P2P path exists
+      - NCCL_SHM_DISABLE=0      # SHM is your best transport here
+      - NCCL_SOCKET_IFNAME=lo   # avoid NCCL probing unnecessary interfaces
     restart: unless-stopped
 
   # ComfyUI GPU

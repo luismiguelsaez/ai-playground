@@ -173,6 +173,9 @@ HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
 SAFETENSORS_FAST_GPU=1 \
 VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
+NCCL_P2P_DISABLE=1 \
+NCCL_SHM_DISABLE=0 \
+NCCL_SOCKET_IFNAME=lo \
 vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --served-model-name model \
   --quantization modelopt \
