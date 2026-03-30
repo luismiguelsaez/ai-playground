@@ -10,6 +10,7 @@ services:
   #  - https://huggingface.co/unsloth/Qwen3.5-27B-GGUF
   #    - Q4_K_M
   #    - UD-Q4_K_XL - 23.06Gi
+  #    - UD-Q8_K_XL ( 2 x RTX 3090 )
   #  - https://huggingface.co/Sepolian/Huihui-Qwen3.5-27B-Claude-4.6-Opus-abliterated-Q4_K_M
   #  - https://huggingface.co/Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF
   # GPU(s): 1 x RTX 3090
@@ -23,7 +24,7 @@ services:
     ports:
       - "8002:8000"
     volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+      - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub:rw
     command: >
       --hf-repo unsloth/Qwen3.5-27B-GGUF:UD-Q4_K_XL
       --alias coding-agent
@@ -31,7 +32,7 @@ services:
       --port 8000
       -ngl 99
       -c 262144
-      -np 1
+      -np 2
       --jinja
       --cache-type-k q4_0
       --cache-type-v q4_0
@@ -48,14 +49,14 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['1']
+              device_ids: ['0']
               capabilities: [gpu]
     restart: unless-stopped
 
   # Qwen3.5 35b
   # Size: 35B
   # HF:
-  #  - https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF
+  #  - https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF - UD-IQ4_XS ( 1 x RTX 3090 )
   # GPU(s): 1 x RTX 3090
   llamacpp-qwen3.5-35b:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
@@ -66,25 +67,25 @@ services:
     ports:
       - "8002:8000"
     volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+      - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub:rw
     command: >
-      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:Q4_K_S
+      --hf-repo unsloth/Qwen3.5-35B-A3B-GGUF:UD-IQ4_XS
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
       -ngl 99
-      -c 262144
-      -np 1
+      -c 131072
+      --batch-size 4096
+      --ubatch-size 2048
       --jinja
-      --cache-type-k q4_0
-      --cache-type-v q4_0
       --flash-attn on
-      --temp 0.6
+      --temp 0.7
       --top-p 0.95
       --min-p 0.0
       --top-k 20
       --presence-penalty 0.0
       --repeat-penalty 1.0
+      --reasoning-format auto
     deploy:
       resources:
         reservations:
@@ -107,7 +108,7 @@ services:
     ports:
       - "8002:8000"
     volumes:
-      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+      - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub:rw
     command: >
       --host 0.0.0.0
       --port 8000
