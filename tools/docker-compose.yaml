@@ -198,7 +198,7 @@ services:
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
     restart: unless-stopped
 
-  # Mini 
+  # Qwen3 27b
   # Size: 27B
   # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
   # GPU(s): 1 x RTX 3090 
@@ -242,12 +242,14 @@ services:
     image: vllm/vllm-openai:v0.18.0-cu130
     pull_policy: always
     command: >
-      cyankiwi/MiniMax-M2.5-AWQ-4bit
+      nvidia/MiniMax-M2.5-NVFP4
       --port 8000
       --served-model-name model
-      --max-model-len 262144
+      --trust-remote-code
+      --max-model-len 196608
       --tensor-parallel-size 2
       --enable-expert-parallel
+      --kv-cache-dtype fp8
       --enable-auto-tool-choice --tool-call-parser minimax_m2
       --reasoning-parser minimax_m2_append_think
       --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"
@@ -266,6 +268,7 @@ services:
               device_ids: ["0","1"]
     environment:
       - SAFETENSORS_FAST_GPU=1
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
     restart: unless-stopped
 
   # ComfyUI GPU

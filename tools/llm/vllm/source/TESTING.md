@@ -164,32 +164,25 @@ vllm serve Sehyo/Qwen3.5-122B-A10B-NVFP4 \
 
 *Out of memory*
 
-## Minimax M2.5 AWQ
+## Minimax M2.5
 
 ### 2 x RTX Pro 6000
 
 ```bash
 HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
-NCCL_IB_DISABLE=1 \
-NCCL_P2P_LEVEL=PHB \
-NCCL_ALLOC_P2P_NET_LL_BUFFERS=1 \
-NCCL_MIN_NCHANNELS=8 \
-OMP_NUM_THREADS=8 \
 SAFETENSORS_FAST_GPU=1 \
+VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
 vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --served-model-name model \
   --quantization modelopt \
   --trust-remote-code \
+  --max-model-len 196608 \
   --tensor-parallel-size 2 \
-  --kv-cache-dtype fp8_e4m3 \
-  --quantization modelopt_fp4 \
-  --attention-backend flashinfer \
-  --disable-custom-all-reduce \
-  --enable-auto-tool-choice \
-  --tool-call-parser minimax_m2 \
-  --reasoning-parser minimax_m2 \
-  --max-num-seqs 2 \
-  --max-num-batched-tokens 512
+  --enable-expert-parallel \
+  --kv-cache-dtype fp8 \
+  --enable-auto-tool-choice --tool-call-parser minimax_m2 \
+  --reasoning-parser minimax_m2_append_think \
+  --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"
 ```
 
