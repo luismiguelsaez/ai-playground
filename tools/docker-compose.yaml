@@ -247,6 +247,7 @@ services:
       --served-model-name model
       --max-model-len 262144
       --tensor-parallel-size 2
+      --enable-expert-parallel
       --enable-auto-tool-choice --tool-call-parser minimax_m2
       --reasoning-parser minimax_m2_append_think
       --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"
