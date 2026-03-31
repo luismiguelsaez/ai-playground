@@ -6,6 +6,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 cd vllm
-VLLM_USE_PRECOMPILED=1 uv pip install --editable .
+export MAKEFLAGS="-j$(nproc)"
+VLLM_USE_PRECOMPILED=0 \
+  TORCH_CUDA_ARCH_LIST="12.0" \
+  MAX_JOBS="$(nproc)" \
+  uv pip install --editable --no-build-isolation .
 
 python3 -m pip install -U flash-linear-attention

@@ -173,9 +173,14 @@ HF_HOME=$HOME/.cache/huggingface \
 HUGGINGFACE_HUB_CACHE=$HF_HOME/hub \
 SAFETENSORS_FAST_GPU=1 \
 VLLM_ALLOW_LONG_MAX_MODEL_LEN=1 \
+VLLM_WORKER_MULTIPROC_METHOD=spawn \
+VLLM_NVFP4_GEMM_BACKEND=cutlass \
+VLLM_USE_FLASHINFER_MOE_FP4=0 \
 NCCL_P2P_DISABLE=1 \
 NCCL_SHM_DISABLE=0 \
+NCCL_IB_DISABLE=1 \
 NCCL_SOCKET_IFNAME=lo \
+OMP_NUM_THREADS=8 \
 vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --served-model-name model \
   --quantization modelopt \
@@ -183,7 +188,6 @@ vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --max-model-len 196608 \
   --tensor-parallel-size 2 \
   --enable-expert-parallel \
-  --kv-cache-dtype fp8 \
   --enable-auto-tool-choice --tool-call-parser minimax_m2 \
   --reasoning-parser minimax_m2_append_think \
   --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"

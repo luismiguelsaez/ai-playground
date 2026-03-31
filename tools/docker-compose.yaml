@@ -242,26 +242,33 @@ services:
   #   - https://huggingface.co/nvidia/MiniMax-M2.5-NVFP4 - fails on vLLM 0.18.0
   #   - https://huggingface.co/mratsim/MiniMax-M2.5-BF16-INT4-AWQ - reommended SGLang
   #   - https://huggingface.co/mratsim/MiniMax-M2.5-FP8-INT4-AWQ
+  #   - https://huggingface.co/lukealonso/MiniMax-M2-NVFP4
   # GPU(s): 2 x RTX 6000 Pro
   vllm-minimax-m2.5:
-    image: vllm/vllm-openai:v0.18.0-cu130
+    image: vllm/vllm-openai:v0.18.1
     pull_policy: always
     command: >
-      cyankiwi/MiniMax-M2.5-AWQ-4bit
+      lukealonso/MiniMax-M2.5-NVFP4
       --port 8000
       --served-model-name model
       --trust-remote-code
       --max-model-len 196608
       --tensor-parallel-size 2
-      --enable-expert-parallel
+      --attention-backend TRITON_ATTN
+      --gpu-memory-utilization 0.95
+      --max-model-len 190000
+      --max-num-batched-tokens 16384
+      --max-num-seqs 64
+      --disable-custom-all-reduce
       --enable-auto-tool-choice
       --tool-call-parser minimax_m2
       --reasoning-parser minimax_m2_append_think
-      --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"
+      --enforce-eager
     ports:
       - "8000:8000"
     volumes:
       - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/flashinfer:/root/.cache/flashinfer
       - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
     runtime: nvidia
     deploy:
@@ -274,32 +281,52 @@ services:
     environment:
       - SAFETENSORS_FAST_GPU=1
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+      - VLLM_NVFP4_GEMM_BACKEND=cutlass
+      - VLLM_USE_FLASHINFER_MOE_FP4=0
+      - VLLM_DISABLE_COMPILE_CACHE=1
       - NCCL_P2P_DISABLE=1      # no direct P2P path exists
       - NCCL_SHM_DISABLE=0      # SHM is your best transport here
       - NCCL_SOCKET_IFNAME=lo   # avoid NCCL probing unnecessary interfaces
+      - OMP_NUM_THREADS=8
+      #
+      - FLASHINFER_JIT_CACHE=/root/.cache/flashinfer  # persist JIT cache
+      - VLLM_WORKER_MULTIPROC_METHOD=spawn
     restart: unless-stopped
 
   ## SGLang
 
+  # lukealonso/MiniMax-M2.5-NVFP4
+  #   - GPUs: 2 x RTX 6000 Pro 
+  #   - VRAM usage: 90.446Gi + 90.446Gi
+  #   - Generation speed: 86t/s
+  # nvidia/MiniMax-M2.5-NVFP4
+  #   - GPUs: 2 x RTX 6000 Pro
+  #   - VRAM usage: 90.446Gi + 90.446Gi
+  #   - Generation speed: 83t/s
   sglang-minimax-m2.5:
     image: lmsysorg/sglang:latest
     pull_policy: always
+    ipc: host
     command: >
       python3 -m sglang.launch_server
-      --model-path mratsim/MiniMax-M2.5-BF16-INT4-AWQ
+      --model-path nvidia/MiniMax-M2.5-NVFP4
       --port 8000
       --host 0.0.0.0
       --served-model-name model
       --trust-remote-code
-      --max-total-tokens 196608
       --tp 2
-      --mem-fraction-static 0.93
+      --ep 2
+      --mem-fraction-static 0.90
       --attention-backend flashinfer
+      --moe-runner-backend flashinfer_cutlass
+      --quantization modelopt_fp4
+      --kv-cache-dtype fp8_e4m3
       --tool-call-parser minimax-m2
       --reasoning-parser minimax
       --disable-custom-all-reduce
+      --enable-flashinfer-allreduce-fusion
       --sleep-on-idle
-    ipc: host
+      --max-running-requests 16
     ports:
       - "8000:8000"
     volumes:
@@ -313,11 +340,13 @@ services:
               capabilities: [gpu]
               device_ids: ["0","1"]
     environment:
-      - PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
-      - SAFETENSORS_FAST_GPU=1
       - NCCL_P2P_DISABLE=1
       - NCCL_SHM_DISABLE=0
       - NCCL_SOCKET_IFNAME=lo
+      - NCCL_IB_DISABLE=1
+      - SAFETENSORS_FAST_GPU=1
+      - PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
+      - OMP_NUM_THREADS=8
     restart: unless-stopped
 
   # ComfyUI GPU
