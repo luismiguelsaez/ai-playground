@@ -36,6 +36,6 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-              device_ids: ["0"]
+              device_ids: ["1"]
     environment:
       - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1

@@ -163,7 +163,7 @@ services:
   # HF: https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
   # GPU(s): 1 x RTX 6000 Pro
   vllm-nvidia-nemotron-3-super:
-    image: vllm/vllm-openai:nightly
+    image: vllm/vllm-openai:v0.18.1
     command: >
       nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
       --port 8000

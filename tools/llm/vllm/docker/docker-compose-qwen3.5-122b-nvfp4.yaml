@@ -1,0 +1,32 @@
+---
+
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.18.1
+    command: >
+      Sehyo/Qwen3.5-122B-A10B-NVFP4
+      --port 8000
+      --served-model-name model
+      --tensor-parallel-size 1
+      --enable-auto-tool-choice
+      --enable-prefix-caching
+      --language-model-only
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --kv-cache-dtype fp8
+      --gpu-memory-utilization 0.95
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $PWD/config/models:/configs
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0"]
+    environment: []
+

@@ -3,13 +3,13 @@
 services:
 
   openclaw:
-    # openclaw config set models.providers.vllm.baseUrl "http://llm:8000/v1"
-    # openclaw config set models.providers.vllm.apiKey "vllm-local"
-    # openclaw config set models.providers.vllm.api "openai-completions"
-    # openclaw openclaw config set models.providers.custom-llm-8000.models.0.contextWindow 131072
-    # openclaw config set agents.defaults.model.primary "model"
-    # openclaw gateway restart
-    # openclaw models status --probe
+    # docker compose exec openclaw openclaw config set models.providers.vllm.baseUrl "http://llm:8000/v1"
+    # docker compose exec openclaw openclaw config set models.providers.vllm.apiKey "vllm-local"
+    # docker compose exec openclaw openclaw config set models.providers.vllm.api "openai-completions"
+    # docker compose exec openclaw openclaw config set models.providers.custom-llm-8000.models.0.contextWindow 131072
+    # docker compose exec openclaw openclaw config set agents.defaults.model.primary "model"
+    # docker compose exec openclaw openclaw gateway restart
+    # docker compose exec openclaw openclaw models status --probe
     image: ghcr.io/openclaw/openclaw:latest
     ports:
       - "18789:18789"
