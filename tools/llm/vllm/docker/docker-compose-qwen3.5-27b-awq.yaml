@@ -2,19 +2,19 @@ version: "3.8"
 
 services:
   vllm:
-    image: vllm/vllm-openai
+    image: vllm/vllm-openai:v0.18.1
     command: >
       --model cyankiwi/Qwen3.5-27B-AWQ-4bit
       --port 8000
       --served-model-name model
-      --tensor-parallel-size 2
+      --tensor-parallel-size 1
       --enable-auto-tool-choice
       --enable-prefix-caching
       --language-model-only
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
       --kv-cache-dtype fp8
-      --gpu-memory-utilization 0.75
+      --gpu-memory-utilization 0.25
     ports:
       - "8000:8000"
     volumes:
@@ -27,6 +27,6 @@ services:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-              device_ids: ["2", "3"]
+              device_ids: ["0"]
     environment: []
 
