@@ -124,6 +124,7 @@ def main():
     checkpoint = "LiquidAI/LFM2.5-1.2B-Instruct"
     checkpoint = "Qwen/Qwen3-4B-Instruct-2507"
     checkpoint = "Qwen/Qwen3.5-0.8B"
+    checkpoint = "LiquidAI/LFM2.5-350M"
     # checkpoint = "Nanbeige/Nanbeige4.1-3B"
     device = "cuda:0" if is_available() else "cpu"
     chat = Chat(

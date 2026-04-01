@@ -17,7 +17,8 @@ services:
   # GPU(s): 1 x RTX 3090
   llamacpp-qwen3.5-27b:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12
+    pull_policy: always
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -60,7 +61,8 @@ services:
   #  - https://huggingface.co/unsloth/Qwen3.5-35B-A3B-GGUF - UD-IQ4_XS ( 1 x RTX 3090 )
   # GPU(s): 1 x RTX 3090
   llamacpp-qwen3.5-35b:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8532
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12
+    pull_policy: always
     runtime: nvidia
     environment:
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
@@ -101,7 +103,8 @@ services:
   # HF: https://huggingface.co/unsloth/MiniMax-M2.5-GGUF
   # GPU(s): 2 x RTX 6000 Pro
   llamacpp-minimax:
-    image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8077
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12
+    pull_policy: always
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
