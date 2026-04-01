@@ -1,5 +1,14 @@
 ---
 
+# Settings ( https://huggingface.co/Qwen/Qwen3.5-122B-A10B )
+#  - Thinking mode for general tasks: temperature=1.0, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=1.5, repetition_penalty=1.0
+#  - Thinking mode for precise coding tasks (e.g. WebDev): temperature=0.6, top_p=0.95, top_k=20, min_p=0.0, presence_penalty=0.0, repetition_penalty=1.0
+#  - Instruct (or non-thinking) mode for general tasks: temperature=0.7, top_p=0.8, top_k=20, min_p=0.0, presence_penalty=1.5, repetition_penalty=1.0
+#  - Instruct (or non-thinking) mode for reasoning tasks: temperature=1.0, top_p=1.0, top_k=40, min_p=0.0, presence_penalty=2.0, repetition_penalty=1.0
+# Resources
+#  - GPU: 1 x RTX 6000 Pro
+#  - VRAM usage: 93.294Gi
+
 services:
   vllm:
     image: vllm/vllm-openai:v0.18.1
@@ -8,13 +17,18 @@ services:
       --port 8000
       --served-model-name model
       --tensor-parallel-size 1
-      --enable-auto-tool-choice
-      --enable-prefix-caching
-      --language-model-only
-      --tool-call-parser qwen3_coder
+      --moe_backend flashinfer_cutlass
       --reasoning-parser qwen3
+      --tool-call-parser qwen3_coder
+      --enable-auto-tool-choice
       --kv-cache-dtype fp8
-      --gpu-memory-utilization 0.95
+      --language-model-only
+      --gpu-memory-utilization 0.954
+      --max-num-seqs 1
+      --max-num-batched-tokens 4176
+      --max-model-len 262144
+      --speculative-config '{"method":"mtp","num_speculative_tokens":2}'
+      --override-generation-config '{"thinking":{"type":"disabled"}, "temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "repetition_penalty": 1.0, "presence_penalty": 0.0}'
     ports:
       - "8000:8000"
     volumes:
@@ -28,5 +42,6 @@ services:
             - driver: nvidia
               capabilities: [gpu]
               device_ids: ["0"]
-    environment: []
+    environment:
+      - VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1
 
