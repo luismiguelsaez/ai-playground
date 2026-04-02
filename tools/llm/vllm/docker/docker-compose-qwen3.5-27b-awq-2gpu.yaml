@@ -3,16 +3,22 @@
 # Usage VRAM: 2 x 20.897Gi
 
 services:
+  vllm-ui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm:8000/v1
+    restart: unless-stopped
+
   vllm:
     image: vllm/vllm-openai:v0.18.1
     command: >
-      cyankiwi/Qwen3.5-27B-AWQ-BF16-INT8
+      QuantTrio/Qwen3.5-27B-AWQ
       --port 8000
       --served-model-name model
-      --trust-remote-code
       --tensor-parallel-size 2
       --max-model-len 262144
-      --language-model-only
       --enable-auto-tool-choice
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
