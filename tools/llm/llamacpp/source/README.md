@@ -13,3 +13,13 @@ cd ik_llama.cpp
 cmake -B build -DGGML_NATIVE=ON -DGGML_CUDA=ON
 cmake --build build --config Release -j$(nproc)
 ```
+
+## Build ( turbo-tan llama )
+
+```bash
+cd llama.cpp-tq3
+
+cmake -B build -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+```
+

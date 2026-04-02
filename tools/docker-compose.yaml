@@ -45,7 +45,7 @@ services:
       --top-k 20
       --presence-penalty 0.0
       --repeat-penalty 1.0
-      --chat-template-kwargs '{"enable_thinking": false}'
+      --reasoning off
     deploy:
       resources:
         reservations:
@@ -204,24 +204,31 @@ services:
 
   # Qwen3 27b
   # Size: 27B
-  # HF: https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
-  # GPU(s): 1 x RTX 3090 
+  # HF:
+  # - https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-4bit
+  #   - Fits GPU: 21Gi on startup
+  #   - Prone to infinite loops
+  # - https://huggingface.co/cyankiwi/Qwen3.5-27B-AWQ-INT8-INT4
+  # - https://huggingface.co/QuantTrio/Qwen3.5-27B-AWQ
+  # GPU(s): 1 x RTX 3090
   vllm-qwen3.5-27b:
     image: vllm/vllm-openai:v0.18.0-cu130
     pull_policy: always
     command: >
-      cyankiwi/Qwen3.5-27B-AWQ-4bit
+      QuantTrio/Qwen3.5-27B-AWQ
       --port 8000
       --served-model-name model
-      --max-model-len 262144 
+      --trust-remote-code
+      --max-model-len 32768
       --language-model-only
       --enable-auto-tool-choice
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
-      --kv-cache-dtype fp8
       --gpu-memory-utilization 0.96
       --max-num-seqs 1
       --max-num-batched-tokens 512
+      --override-generation-config '{"thinking":{"type":"disabled"}, "temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "repetition_penalty": 1.0, "presence_penalty": 0.0}'
+      --speculative-config '{"method":"mtp","num_speculative_tokens":2}'
     ports:
       - "8000:8000"
     volumes:
@@ -235,7 +242,8 @@ services:
             - driver: nvidia
               capabilities: [gpu]
               device_ids: ["0"]
-    environment: []
+    environment:
+      - VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1
     restart: unless-stopped
 
   # Minimax M2.5
