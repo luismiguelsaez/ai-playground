@@ -1,0 +1,41 @@
+---
+
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.18.1
+    command: >
+      cyankiwi/Qwen3.5-27B-AWQ-BF16-INT8
+      --port 8000
+      --served-model-name model
+      --trust-remote-code
+      --tensor-parallel-size 2
+      --max-model-len 262144
+      --language-model-only
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --gpu-memory-utilization 0.75
+      --max-num-seqs 4
+      --max-num-batched-tokens 512
+      --override-generation-config '{"thinking":{"type":"disabled"}, "temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "repetition_penalty": 1.0, "presence_penalty": 0.0}'
+      --speculative-config '{"method":"mtp","num_speculative_tokens":2}'
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $PWD/config/models:/configs
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0","1"]
+    environment:
+      - NCCL_P2P_DISABLE=1
+      - NCCL_SHM_DISABLE=0
+      - NCCL_SOCKET_IFNAME=lo
+      - NCCL_IB_DISABLE=1
+      - SAFETENSORS_FAST_GPU=1
+      - OMP_NUM_THREADS=4
