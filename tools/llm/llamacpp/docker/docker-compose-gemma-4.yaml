@@ -1,0 +1,59 @@
+---
+
+# Gemma 4 dense 31B
+# - HF: unsloth/gemma-4-31B-it-GGUF:IQ4_XS
+# - GPU(s): 1 x RTX 3090
+# - VRAM Usage: 22.27Gi
+# - Context: 80000
+#
+# - HF: unsloth/gemma-4-31B-it-GGUF:UD-Q6_K_XL
+# - GPU(s): 2 x RTX 3090
+# - VRAM Usage: 22.774Gi + 21.323Gi
+# - Context: 256000
+#
+# Gemma 4 MoE 26B
+# - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_XL
+# - GPU(s): 1 x RTX 3090
+# - VRAM Usage: 19.640Gi
+# - Context: 80000
+#
+# - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
+# - GPU(s): 2 x RTX 3090
+# - VRAM Usage:
+# - Context: 256000
+
+services:
+
+  llamacpp-gemma-4-31b-it:
+    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda12
+    pull_policy: always
+    runtime: nvidia
+    environment:
+      - LLAMA_CACHE=/root/.cache/llama.cpp
+      - CUDA_VISIBLE_DEVICES=0,1
+    ports:
+      - "8001:8000"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
+    command: >
+      --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
+      --alias coding-agent
+      --host 0.0.0.0
+      --port 8000
+      -ngl 99
+      -c 256000
+      -np 1
+      --jinja
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']
+              capabilities: [gpu]
+    restart: unless-stopped
+

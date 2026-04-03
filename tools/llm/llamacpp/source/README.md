@@ -2,7 +2,7 @@
 
 ```bash
 cd llama.cpp
-CMAKE_PREFIX_PATH=/usr/local/cuda cmake -B build -DGGML_CUDA=ON -DGGML_CUDA_FA_ALL_QUANTS=ON -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc
+CMAKE_PREFIX_PATH=/usr/local/cuda cmake -B build -DGGML_CUDA=ON -DGGML_CUDA_FA_ALL_QUANTS=ON -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES="86"
 cmake --build build --config Release -j48 --clean-first --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
 ```
 
