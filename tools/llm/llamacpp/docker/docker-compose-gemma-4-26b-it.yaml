@@ -13,7 +13,7 @@
 
 services:
 
-  llamacpp-gemma-4-31b-it:
+  llamacpp-gemma-4-26b-it:
     # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12
     pull_policy: always
