@@ -19,7 +19,7 @@
 #
 # - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
 # - GPU(s): 2 x RTX 3090
-# - VRAM Usage:
+# - VRAM Usage: 16.999Gi + 14.626Gi
 # - Context: 256000
 
 services:
