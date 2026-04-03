@@ -1,6 +1,6 @@
 ---
 
-# Gemma 4 dense 31B
+# Gemma 4 dense 31B *
 # - HF: unsloth/gemma-4-31B-it-GGUF:IQ4_XS
 # - GPU(s): 1 x RTX 3090
 # - VRAM Usage: 22.27Gi
@@ -9,17 +9,6 @@
 # - HF: unsloth/gemma-4-31B-it-GGUF:UD-Q6_K_XL
 # - GPU(s): 2 x RTX 3090
 # - VRAM Usage: 22.774Gi + 21.323Gi
-# - Context: 256000
-#
-# Gemma 4 MoE 26B
-# - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_XL
-# - GPU(s): 1 x RTX 3090
-# - VRAM Usage: 19.640Gi
-# - Context: 80000
-#
-# - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
-# - GPU(s): 2 x RTX 3090
-# - VRAM Usage: 16.999Gi + 14.626Gi
 # - Context: 256000
 
 services:
@@ -37,7 +26,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
+      --hf-repo unsloth/gemma-4-31B-it-GGUF:UD-Q6_K_XL
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
