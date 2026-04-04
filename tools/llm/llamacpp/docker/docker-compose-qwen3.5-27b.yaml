@@ -1,14 +1,19 @@
 ---
 
-# Models
-# - unsloth/Qwen3.5-122B-A10B-GGUF:IQ4_XS - 4 GPUs
-# - unsloth/Qwen3.5-35B-A3B-GGUF:Q4_K_M - 1GPU
-# - unsloth/Qwen3.5-35B-A3B-GGUF:Q6_K - 2GPU
+# Qwen 3.5 27b
+# - HF: unsloth/Qwen3.5-27B-GGUF:Q4_K_M
+# - GPU(s): 1 x RTX 3090
+# - VRAM Usage: 
+# - Context: 262144
+#
+# - HF: unsloth/Qwen3.5-27B-GGUF:UD-Q6_K_XL
+# - GPU(s): 2 x RTX 3090
+# - VRAM Usage: 
+# - Context: 262144
 
 services:
 
   agent-qwen3.5:
-    # Image tag: https://github.com/ggml-org/llama.cpp/actions/workflows/docker.yml
     image: ghcr.io/ggml-org/llama.cpp:server-cuda12-b8148
     runtime: nvidia
     environment:
@@ -19,7 +24,7 @@ services:
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_S
+      --hf-repo unsloth/Qwen3.5-27B-GGUF:Q4_K_M
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -45,6 +50,3 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
 
-networks:
-  ai-network:
-    driver: bridge
