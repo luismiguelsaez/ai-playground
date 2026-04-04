@@ -10,3 +10,6 @@
 [submodule "tools/llm/llamacpp/source/ik_llama.cpp"]
 	path = tools/llm/llamacpp/source/ik_llama.cpp
 	url = https://github.com/ikawrakow/ik_llama.cpp
+[submodule "tools/llm/llamacpp/source/exllamav3"]
+	path = tools/llm/llamacpp/source/exllamav3
+	url = https://github.com/turboderp-org/exllamav3
