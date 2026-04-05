@@ -3,8 +3,8 @@
 # Gemma 4 MoE 26B
 # - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_XL
 # - GPU(s): 1 x RTX 3090
-# - VRAM Usage: 19.640Gi
-# - Context: 80000
+# - VRAM Usage: 21.483Gi
+# - Context: 256000
 #
 # - HF: unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
 # - GPU(s): 2 x RTX 3090
@@ -20,13 +20,13 @@ services:
     runtime: nvidia
     environment:
       - LLAMA_CACHE=/root/.cache/llama.cpp
-      - CUDA_VISIBLE_DEVICES=0,1
+      - CUDA_VISIBLE_DEVICES=0
     ports:
-      - "8001:8000"
+      - "8002:8000"
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/llama.cpp
     command: >
-      --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q6_K_XL
+      --hf-repo unsloth/gemma-4-26B-A4B-it-GGUF:UD-Q4_K_XL
       --alias coding-agent
       --host 0.0.0.0
       --port 8000
@@ -42,7 +42,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0','1']
+              device_ids: ['0']
               capabilities: [gpu]
     restart: unless-stopped
 
