@@ -12,7 +12,7 @@ services:
   #   - VRAM usage: 90.446Gi + 90.446Gi
   #   - Generation speed: 83t/s
   sglang-minimax-m2.5:
-    image: lmsysorg/sglang:latest
+    image: lmsysorg/sglang:v0.5.10
     pull_policy: always
     ipc: host
     command: >
