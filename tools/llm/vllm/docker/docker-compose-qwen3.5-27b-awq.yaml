@@ -1,4 +1,4 @@
-version: "3.8"
+---
 
 services:
   vllm:
@@ -14,7 +14,7 @@ services:
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
       --kv-cache-dtype fp8
-      --gpu-memory-utilization 0.25
+      --gpu-memory-utilization 0.96
     ports:
       - "8000:8000"
     volumes:

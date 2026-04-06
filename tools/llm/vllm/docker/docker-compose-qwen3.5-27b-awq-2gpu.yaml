@@ -31,6 +31,8 @@ services:
       - "8000:8000"
     volumes:
       - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/vllm:/root/.cache/vllm
+      - $HOME/.cache/torch_compile_cache:/root/.cache/torch_compile_cache
       - $PWD/config/models:/configs
     runtime: nvidia
     deploy:
