@@ -39,6 +39,8 @@ services:
       - "8000:8000"
     volumes:
       - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/sglang:/root/.cache/sglang
+      - $HOME/.cache/flashinfer:/root/.cache/flashinfer
     runtime: nvidia
     deploy:
       resources:
