@@ -1,6 +1,16 @@
 ---
 
 services:
+
+  ## OpenWebUI
+  vllm-open-webui-nvidia-nemotron-3-super:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.5:8000/v1
+    restart: unless-stopped
+
   ## SGLang
 
   # lukealonso/MiniMax-M2.5-NVFP4
