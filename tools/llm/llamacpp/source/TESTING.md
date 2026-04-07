@@ -31,6 +31,6 @@
 ### GLM-4.7 REAP ( [GGUF](https://huggingface.co/unsloth/GLM-4.7-REAP-218B-A32B-GGUF) )
 
 ```bash
-./llama.cpp/build/bin/llama-cli -m /data/models/huggingface/hub/GLM-4.7-REAP-218B-A32B-UD-Q4_K_XL-00001-of-00003.gguf -c 262144 -ctk q4_0 -ctv q4_0 --tensor-split 1,1 -fa on
+./buun-llama-cpp/build/bin/llama-cli -m /data/models/huggingface/hub/GLM-4.7-REAP-218B-A32B-UD-Q4_K_XL-00001-of-00003.gguf -c 262144 -ctk q4_0 -ctv q4_0 --tensor-split 1,1 -fa on
 ```
 
