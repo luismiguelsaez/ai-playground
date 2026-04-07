@@ -13,3 +13,9 @@
 [submodule "tools/llm/llamacpp/source/exllamav3"]
 	path = tools/llm/llamacpp/source/exllamav3
 	url = https://github.com/turboderp-org/exllamav3
+[submodule "tools/llm/llamacpp/source/buun-llama-cpp"]
+	path = tools/llm/llamacpp/source/buun-llama-cpp
+	url = https://github.com/spiritbuun/buun-llama-cpp
+[submodule "tools/llm/llamacpp/source/llama.cpp-tq3"]
+	path = tools/llm/llamacpp/source/llama.cpp-tq3
+	url = https://github.com/turbo-tan/llama.cpp-tq3
