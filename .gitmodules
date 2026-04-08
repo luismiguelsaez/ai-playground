@@ -19,3 +19,6 @@
 [submodule "tools/llm/llamacpp/source/llama.cpp-tq3"]
 	path = tools/llm/llamacpp/source/llama.cpp-tq3
 	url = https://github.com/turbo-tan/llama.cpp-tq3
+[submodule "models/image-processing/sam3.cpp"]
+	path = models/image-processing/sam3.cpp
+	url = https://github.com/PABannier/sam3.cpp
