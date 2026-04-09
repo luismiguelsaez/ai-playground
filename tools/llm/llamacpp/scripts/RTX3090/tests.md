@@ -2,6 +2,7 @@
 ## Qwen3.5 27B
 
 - Model: Ornstein 27B Q4_K_M
+- Context: 262144
 - VRAM usage: 19.68Gi
 - KV quantization: K turbo3_tcq, V turbo2_tcq
 - Command
@@ -11,7 +12,8 @@
 ```
 
 - Model: Ornstein 27B Q5_K_M
-- VRAM usage: 22Gi
+- Context: 262144
+- VRAM usage: 23Gi
 - KV quantization: K turbo3_tcq, V turbo2_tcq
 - Command
 
