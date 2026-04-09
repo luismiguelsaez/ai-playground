@@ -1,0 +1,21 @@
+
+## Qwen3.5 27B
+
+- Model: Ornstein 27B Q4_K_M
+- VRAM usage: 19.68Gi
+- KV quantization: K turbo3_tcq, V turbo2_tcq
+- Command
+
+```bash
+ ~/github/ai-playground/tools/llm/llamacpp/source/buun-llama-cpp/build/bin/llama-cli -c 262144 -ctk turbo3_tcq -ctv turbo2_tcq -fa on --device CUDA0 -m /data/models/huggingface/hub/Ornstein-27B-Q4_K_M.gguf -n 8192
+```
+
+- Model: Ornstein 27B Q5_K_M
+- VRAM usage: 22Gi
+- KV quantization: K turbo3_tcq, V turbo2_tcq
+- Command
+
+```bash
+ ~/github/ai-playground/tools/llm/llamacpp/source/buun-llama-cpp/build/bin/llama-cli -c 262144 -ctk turbo3_tcq -ctv turbo2_tcq -fa on --device CUDA0 -m /data/models/huggingface/hub/Ornstein-27B-Q5_K_M.gguf -n 8192
+```
+
