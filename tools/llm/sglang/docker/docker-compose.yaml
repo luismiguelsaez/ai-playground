@@ -27,7 +27,7 @@ services:
     ipc: host
     command: >
       python3 -m sglang.launch_server
-      --model-path nvidia/MiniMax-M2.5-NVFP4
+      --model-path lukealonso/MiniMax-M2.7-NVFP4 
       --port 8000
       --host 0.0.0.0
       --served-model-name model

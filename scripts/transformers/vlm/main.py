@@ -6,10 +6,13 @@ import argparse
 
 # Set device
 device = "cuda:0" if is_available() else "cpu"
+print(f"Running on device: {device}")
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Image text extraction with LFM2.5-VL")
-parser.add_argument("--image", type=str, required=True, help="Path to the input image file")
+parser.add_argument(
+    "--image", type=str, required=True, help="Path to the input image file"
+)
 args = parser.parse_args()
 
 # Time model loading

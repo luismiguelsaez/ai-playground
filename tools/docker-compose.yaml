@@ -378,6 +378,7 @@ services:
   # - https://github.com/ltdrdata/ComfyUI-Impact-Pack
   # - https://github.com/yolain/ComfyUI-Easy-Use
   # - https://github.com/kijai/ComfyUI-KJNodes
+  # - https://github.com/kijai/ComfyUI-MemoryVisualization
   # - https://github.com/Fannovel16/ComfyUI-Frame-Interpolation
   # - https://github.com/PozzettiAndrea/ComfyUI-TRELLIS2
   # - https://github.com/Lightricks/ComfyUI-LTXVideo
