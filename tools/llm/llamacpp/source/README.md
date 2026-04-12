@@ -23,3 +23,9 @@ cmake -B build -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 ```
 
+## Build ( Buun llama - TurboQuant )
+
+```bash
+rm -rf build && cmake -B build -DGGML_CUDA=ON -DGGML_NATIVE=ON -DGGML_CUDA_FA=ON -DGGML_CUDA_FA_ALL_QUANTS=ON -DCMAKE_BUILD_TYPE=Release -DLLAMA_OPENSSL=ON
+cmake --build build -j$(nproc)
+```
