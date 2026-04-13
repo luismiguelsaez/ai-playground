@@ -213,7 +213,9 @@ vllm serve lukealonso/MiniMax-M2.7-NVFP4 \
 --reasoning-parser minimax_m2_append_think \
 --disable-custom-all-reduce \
 --kv-cache-dtype fp8 \
---max-num-seqs 2
+--max-num-seqs 2 \
+--gpu-memory-utilization 0.9556 \
+--moe-backend flashinfer_cutlass
 ```
 
 - Issue with PCIe only, multi-NUMA systems due to invalid peer-to-peer (P2P) or shared memory assumptions across NUMA nodes: stuck at `Waiting for 1 local, 0 remote core engine proc(s) to start.`
