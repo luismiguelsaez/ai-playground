@@ -1,0 +1,61 @@
+---
+
+services:
+
+  ## OpenWebUI
+  vllm-open-webui-nvidia-nemotron-3-super:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.7:8000/v1
+    restart: unless-stopped
+
+  ## SGLang
+
+  # lukealonso/MiniMax-M2.5-NVFP4
+  #   - GPUs: 2 x RTX 6000 Pro
+  #   - VRAM usage: 85.368Gi +  85.368Gi
+  #   - Generation speed:
+  sglang-minimax-m2.5:
+    image: voipmonitor/sglang:cu130
+    pull_policy: always
+    ipc: host
+    command: >
+      python3 -m sglang.launch_server
+      --model-path lukealonso/MiniMax-M2.5-NVFP4
+      --port 8000
+      --host 0.0.0.0
+      --served-model-name model
+      --kv-cache-dtype fp8_e4m3
+      --reasoning-parser minimax
+      --tool-call-parser minimax-m2
+      --tp 2
+      --enable-torch-compile
+      --trust-remote-code
+      --quantization modelopt_fp4
+      --moe-runner-backend b12x
+      --fp4-gemm-backend b12x 
+      --attention-backend flashinfer
+      --enable-pcie-oneshot-allreduce
+      --mem-fraction-static 0.80
+      --cuda-graph-max-bs 16
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/sglang:/root/.cache/sglang
+      - $HOME/.cache/flashinfer:/root/.cache/flashinfer
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0","1"]
+    environment:
+      - OMP_NUM_THREADS=16
+      - SGLANG_ENABLE_SPEC_V2=True
+    restart: unless-stopped
+
