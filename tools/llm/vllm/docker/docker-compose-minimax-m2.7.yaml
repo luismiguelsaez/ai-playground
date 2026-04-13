@@ -13,9 +13,8 @@ services:
       --port 8000
       --served-model-name MiniMax-M2.7-NVFP4
       --trust-remote-code
+      --dtype bfloat16
       --max-model-len 196608
-      --tensor-parallel-size 2
-      --trust-remote-code
       --enable_expert_parallel
       --tensor-parallel-size 2
       --enable-auto-tool-choice
