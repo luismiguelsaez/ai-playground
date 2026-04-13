@@ -227,7 +227,6 @@ vllm serve lukealonso/MiniMax-M2.7-NVFP4 \
 - Startup logs
 
 ```
-```
 Model loading took 62.75 GiB memory and 29.906217 seconds
 Dynamo bytecode transform time: 10.45 s
 torch.compile took 25.68 s in total
@@ -236,4 +235,3 @@ GPU KV cache size: 442,080 tokens
 Maximum concurrency for 196,608 tokens per request: 2.25x
 ```
 
-```
