@@ -203,6 +203,7 @@ SAFETENSORS_FAST_GPU=1 \
 NCCL_P2P_DISABLE=1 \
 NCCL_DEBUG=INFO \
 VLLM_LOGGING_LEVEL=INFO \
+VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1 \
 vllm serve lukealonso/MiniMax-M2.7-NVFP4 \
 --trust-remote-code \
 --enable_expert_parallel \
@@ -216,6 +217,21 @@ vllm serve lukealonso/MiniMax-M2.7-NVFP4 \
 ```
 
 - Issue with PCIe only, multi-NUMA systems due to invalid peer-to-peer (P2P) or shared memory assumptions across NUMA nodes: stuck at `Waiting for 1 local, 0 remote core engine proc(s) to start.`
-- Options to fix: `--disable-custom-all-reduce` or `NCCL_P2P_DISABLE=1`
-- Debug uptions: `VLLM_LOGGING_LEVEL=DEBUG` and `NCCL_DEBUG=TRACE`
+  - Options to fix: `--disable-custom-all-reduce` or `NCCL_P2P_DISABLE=1`
+  - Debug uptions: `VLLM_LOGGING_LEVEL=DEBUG` and `NCCL_DEBUG=TRACE`
+- Issue with Blackwell: `Assertion failed: Failed to initialize cutlass TMA WS grouped gemm`
+  - Options to ifx: `FLASHINFER_CUDA_ARCH_LIST=12.0f`
 
+- Startup logs
+
+```
+```
+Model loading took 62.75 GiB memory and 29.906217 seconds
+Dynamo bytecode transform time: 10.45 s
+torch.compile took 25.68 s in total
+Initial profiling/warmup run took 1.90 s
+GPU KV cache size: 442,080 tokens
+Maximum concurrency for 196,608 tokens per request: 2.25x
+```
+
+```
