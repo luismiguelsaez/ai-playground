@@ -8,43 +8,38 @@ services:
     ports:
       - 3001:8080
     environment:
-      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.5:8000/v1
+      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.7:8000/v1
     restart: unless-stopped
 
   ## SGLang
 
-  # lukealonso/MiniMax-M2.5-NVFP4
+  # lukealonso/MiniMax-M2.7-NVFP4
   #   - GPUs: 2 x RTX 6000 Pro
-  #   - VRAM usage: 90.446Gi + 90.446Gi
-  #   - Generation speed: 86t/s
-  # nvidia/MiniMax-M2.5-NVFP4
-  #   - GPUs: 2 x RTX 6000 Pro
-  #   - VRAM usage: 90.446Gi + 90.446Gi
-  #   - Generation speed: 83t/s
-  sglang-minimax-m2.5:
-    image: lmsysorg/sglang:v0.5.10
+  #   - VRAM usage: 85.368Gi +  85.368Gi
+  #   - Generation speed:
+  sglang-minimax-m2.7:
+    image: voipmonitor/sglang:cu130
     pull_policy: always
     ipc: host
     command: >
       python3 -m sglang.launch_server
-      --model-path lukealonso/MiniMax-M2.7-NVFP4 
+      --model-path lukealonso/MiniMax-M2.7-NVFP4
       --port 8000
       --host 0.0.0.0
       --served-model-name model
-      --trust-remote-code
-      --tp 2
-      --ep 2
-      --mem-fraction-static 0.90
-      --attention-backend flashinfer
-      --moe-runner-backend flashinfer_cutlass
-      --quantization modelopt_fp4
       --kv-cache-dtype fp8_e4m3
-      --tool-call-parser minimax-m2
       --reasoning-parser minimax
-      --disable-custom-all-reduce
-      --enable-flashinfer-allreduce-fusion
-      --sleep-on-idle
-      --max-running-requests 16
+      --tool-call-parser minimax-m2
+      --tp 2
+      --enable-torch-compile
+      --trust-remote-code
+      --quantization modelopt_fp4
+      --moe-runner-backend b12x
+      --fp4-gemm-backend b12x 
+      --attention-backend flashinfer
+      --enable-pcie-oneshot-allreduce
+      --mem-fraction-static 0.80
+      --cuda-graph-max-bs 16
     ports:
       - "8000:8000"
     volumes:
@@ -60,12 +55,7 @@ services:
               capabilities: [gpu]
               device_ids: ["0","1"]
     environment:
-      - NCCL_P2P_DISABLE=1
-      - NCCL_SHM_DISABLE=0
-      - NCCL_SOCKET_IFNAME=lo
-      - NCCL_IB_DISABLE=1
-      - SAFETENSORS_FAST_GPU=1
-      - PYTORCH_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
-      - OMP_NUM_THREADS=8
+      - OMP_NUM_THREADS=16
+      - SGLANG_ENABLE_SPEC_V2=True
     restart: unless-stopped
 

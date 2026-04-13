@@ -193,3 +193,29 @@ vllm serve nvidia/MiniMax-M2.5-NVFP4 \
   --compilation-config "{\"cudagraph_mode\": \"PIECEWISE\"}"
 ```
 
+## Minimax M2.7
+
+### 2 x RTX Pro 6000
+
+```bash
+CUDA_VISIBLE_DEVICES=0,1 \
+SAFETENSORS_FAST_GPU=1 \
+NCCL_P2P_DISABLE=1 \
+NCCL_DEBUG=INFO \
+VLLM_LOGGING_LEVEL=INFO \
+vllm serve lukealonso/MiniMax-M2.7-NVFP4 \
+--trust-remote-code \
+--enable_expert_parallel \
+--tensor-parallel-size 2 \
+--enable-auto-tool-choice \
+--tool-call-parser minimax_m2 \
+--reasoning-parser minimax_m2_append_think \
+--disable-custom-all-reduce \
+--kv-cache-dtype fp8 \
+--max-num-seqs 2
+```
+
+- Issue with PCIe only, multi-NUMA systems due to invalid peer-to-peer (P2P) or shared memory assumptions across NUMA nodes: stuck at `Waiting for 1 local, 0 remote core engine proc(s) to start.`
+- Options to fix: `--disable-custom-all-reduce` or `NCCL_P2P_DISABLE=1`
+- Debug uptions: `VLLM_LOGGING_LEVEL=DEBUG` and `NCCL_DEBUG=TRACE`
+
