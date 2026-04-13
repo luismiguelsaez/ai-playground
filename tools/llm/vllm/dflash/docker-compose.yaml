@@ -1,0 +1,36 @@
+---
+
+services:
+  vllm-open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm:8000/v1
+    restart: unless-stopped
+  vllm:
+    image: vllm/vllm-openai:nightly
+    command: >
+      Qwen/Qwen3.5-9B
+      --port 8000
+      --speculative-config '{"method": "dflash", "model": "z-lab/Qwen3.5-9B-DFlash", "num_speculative_tokens": 15}'
+      --attention-backend flash_attn
+      --max-num-batched-tokens 32768
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+      --reasoning-parser qwen3
+      --gpu-memory-utilization 0.50
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0"]
+    environment: []
+
