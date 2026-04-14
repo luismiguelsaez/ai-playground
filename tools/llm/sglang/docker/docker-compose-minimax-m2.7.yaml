@@ -3,7 +3,7 @@
 services:
 
   ## OpenWebUI
-  vllm-open-webui-nvidia-nemotron-3-super:
+  sglang-open-webui-minimax-m2.7:
     image: ghcr.io/open-webui/open-webui:latest
     ports:
       - 3001:8080
@@ -24,6 +24,8 @@ services:
     shm_size: 32g
     command: >
       python -m sglang.launch_server
+      --host 0.0.0.0
+      --port 8000
       --model-path lukealonso/MiniMax-M2.7-NVFP4
       --served-model-name MiniMax-M2.7-NVFP4
       --reasoning-parser minimax
@@ -38,7 +40,7 @@ services:
       --attention-backend flashinfer
       --enable-pcie-oneshot-allreduce
       --mem-fraction-static 0.93
-      --host 0.0.0.0 --port 5000
+      --max-running-requests 2
     ports:
       - "8000:8000"
     volumes:
@@ -56,5 +58,8 @@ services:
     environment:
       - OMP_NUM_THREADS=16
       - SGLANG_ENABLE_SPEC_V2=True
+      - NCCL_P2P_DISABLE=1
+      - NCCL_SHM_DISABLE=0
+      - NCCL_SOCKET_IFNAME=lo
     restart: unless-stopped
 
