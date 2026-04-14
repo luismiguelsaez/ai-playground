@@ -28,7 +28,6 @@ services:
       --kv-cache-dtype fp8
       --enable-chunked-prefill
       --max-num-seqs 4
-      --max-num-batched-tokens 131072
       --gpu-memory-utilization 0.9556
       --moe-backend flashinfer_cutlass
       --compilation-config '{"cudagraph_mode":"PIECEWISE","cudagraph_num_of_warmups":1}'
