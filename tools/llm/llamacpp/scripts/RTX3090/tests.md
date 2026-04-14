@@ -1,3 +1,7 @@
+## Documents
+
+- [llama-cpp TurboQuant](https://github.com/spiritbuun/buun-llama-cpp)
+
 
 ## Qwen3.5 27B
 
