@@ -361,9 +361,10 @@ nvidia-smi dmon -s pucvmt -d 2
 - From vLLM logs
 
 ```
+vllm-minimax-m2.7-1  | (APIServer pid=1) INFO 04-14 17:17:00 [loggers.py:259] Engine 000: Avg prompt throughput: 1241.3 tokens/s, Avg generation throughput: 64.5 tokens/s, Running: 1 reqs, Waiting: 0 reqs, GPU KV cache usage: 3.1%, Prefix cache hit rate: 1.8%
 vllm-minimax-m2.7-1  | (APIServer pid=1) INFO 04-14 17:13:20 [loggers.py:259] Engine 000: Avg prompt throughput: 6.0 tokens/s, Avg generation throughput: 294.4 tokens/s, Running: 8 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.7%, Prefix cache hit rate: 63.6%
 vllm-minimax-m2.7-1  | (APIServer pid=1) INFO 04-14 17:13:40 [loggers.py:259] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 0.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 63.6%
 ```
 
-*Check `generation throughput` and KV cache usage metrics*
+*Check `generation throughput` ,`prompt throughput` and KV cache usage metrics*
 
