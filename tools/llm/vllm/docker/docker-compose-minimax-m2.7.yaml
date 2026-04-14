@@ -17,7 +17,8 @@ services:
       --trust-remote-code
       --dtype bfloat16
       --quantization modelopt_fp4
-      --max-model-len 65536
+      --max-model-len 191000 
+      --kv-cache-dtype fp8
       --enable_expert_parallel
       --tensor-parallel-size 2
       --enable-auto-tool-choice
@@ -25,7 +26,9 @@ services:
       --reasoning-parser minimax_m2_append_think
       --disable-custom-all-reduce
       --kv-cache-dtype fp8
-      --max-num-seqs 256
+      --enable-chunked-prefill
+      --max-num-seqs 4
+      --max-num-batched-tokens 131072
       --gpu-memory-utilization 0.9556
       --moe-backend flashinfer_cutlass
       --compilation-config '{"cudagraph_mode":"PIECEWISE","cudagraph_num_of_warmups":1}'

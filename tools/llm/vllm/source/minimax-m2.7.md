@@ -1,5 +1,10 @@
 # Minimax M2.7 on 2 x RTX 6000 Pro
 
+## docs
+
+- [Engine arguments](https://docs.vllm.ai/en/v0.4.1/models/engine_args.html)
+
+
 ## Hardware and architecture
 
 - Topology
