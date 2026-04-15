@@ -2,9 +2,12 @@
 name = "vllm-project"
 version = "0.18.1"
 description = "vLLM: High-Performance Serving for Large Language Models"
-requires-python = ">=3.10,<3.14"
+requires-python = "==3.12.*"
+
 dependencies = [
-    "vllm @ git+https://github.com/vllm-project/vllm.git@v0.19.0",
+  #"vllm @ git+https://github.com/vllm-project/vllm.git@v0.19.0",
+  "vllm>=0.19.0",
+  "torch>=2.0.0"
 ]
 
 [dependency-groups]
@@ -12,3 +15,17 @@ dev = []
 
 [tool.uv]
 concurrent-builds = 48
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+vllm = { index = "vllm-nightly" }
+
+[[tool.uv.index]]
+name = "vllm-nightly"
+url = "https://wheels.vllm.ai/nightly"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

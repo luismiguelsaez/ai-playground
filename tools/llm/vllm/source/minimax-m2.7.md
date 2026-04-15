@@ -373,3 +373,23 @@ vllm-minimax-m2.7-1  | (APIServer pid=1) INFO 04-14 17:13:40 [loggers.py:259] En
 
 *Check `generation throughput` ,`prompt throughput` and KV cache usage metrics*
 
+
+## Verify versions match
+
+- vLLM version
+
+```bash
+python -c "import vllm; print(vllm.__version__)"
+```
+
+- torch CUDA version
+
+```bash
+python -c "import torch; print(torch.version.cuda)"
+```
+
+- CUDA compiler version
+
+```bash
+nvcc --version
+```
