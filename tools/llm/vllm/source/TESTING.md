@@ -235,3 +235,10 @@ GPU KV cache size: 442,080 tokens
 Maximum concurrency for 196,608 tokens per request: 2.25x
 ```
 
+
+## Qwen3.5 40B
+
+```bash
+vllm serve DavidAU/Qwen3.5-40B-Claude-4.6-Opus-Deckard-Heretic-Uncensored-Thinking --max-num-seqs 2 --max-model-len 64000 --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser qwen3_coder --reasoning-parser qwen3
+```
+
