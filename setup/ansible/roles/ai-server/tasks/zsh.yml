@@ -1,5 +1,6 @@
 ---
 # Zsh configuration tasks
+
 - name: Check if user exists
   getent:
     database: passwd
@@ -18,12 +19,12 @@
   become: true
   when: ai_server_install_zsh
 
-- name: Install Oh My Zsh
-  command: sh -c "{{ item }}"
+- name: Install Oh My Zsh (unattended)
+  command: >-
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    | bash -s -- --unattended
   args:
     creates: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh/oh-my-zsh.sh"
-  loop:
-    - curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
   environment:
     ZSH: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh"
   become: true
@@ -37,28 +38,274 @@
     force: true
   become: true
   become_user: "{{ zsh_user }}"
+  creates: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
   when: ai_server_install_zsh and ('zsh-autosuggestions' in zsh_plugins)
 
-- name: Install eza (modern ls replacement)
-  apt:
-    name: eza
-    state: present
-  become: true
-  when: ai_server_install_zsh and ('eza' in zsh_plugins)
+# ====================================================================
+# bat - Modern cat replacement (from GitHub releases)
+# ====================================================================
 
-- name: Install bat (cat replacement)
-  apt:
-    name: bat
-    state: present
-  become: true
+- name: Get bat latest release version
+  uri:
+    url: https://api.github.com/repos/sharkdp/bat/releases/latest
+    return_content: true
+  register: bat_release
+  changed_when: false
   when: ai_server_install_zsh and ('cat' in zsh_aliases)
 
-- name: Install zoxide (cd replacement)
-  apt:
-    name: zoxide
-    state: present
+- name: Set bat archive name (x86_64)
+  set_fact:
+    bat_archive: "bat-v{{ bat_release.json.tag_name }}-x86_64-unknown-linux-gnu.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+    - ansible_architecture is match('.*64')
+
+- name: Set bat archive name (aarch64)
+  set_fact:
+    bat_archive: "bat-v{{ bat_release.json.tag_name }}-aarch64-unknown-linux-gnu.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+    - ansible_architecture is match('aarch64')
+
+- name: Download bat binary
+  get_url:
+    url: "https://github.com/sharkdp/bat/releases/download/v{{ bat_release.json.tag_name }}/{{ bat_archive }}"
+    dest: "/tmp/bat-{{ bat_release.json.tag_name }}.tar.gz"
+    mode: '0644'
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+    - bat_archive is defined
+
+- name: Extract bat archive
+  unarchive:
+    src: "/tmp/bat-{{ bat_release.json.tag_name }}.tar.gz"
+    dest: /tmp/
+    remote_src: true
+  register: bat_extract
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+
+- name: Install bat binary to /usr/local/bin
+  copy:
+    src: "{{ bat_extract.files[0].split('/')[0] }}/bat"
+    remote_src: true
+    dest: /usr/local/bin/bat
+    mode: '0755'
   become: true
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+
+- name: Install bat man page
+  copy:
+    src: "{{ bat_extract.files[0].split('/')[0] }}/man/man1/bat.1"
+    dest: /usr/local/share/man/man1/bat.1
+    remote_src: true
+    mode: '0644'
+  become: true
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+
+- name: Install bat completions
+  copy:
+    src: "{{ bat_extract.files[0].split('/')[0] }}/shell/"
+    dest: /usr/local/share/bash-completion/completions/
+    remote_src: true
+  become: true
+  when:
+    - ai_server_install_zsh
+    - ('cat' in zsh_aliases)
+
+# ====================================================================
+# eza - Modern ls replacement (from GitHub releases)
+# ====================================================================
+
+- name: Get eza latest release version
+  uri:
+    url: https://api.github.com/repos/eza-community/eza/releases/latest
+    return_content: true
+  register: eza_release
+  changed_when: false
+  when: ai_server_install_zsh and ('eza' in zsh_plugins)
+
+- name: Determine eza asset name for architecture
+  set_fact:
+    eza_asset: "{{ item.name }}"
+  loop: "{{ eza_release.json.assets }}"
+  when:
+    - ai_server_install_zsh
+    - ('eza' in zsh_plugins)
+    - >-
+      ((ansible_architecture is match('.*64') and item.name | regex_search('x86_64-unknown-linux-gnu')) or
+       (ansible_architecture is match('aarch64') and item.name | regex_search('aarch64-unknown-linux-gnu')))
+  register: eza_asset_match
+
+- name: Download eza binary
+  get_url:
+    url: "https://github.com/eza-community/eza/releases/latest/download/{{ eza_asset_match.results[0].item }}"
+    dest: "/tmp/eza-{{ eza_release.json.tag_name }}.tar.gz"
+    mode: '0644'
+    headers:
+      Accept: "application/octet-stream"
+  when:
+    - ai_server_install_zsh
+    - ('eza' in zsh_plugins)
+    - eza_asset_match is defined
+    - eza_asset_match.results | length > 0
+
+- name: Extract eza archive
+  unarchive:
+    src: "/tmp/eza-{{ eza_release.json.tag_name }}.tar.gz"
+    dest: /tmp/
+    remote_src: true
+  register: eza_extract
+  when:
+    - ai_server_install_zsh
+    - ('eza' in zsh_plugins)
+
+- name: Install eza binary to /usr/local/bin
+  copy:
+    src: "{{ eza_extract.files[0].split('/')[0] }}/eza"
+    remote_src: true
+    dest: /usr/local/bin/eza
+    mode: '0755'
+  become: true
+  when:
+    - ai_server_install_zsh
+    - ('eza' in zsh_plugins)
+
+# ====================================================================
+# zoxide - Fast cd replacement (from GitHub releases)
+# ====================================================================
+
+- name: Get zoxide latest release version
+  uri:
+    url: https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest
+    return_content: true
+  register: zoxide_release
+  changed_when: false
   when: ai_server_install_zsh and ('zoxide' in zsh_plugins)
+
+- name: Set zoxide archive name (x86_64)
+  set_fact:
+    zoxide_archive: "zoxide-{{ zoxide_release.json.tag_name }}-x86_64-unknown-linux-musl.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('zoxide' in zsh_plugins)
+    - ansible_architecture is match('.*64')
+
+- name: Set zoxide archive name (aarch64)
+  set_fact:
+    zoxide_archive: "zoxide-{{ zoxide_release.json.tag_name }}-aarch64-unknown-linux-musl.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('zoxide' in zsh_plugins)
+    - ansible_architecture is match('aarch64')
+
+- name: Download zoxide binary
+  get_url:
+    url: "https://github.com/ajeetdsouza/zoxide/releases/download/{{ zoxide_release.json.tag_name }}/{{ zoxide_archive }}"
+    dest: "/tmp/zoxide-{{ zoxide_release.json.tag_name }}.tar.gz"
+    mode: '0644'
+  when:
+    - ai_server_install_zsh
+    - ('zoxide' in zsh_plugins)
+    - zoxide_archive is defined
+
+- name: Extract zoxide archive
+  unarchive:
+    src: "/tmp/zoxide-{{ zoxide_release.json.tag_name }}.tar.gz"
+    dest: /tmp/
+    remote_src: true
+  register: zoxide_extract
+  when:
+    - ai_server_install_zsh
+    - ('zoxide' in zsh_plugins)
+
+- name: Install zoxide binary to /usr/local/bin
+  copy:
+    src: "{{ zoxide_extract.files[0].split('/')[0] }}/zoxide"
+    remote_src: true
+    dest: /usr/local/bin/zoxide
+    mode: '0755'
+  become: true
+  when:
+    - ai_server_install_zsh
+    - ('zoxide' in zsh_plugins)
+
+# ====================================================================
+# fzf - Fuzzy finder (from GitHub releases)
+# ====================================================================
+
+- name: Get fzf latest release version
+  uri:
+    url: https://api.github.com/repos/junegunn/fzf/releases/latest
+    return_content: true
+  register: fzf_release
+  changed_when: false
+  when: ai_server_install_zsh and ('fzf' in zsh_plugins)
+
+- name: Set fzf archive name (x86_64)
+  set_fact:
+    fzf_archive: "fzf-{{ fzf_release.json.tag_name }}-linux_amd64.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
+    - ansible_architecture is match('.*64')
+
+- name: Set fzf archive name (aarch64)
+  set_fact:
+    fzf_archive: "fzf-{{ fzf_release.json.tag_name }}-linux_arm64.tar.gz"
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
+    - ansible_architecture is match('aarch64')
+
+- name: Download fzf binary
+  get_url:
+    url: "https://github.com/junegunn/fzf/releases/download/{{ fzf_release.json.tag_name }}/{{ fzf_archive }}"
+    dest: "/tmp/fzf-{{ fzf_release.json.tag_name }}.tar.gz"
+    mode: '0644'
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
+    - fzf_archive is defined
+
+- name: Extract fzf archive
+  unarchive:
+    src: "/tmp/fzf-{{ fzf_release.json.tag_name }}.tar.gz"
+    dest: /tmp/
+    remote_src: true
+  register: fzf_extract
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
+
+- name: Install fzf binary to /usr/local/bin
+  copy:
+    src: "{{ fzf_extract.files[0].split('/')[0] }}/fzf"
+    remote_src: true
+    dest: /usr/local/bin/fzf
+    mode: '0755'
+  become: true
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
+
+- name: Run fzf install script (key bindings, completion)
+  command: "/usr/local/bin/fzf/install --all --no-update-rc --no-zsh"
+  become_user: "{{ zsh_user }}"
+  become: true
+  args:
+    creates: "{{ ansible_env.HOME | default('/home/' ~ zsh_user) }}/.fzf"
+  when:
+    - ai_server_install_zsh
+    - ('fzf' in zsh_plugins)
 
 - name: Copy zshrc to user home
   template:
