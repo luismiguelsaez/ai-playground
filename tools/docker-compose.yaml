@@ -374,7 +374,7 @@ services:
   # - https://github.com/Lightricks/ComfyUI-LTXVideo
   # - https://github.com/Jasonzzt/ComfyUI-CacheDiT
   comfy-gpu:
-    image: yanwk/comfyui-boot:cu130-slim-20260306
+    image: yanwk/comfyui-boot:cu130-slim-v2-20260416
     ports:
       - "8188:8188"
     security_opt:

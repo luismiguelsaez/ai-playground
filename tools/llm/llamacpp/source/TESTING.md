@@ -42,6 +42,8 @@
 
 ### Qwen3.5 122B - Qwen3.5 0.8B ( draft )
 
+- VRAM: ~80Gi
+
 ```bash
 llama-cli -c 262144 -fa on --fit on -hfr unsloth/Qwen3.5-122B-A10B-GGUF:Q4_K_M -hfrd unsloth/Qwen3.5-0.8B-GGUF:UD-Q4_K_XL --device CUDA1
 ```

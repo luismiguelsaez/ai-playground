@@ -15,6 +15,9 @@ dev = []
 
 [tool.uv]
 concurrent-builds = 48
+required-environments = [
+  "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
 
 [tool.uv.sources]
 torch = { index = "pytorch-cu130" }
@@ -29,3 +32,4 @@ explicit = true
 name = "pytorch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
 explicit = true
+
