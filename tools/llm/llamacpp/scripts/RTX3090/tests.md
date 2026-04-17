@@ -35,3 +35,28 @@
 llama-server --host 0.0.0.0 --port 8000 -c 262144 -ctk turbo3_tcq -ctv turbo2_tcq -fa on -hfr kai-os/Carnice-27b-GGUF:Q4_K_M
 ```
 
+- Model: Ornstein 31B Q4_K_M
+- Context: 64000
+- VRAM usage: 22Gi
+- KV quantization: K turbo3_tcq, V turbo3_tcq
+- Issues
+  - `OOMKilled` at the OS level after a few requests
+  - Test `--cache-ram 1024` to mitigate
+- Command
+
+```bash
+llama-server --host 0.0.0.0 --port 8000 -c 131072 -ctk turbo3_tcq -ctv turbo3_tcq -fa on -hfr DJLougen/Ornstein-31B-it-GGUF:Q4_K_M --device CUDA0 --cache-ram 1024
+```
+
+## Qwen 3.5 35B A3B
+
+- Model: Qwen3.5 35B A3B ( unstloth )
+- Context: 262144
+- VRAM usage: 20Gi
+- KV quantization: K turbo3_tcq, V turbo2_tcq
+- Command:
+
+```bash
+llama-server --host 0.0.0.0 --port 8000 -c 262144 -ctk turbo3_tcq -ctv turbo2_tcq -fa on -hfr unsloth/Qwen3.6-35B-A3B-GGUF:UD-IQ4_XS --device CUDA0
+```
+

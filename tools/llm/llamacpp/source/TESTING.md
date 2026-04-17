@@ -25,6 +25,14 @@
 ./buun-llama-cpp/build/bin/llama-server --host 0.0.0.0 --port 8002 --device CUDA0 --model /data/models/huggingface/hub/gemma-4-26B-A4B-it-UD-Q5_K_XL.gguf -c 262144 -ctk turbo3_tcq -ctv turbo3_tcq
 ```
 
+### Qwen3.6 35B A3B
+
+- TurboQuant enabled ( 19.121Gi )
+
+```bash
+llama-server --host 0.0.0.0 --port 8000 -c 131072 -ctk turbo3_tcq -ctv turbo2_tcq -fa on -hfr unsloth/Qwen3.6-35B-A3B-GGUF:UD-IQ4_XS --device CUDA0
+```
+
 
 ## Big models
 
