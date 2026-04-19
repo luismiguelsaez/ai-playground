@@ -242,3 +242,21 @@ Maximum concurrency for 196,608 tokens per request: 2.25x
 vllm serve DavidAU/Qwen3.5-40B-Claude-4.6-Opus-Deckard-Heretic-Uncensored-Thinking --max-num-seqs 2 --max-model-len 64000 --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser qwen3_coder --reasoning-parser qwen3
 ```
 
+
+## Qwen3.6 35B A3B
+
+- Run
+```bash
+vllm serve RedHatAI/Qwen3.6-35B-A3B-NVFP4 --max-model-len 262144 --kv-cache-dtype fp8 --enable-auto-tool-choice --tool-call-parser qwen3_coder --reasoning-parser qwen3 --gpu-memory-utilization 0.7
+```
+
+- Eval
+
+```bash
+lm_eval --model local-chat-completions \
+  --tasks gsm8k_platinum_cot_llama \
+  --model_args "model=RedHatAI/Qwen3.6-35B-A3B-NVFP4,max_length=262144,base_url=http://0.0.0.0:8000/v1/chat/completions,num_concurrent=128,max_retries=3,tokenized_requests=False,tokenizer_backend=None,timeout=1200" \
+  --num_fewshot 0 \
+  --apply_chat_template \
+  --gen_kwargs "do_sample=True,temperature=1.0,top_p=0.95,top_k=20,min_p=0.0,max_gen_toks=64000,presence_penalty=1.5,repetition_penalty=1.0,seed=5678"
+```
