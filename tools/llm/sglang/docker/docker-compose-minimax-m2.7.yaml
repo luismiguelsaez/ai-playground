@@ -41,6 +41,7 @@ services:
       --enable-pcie-oneshot-allreduce
       --mem-fraction-static 0.93
       --max-running-requests 1
+      --disable-custom-all-reduce
     ports:
       - "8000:8000"
     volumes:

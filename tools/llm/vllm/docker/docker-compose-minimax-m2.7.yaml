@@ -1,5 +1,5 @@
 services:
-  # Minimax M2.7
+  # Minimax M2.7 ( https://github.com/vllm-project/recipes/blob/main/MiniMax/MiniMax-M2.md )
   # Size: 229B - 10B active
   # HF:
   #   - https://huggingface.co/lukealonso/MiniMax-M2.7-NVFP4
