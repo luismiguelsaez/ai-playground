@@ -47,7 +47,7 @@ llama-server --host 0.0.0.0 --port 8000 -c 131072 -ctk turbo3_tcq -ctv turbo2_tc
 
 ### GLM-5.1
 
-- TurboQuant enabled ( 94.4 x 2 + CPU )
+- TurboQuant enabled ( 94.4GI x 2 GPU + 70Gi CPU ) `llama-cpp-turboquant` fork
 
 ```bash
 build/bin/llama-server --host 0.0.0.0 --port 8002 -c 60000 -fa on --no-mmap --parallel 1 --fit on -ctk q8_0 -ctv turbo3 --kv-unified -hfr unsloth/GLM-5.1-GGUF:UD-IQ3_XXS
