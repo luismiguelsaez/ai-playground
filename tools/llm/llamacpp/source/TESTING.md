@@ -45,6 +45,14 @@ llama-server --host 0.0.0.0 --port 8000 -c 131072 -ctk turbo3_tcq -ctv turbo2_tc
 ./llama.cpp/build/bin/llama-cli -m /data/models/huggingface/hub/GLM-4.7-REAP-218B-A32B-UD-Q4_K_XL-00001-of-00003.gguf -c 262144 -ctk q4_0 -ctv q4_0 --tensor-split 1,1 -fa on
 ```
 
+### GLM-5.1
+
+- TurboQuant enabled ( 94.4 x 2 + CPU )
+
+```bash
+build/bin/llama-server --host 0.0.0.0 --port 8002 -c 60000 -fa on --no-mmap --parallel 1 --fit on -ctk q8_0 -ctv turbo3 --kv-unified -hfr unsloth/GLM-5.1-GGUF:UD-IQ3_XXS
+```
+
 
 ## Draft model
 
