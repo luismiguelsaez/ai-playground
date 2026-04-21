@@ -24,23 +24,23 @@ services:
     shm_size: 32g
     command: >
       python -m sglang.launch_server
-      --host 0.0.0.0
-      --port 8000
       --model-path lukealonso/MiniMax-M2.7-NVFP4
       --served-model-name MiniMax-M2.7-NVFP4
       --reasoning-parser minimax
       --tool-call-parser minimax-m2
-      --tp 2
+      --tensor-parallel-size 2
+      --sleep-on-idle
       --enable-torch-compile
       --trust-remote-code
-      --kv-cache-dtype fp8_e4m3
+      --kv-cache-dtype bf16
       --quantization modelopt_fp4
       --moe-runner-backend b12x
       --fp4-gemm-backend b12x
+      --context-length 131072
       --attention-backend flashinfer
       --enable-pcie-oneshot-allreduce
       --mem-fraction-static 0.93
-      --max-running-requests 2
+      --max-running-requests 1
     ports:
       - "8000:8000"
     volumes:
@@ -58,8 +58,5 @@ services:
     environment:
       - OMP_NUM_THREADS=16
       - SGLANG_ENABLE_SPEC_V2=True
-      - NCCL_P2P_DISABLE=1
-      - NCCL_SHM_DISABLE=0
-      - NCCL_SOCKET_IFNAME=lo
     restart: unless-stopped
 

@@ -5,7 +5,6 @@ services:
     image: vllm/vllm-openai:v0.19.1
     command: >
       RedHatAI/gemma-4-31B-it-NVFP4
-      --attention-backend flash_attn
       --max-model-len 262144
       --kv-cache-dtype fp8
       --enable-auto-tool-choice
@@ -13,7 +12,6 @@ services:
       --reasoning-parser gemma4
       --gpu-memory-utilization 0.5
       --served-model-name gemma-4-31B-it-NVFP4
-      --speculative-config '{"method": "dflash", "model": "RedHatAI/gemma-4-31B-it-speculator.dflash", "num_speculative_tokens": 8}'
     ports:
       - "8000:8000"
     volumes:
