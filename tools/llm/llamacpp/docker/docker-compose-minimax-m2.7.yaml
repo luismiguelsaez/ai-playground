@@ -13,19 +13,14 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
     ports:
-      - "8002:8000"
+      - "8002:8080"
     volumes:
       - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub:rw
     command: >
-      --host 0.0.0.0
-      --port 8000
       --hf-repo unsloth/MiniMax-M2.7-GGUF:UD-Q4_K_M
       --alias coding-agent
-      --n-predict 196608
       --ctx-size 196608
-      --batch-size 2048
       --parallel 2
-      --cont-batching
       --cache-type-k q8_0
       --cache-type-v q8_0
       --flash-attn on
@@ -35,13 +30,8 @@ services:
       --min-p 0.05
       --top-p 0.95
       --jinja
-      --fit on
       --reasoning-format auto
-      --no-mmap
-      --mlock
-      --numa isolate
       --gpu-layers 999
-      --metrics
     deploy:
       resources:
         reservations:
