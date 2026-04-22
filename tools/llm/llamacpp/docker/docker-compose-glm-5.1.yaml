@@ -1,0 +1,31 @@
+---
+
+services:
+  llamacpp-minimax:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda13
+    pull_policy: always
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8002:8080"
+    volumes:
+      - ~/.cache/huggingface/hub:/root/.cache/huggingface/hub:rw
+    command: >
+      --hf-repo unsloth/GLM-5.1-GGUF:UD-IQ3_XXS
+      --ctx-size 60000
+      --parallel 1
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --flash-attn on
+      --jinja
+      --reasoning-format auto
+      --fit on
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']
+              capabilities: [gpu]
+    restart: unless-stopped
