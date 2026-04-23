@@ -1,3 +1,7 @@
+
+# OS configuration
+# - NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+
 services:
 
   ## OpenWebUI
