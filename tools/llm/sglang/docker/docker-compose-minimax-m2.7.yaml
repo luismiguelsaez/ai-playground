@@ -1,6 +1,9 @@
 ---
 
-# NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+# OS configuration
+# - NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+# Resources
+# - VRAM Usage: 90Gi ( startup )
 
 services:
 
@@ -26,6 +29,8 @@ services:
     shm_size: 32g
     command: >
       sglang serve
+      --host 0.0.0.0
+      --port 30000
       --model-path lukealonso/MiniMax-M2.7-NVFP4
       --served-model-name MiniMax-M2.7-NVFP4
       --reasoning-parser minimax
