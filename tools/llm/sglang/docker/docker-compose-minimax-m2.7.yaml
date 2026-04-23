@@ -10,7 +10,7 @@ services:
     ports:
       - 3001:8080
     environment:
-      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.7:8000/v1
+      - OPENAI_API_BASE_URL=http://sglang-minimax-m2.7:30000/v1
     restart: unless-stopped
 
   ## SGLang
@@ -25,7 +25,7 @@ services:
     ipc: host
     shm_size: 32g
     command: >
-      python -m sglang.launch_server
+      sglang serve
       --model-path lukealonso/MiniMax-M2.7-NVFP4
       --served-model-name MiniMax-M2.7-NVFP4
       --reasoning-parser minimax
@@ -44,7 +44,7 @@ services:
       --mem-fraction-static 0.93
       --max-running-requests 1
     ports:
-      - "8000:8000"
+      - "30000:30000"
     volumes:
       - $HOME/.cache/huggingface:/root/.cache/huggingface
       - $HOME/.cache/sglang:/root/.cache/sglang
