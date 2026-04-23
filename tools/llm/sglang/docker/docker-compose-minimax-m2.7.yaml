@@ -1,5 +1,7 @@
 ---
 
+# NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+
 services:
 
   ## OpenWebUI
@@ -41,7 +43,6 @@ services:
       --enable-pcie-oneshot-allreduce
       --mem-fraction-static 0.93
       --max-running-requests 1
-      --disable-custom-all-reduce
     ports:
       - "8000:8000"
     volumes:
