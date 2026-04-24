@@ -72,3 +72,7 @@ llama-server --host 0.0.0.0 --port 8000 -c 262144 -ctk turbo3_tcq -ctv turbo2_tc
 llama-server --host 0.0.0.0 --port 8000 -c 262144 -ctk turbo4 -ctv turbo3_tcq --kv-unified -fa on -hfr unsloth/Qwen3.6-27B-GGUF:UD-Q4_K_XL
 ```
 
+```bash
+build/bin/llama-server --host 0.0.0.0 --port 8002 -ngl 99 -ngld 99 -c 8192 -cd 4096 -fa on -ctk q8_0 -ctv q8_0 --draft-max 12 --draft-min 3 --draft-p-min 0.6 -hfr unsloth/Qwen3.6-27B-GGUF:Q4_K_M -md /data/models/huggingface/hub/Qwen3-1.7B-Q8_0.gguf --device CUDA0
+```
+
