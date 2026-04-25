@@ -6,20 +6,38 @@
 #   - DFlash: --speculative-config '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 15}'
 
 services:
-  vllm:
+  ## OpenWebUI
+  vllm-open-webui-qwen3.5-27b:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm:8000/v1
+    restart: unless-stopped
+
+  vllm-qwen3.5-27b:
+    ipc: host
     image: vllm/vllm-openai:nightly
     command: >
-      sakamakismile/Qwen3.6-27B-NVFP4
+      AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-NVFP4
+      --served-model-name Qwen3.6-27B
+      --tensor-parallel-size 1
+      --quantization compressed-tensors
+      --dtype auto
       --max-model-len 262144
+      --max-num-seqs 64
+      --max-num-batched-tokens 16384
+      --gpu-memory-utilization 0.85
+      --enable-chunked-prefill
+      --no-enable-prefix-caching
+      --load-format safetensors
+      --trust-remote-code
+      --attention-backend flash_attn
+      --mm-encoder-tp-mode data
+      --mm-processor-cache-type shm
       --enable-auto-tool-choice
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
-      --gpu-memory-utilization 0.9
-      --served-model-name Qwen3.6-27B-DFlash
-      --max-num-batched-tokens 512 
-      --max-num-seqs 2
-      --override-generation-config '{"thinking":{"type":"disabled"}, "temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "repetition_penalty": 1.0, "presence_penalty": 0.0}'
-      --default-chat-template-kwargs '{"enable_thinking": true, "preserve_thinking": false}'
     ports:
       - "8000:8000"
     volumes:
@@ -35,5 +53,7 @@ services:
               capabilities: [gpu]
               device_ids: ["0"]
     environment:
-      - VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1
+      - TORCH_CUDA_ARCH_LIST=12.0+PTX
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+      - VLLM_USE_FLASHINFER_MOE_FP4=0
 
