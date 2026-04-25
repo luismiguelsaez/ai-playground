@@ -73,6 +73,6 @@ llama-server --host 0.0.0.0 --port 8000 -c 262144 -ctk turbo4 -ctv turbo3_tcq --
 ```
 
 ```bash
-build/bin/llama-server --host 0.0.0.0 --port 8002 -ngl 99 -ngld 99 -c 8192 -cd 4096 -fa on -ctk q8_0 -ctv q8_0 --draft-max 12 --draft-min 3 --draft-p-min 0.6 -hfr unsloth/Qwen3.6-27B-GGUF:Q4_K_M -md /data/models/huggingface/hub/Qwen3-1.7B-Q8_0.gguf --device CUDA0
+build/bin/llama-server --host 0.0.0.0 --port 8000 -c 131072 -np 1 --spec-type dflash -ngl 999 -ngld 999 --draft-max 16 --draft-min 1 --jinja -fa on --chat-template-kwargs '{"enable_thinking":false}' -m ~/.cache/huggingface/hub/Ornstein-3.6-27B-Q4_K_M.gguf -md ~/.cache/huggingface/hub/dflash-draft-3.6-q4_k_m.gguf -ctk turbo4 -ctv turbo3_tcq
 ```
 
