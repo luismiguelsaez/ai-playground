@@ -25,3 +25,6 @@
 [submodule "tools/llm/llamacpp/source/llama-cpp-turboquant"]
 	path = tools/llm/llamacpp/source/llama-cpp-turboquant
 	url = https://github.com/TheTom/llama-cpp-turboquant.git
+[submodule "tools/llm/vllm/source/genesis-vllm-patches"]
+	path = tools/llm/vllm/source/genesis-vllm-patches
+	url = https://github.com/Sandermage/genesis-vllm-patches
