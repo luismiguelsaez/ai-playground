@@ -1,0 +1,69 @@
+# https://medium.com/@fzbcwvv/an-overnight-stack-for-qwen3-6-27b-85-tps-125k-context-vision-on-one-rtx-3090-0d95c6291914
+services:
+  vllm-qwen36-27b-autoround-tp1-turbo:
+    image: vllm/vllm-openai:nightly
+    container_name: vllm-qwen36-27b-autoround-tp1-turbo
+    restart: "no"
+    ports:
+      - "8020:8000"
+    volumes:
+      - /data/models/huggingface/hub:/root/.cache/huggingface
+      - $PWD/patches/genesis-vllm-patches/patch_genesis_unified.py:/patches/patch_genesis_unified.py:ro
+      - $PWD/patches/genesis-vllm-patches/patch_tolist_cudagraph.py:/patches/patch_tolist_cudagraph.py:ro
+      - $PWD/patches/qwen36-27b-single-3090/patches/patch_tolist_cudagraph.py:/patches/patch_tolist_cudagraph.py:ro
+    environment:
+      - CUDA_VISIBLE_DEVICES=1
+      - VLLM_WORKER_MULTIPROC_METHOD=spawn
+      - NCCL_P2P_DISABLE=1
+      - VLLM_USE_FLASHINFER_SAMPLER=1
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+      - VLLM_MARLIN_USE_ATOMIC_ADD=1
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
+    shm_size: "16gb"
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    entrypoint: ["/bin/bash", "-c",
+      "pip install xxhash -q && python3 /patches/patch_genesis_unified.py && python3 /patches/patch_tolist_cudagraph.py && exec vllm serve \"$@\"",
+      "--"]
+    command:
+      - --model
+      - /root/.cache/huggingface/qwen3.6-27b-autoround-int4
+      - --served-model-name
+      - qwen3.6-27b-autoround
+      - --quantization
+      - auto_round
+      - --dtype
+      - float16
+      - --tensor-parallel-size
+      - "1"
+      - --max-model-len
+      - "125000"
+      - --gpu-memory-utilization
+      - "0.97"
+      - --max-num-seqs
+      - "1"
+      - --max-num-batched-tokens
+      - "4128"
+      - --kv-cache-dtype
+      - turboquant_3bit_nc
+      - --trust-remote-code
+      - --reasoning-parser
+      - qwen3
+      - --enable-auto-tool-choice
+      - --tool-call-parser
+      - qwen3_coder
+      - --enable-prefix-caching
+      - --enable-chunked-prefill
+      - --no-scheduler-reserve-full-isl
+      - --speculative-config
+      - '{"method":"mtp","num_speculative_tokens":3}'
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"

@@ -12,10 +12,10 @@ services:
     ports:
       - 3001:8080
     environment:
-      - OPENAI_API_BASE_URL=http://vllm:8000/v1
+      - OPENAI_API_BASE_URL=http://vllm-qwen3.6-27b:8000/v1
     restart: unless-stopped
 
-  vllm-qwen3.5-27b:
+  vllm-qwen3.6-27b:
     ipc: host
     image: vllm/vllm-openai:nightly
     command: >
