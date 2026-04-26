@@ -13,14 +13,14 @@ services:
       --tool-call-parser qwen3_coder
       --reasoning-parser qwen3
       --kv-cache-dtype fp8_e5m2
-      --gpu-memory-utilization 0.25
+      --gpu-memory-utilization 0.97
       --max-model-len 20000
       --max-num-seqs 1
       --speculative-config '{"method":"mtp","num_speculative_tokens":3}'
     ports:
       - "8000:8000"
     volumes:
-      - /data/models/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
     runtime: nvidia
     deploy:
       resources:
