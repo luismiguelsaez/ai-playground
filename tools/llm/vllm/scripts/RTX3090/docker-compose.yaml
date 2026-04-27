@@ -8,9 +8,7 @@ services:
       - "8020:8000"
     volumes:
       - /data/models/huggingface/hub:/root/.cache/huggingface
-      - $PWD/patches/genesis-vllm-patches/patch_genesis_unified.py:/patches/patch_genesis_unified.py:ro
-      - $PWD/patches/genesis-vllm-patches/patch_tolist_cudagraph.py:/patches/patch_tolist_cudagraph.py:ro
-      - $PWD/patches/qwen36-27b-single-3090/patches/patch_tolist_cudagraph.py:/patches/patch_tolist_cudagraph.py:ro
+      - $PWD/patches/genesis-vllm-patches/vllm:/root/vllm:ro
     environment:
       - CUDA_VISIBLE_DEVICES=1
       - VLLM_WORKER_MULTIPROC_METHOD=spawn
@@ -29,7 +27,7 @@ services:
               count: all
               capabilities: [gpu]
     entrypoint: ["/bin/bash", "-c",
-      "pip install xxhash -q && python3 /patches/patch_genesis_unified.py && python3 /patches/patch_tolist_cudagraph.py && exec vllm serve \"$@\"",
+      "pip install xxhash -q && python3 -m vllm._genesis.patches.apply_all && exec vllm serve \"$@\"",
       "--"]
     command:
       - --model
