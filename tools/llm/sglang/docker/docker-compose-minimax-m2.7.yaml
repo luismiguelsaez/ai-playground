@@ -2,8 +2,11 @@
 
 # OS configuration
 # - NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
-# Resources
-# - VRAM Usage: 90Gi ( startup )
+#
+# Models
+#
+# NVIDIA ( https://huggingface.co/nvidia/MiniMax-M2.7-NVFP4 )
+# - VRAM Usage:  ( startup )
 
 services:
 
