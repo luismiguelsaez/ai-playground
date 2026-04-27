@@ -6,6 +6,7 @@
 #
 # nvidia/MiniMax-M2.7-NVFP4
 # lukealonso/MiniMax-M2.7-NVFP4
+#   - VRAM: 92.494 ( startup )
 
 services:
 
