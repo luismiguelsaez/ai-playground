@@ -5,7 +5,9 @@
 
 ## Install PyTorch
 
-SGLANG_VERSION="0.5.10"
+export SGLANG_VERSION="0.5.10"
+export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
+export CUDA_HOME=/usr/local/cuda-13
 
 uv pip install torch==$SGLANG_VERSION torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 

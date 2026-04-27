@@ -26,6 +26,7 @@ services:
   #   - VRAM usage: 85.368Gi +  85.368Gi
   #   - Generation speed:
   sglang-minimax-m2.7:
+    #image: lmsysorg/sglang:v0.5.10-cu130
     image: voipmonitor/sglang:cu130
     pull_policy: always
     ipc: host
