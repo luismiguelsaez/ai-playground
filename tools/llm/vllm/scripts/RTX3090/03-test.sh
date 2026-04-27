@@ -20,3 +20,5 @@ vllm serve Lorbus/Qwen3.6-27B-int4-AutoRound \
   --enable-chunked-prefill \
   --no-scheduler-reserve-full-isl \
   --speculative-config '{"method":"mtp","num_speculative_tokens":3}'
+
+docker run -p 8000:8000 -v ~/.cache/huggingface/hub:/root/.cache/llama.cpp --gpus all ghcr.io/ggml-org/llama.cpp:server-cuda12 -m /root/.cache/llama.cpp/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf -c 131072 --host 0.0.0.0 --port 8000 -fa on -ngl 999 --spec-default -ctk q8_0 -ctv q8_0 --reasoning off
