@@ -1,6 +1,11 @@
 
 # OS configuration
 # - NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+#
+# Models
+#
+# nvidia/MiniMax-M2.7-NVFP4
+# lukealonso/MiniMax-M2.7-NVFP4
 
 services:
 
@@ -20,14 +25,14 @@ services:
   # GPU(s): 2 x RTX 6000 Pro
   # VRAM: 2 x 93Gi
   vllm-minimax-m2.7:
-    image: vllm/vllm-openai:v0.19.1
+    image: vllm/vllm-openai:v0.20.0-cu130
     pull_policy: always
     ipc: host
     shm_size: 32g
     command: >
       lukealonso/MiniMax-M2.7-NVFP4
       --port 8000
-      --served-model-name MiniMax-M2.7-NVFP4
+      --served-model-name MiniMax-M2.7
       --trust-remote-code
       --kv-cache-dtype fp8
       --max-model-len 191000

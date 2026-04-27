@@ -31,23 +31,19 @@ services:
       sglang serve
       --host 0.0.0.0
       --port 30000
-      --model-path lukealonso/MiniMax-M2.7-NVFP4
+      --model-path nvidia/MiniMax-M2.7-NVFP4
       --served-model-name MiniMax-M2.7-NVFP4
+      --context-length 191000
       --reasoning-parser minimax
       --tool-call-parser minimax-m2
       --tensor-parallel-size 2
-      --sleep-on-idle
-      --enable-torch-compile
       --trust-remote-code
-      --kv-cache-dtype bf16
+      --kv-cache-dtype fp8_e4m3
       --quantization modelopt_fp4
-      --moe-runner-backend b12x
-      --fp4-gemm-backend b12x
-      --context-length 131072
+      --moe-runner-backend flashinfer_cutlass 
       --attention-backend flashinfer
-      --enable-pcie-oneshot-allreduce
       --mem-fraction-static 0.93
-      --max-running-requests 1
+      --max-running-requests 4
     ports:
       - "30000:30000"
     volumes:
