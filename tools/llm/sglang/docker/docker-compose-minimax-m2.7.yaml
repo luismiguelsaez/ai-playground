@@ -6,7 +6,8 @@
 # Models
 #
 # NVIDIA ( https://huggingface.co/nvidia/MiniMax-M2.7-NVFP4 )
-# - VRAM Usage:  ( startup )
+# - VRAM Usage:  91.876Gi ( startup )
+#   - K size: 8.76 GB, V size: 8.76 GB ( per GPU )
 
 services:
 
