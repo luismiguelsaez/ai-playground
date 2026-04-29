@@ -12,7 +12,6 @@ services:
       --kv-cache-dtype fp8_e4m3
       --tensor-parallel-size 1
       --quantization compressed-tensors
-      --dtype auto
       --max-model-len 262144
       --max-num-seqs 64
       --max-num-batched-tokens 16384
@@ -21,13 +20,10 @@ services:
       --no-enable-prefix-caching
       --load-format safetensors
       --trust-remote-code
-      --attention-backend flash_attn
-      --mm-encoder-tp-mode weights 
-      --mm-processor-cache-type shm
       --enable-auto-tool-choice
       --tool-call-parser gemma4 
       --reasoning-parser gemma4
-      --speculative-config '{"method": "dflash", "model": "RedHatAI/gemma-4-31B-it-speculator.dflash", "num_speculative_tokens": 15}'
+      --speculative-config '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 15}'
     ports:
       - "8000:8000"
     volumes:

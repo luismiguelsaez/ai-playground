@@ -1,0 +1,49 @@
+---
+
+services:
+  ## OpenWebUI
+  vllm-open-webui-nvidia-nemotron-3-nano-omni-30b:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-nvidia-nemotron-3-nano-omni-30b:8000/v1
+    restart: unless-stopped
+
+  vllm-nvidia-nemotron-3-nano-omni-30b:
+    ipc: host
+    shm_size: 32g
+    image: vllm/vllm-openai:v0.20.0
+    command: >
+      nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4
+      --served-model-name Nvidia-Nemotron-3-Nano-Omni-30B 
+      --max-num-seqs 8 
+      --max-model-len 262144
+      --port 8000
+      --trust-remote-code
+      --gpu-memory-utilization 0.8
+      --limit-mm-per-prompt '{"video": 1, "image": 1, "audio": 1}'
+      --media-io-kwargs '{"video": {"fps": 2,  "num_frames": 256}}'
+      --allowed-local-media-path=/
+      --enable-prefix-caching
+      --max-num-batched-tokens 32768
+      --reasoning-parser nemotron_v3
+      --enable-auto-tool-choice
+      --tool-call-parser qwen3_coder
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/vllm:/root/.cache/vllm
+      - $PWD/config/models:/configs
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0"]
+    environment:
+      - VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1
+
