@@ -2,16 +2,32 @@
 
 services:
   vllm:
-    image: vllm/vllm-openai:v0.19.1
+    ipc: host
+    shm_size: 32g
+    image: vllm/vllm-openai:v0.20.0
     command: >
       RedHatAI/gemma-4-31B-it-NVFP4
+      --served-model-name Gemma-4-31B-it
+      --dtype auto
+      --kv-cache-dtype fp8_e4m3
+      --tensor-parallel-size 1
+      --quantization compressed-tensors
+      --dtype auto
       --max-model-len 262144
-      --kv-cache-dtype fp8
+      --max-num-seqs 64
+      --max-num-batched-tokens 16384
+      --gpu-memory-utilization 0.85
+      --enable-chunked-prefill
+      --no-enable-prefix-caching
+      --load-format safetensors
+      --trust-remote-code
+      --attention-backend flash_attn
+      --mm-encoder-tp-mode weights 
+      --mm-processor-cache-type shm
       --enable-auto-tool-choice
-      --tool-call-parser gemma4
+      --tool-call-parser gemma4 
       --reasoning-parser gemma4
-      --gpu-memory-utilization 0.5
-      --served-model-name gemma-4-31B-it-NVFP4
+      --speculative-config '{"method": "dflash", "model": "RedHatAI/gemma-4-31B-it-speculator.dflash", "num_speculative_tokens": 15}'
     ports:
       - "8000:8000"
     volumes:

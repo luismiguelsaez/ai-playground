@@ -17,6 +17,7 @@ services:
 
   vllm-qwen3.6-27b:
     ipc: host
+    shm_size: 32g
     image: vllm/vllm-openai:nightly
     command: >
       AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-NVFP4
@@ -24,6 +25,7 @@ services:
       --tensor-parallel-size 1
       --quantization compressed-tensors
       --dtype auto
+      --kv-cache-dtype fp8_e4m3
       --max-model-len 262144
       --max-num-seqs 64
       --max-num-batched-tokens 16384

@@ -6,6 +6,8 @@
 #
 # Intel/DeepSeek-V4-Flash-W4A16-AutoRound 
 #   - VRAM:  ( startup )
+#
+# Recipe: https://recipes.vllm.ai/deepseek-ai/DeepSeek-V4-Flash?features=tool_calling%2Creasoning%2Cspec_decoding
 
 services:
 
@@ -19,7 +21,7 @@ services:
     restart: unless-stopped
 
   vllm-deepseek-v4-flash:
-    image: vllm/vllm-openai:v0.20.0-cu130
+    image: vllm/vllm-openai:nightly
     pull_policy: always
     ipc: host
     shm_size: 32g
@@ -27,15 +29,16 @@ services:
       Intel/DeepSeek-V4-Flash-W4A16-AutoRound
       --port 8000
       --served-model-name DeepSeek-V4-Flash
-      --trust-remote-code
-      --kv-cache-dtype fp8_e4m3
-      --max-model-len 60000 
-      --enable_expert_parallel
+      --max-model-len 30000
+      --kv-cache-dtype fp8
+      --block-size 256
+      --enable-expert-parallel
       --tensor-parallel-size 2
+      --tokenizer-mode deepseek_v4
+      --tool-call-parser deepseek_v4
       --enable-auto-tool-choice
-      --enable-chunked-prefill
-      --max-num-seqs 4
-      --gpu-memory-utilization 0.96
+      --reasoning-parser deepseek_v4
+      --speculative_config '{"method":"mtp","num_speculative_tokens":1}'
     ports:
       - "8000:8000"
     volumes:
