@@ -1,0 +1,63 @@
+
+# OS configuration
+# - NCCL stuck issue: add `iommu=pt` to Kernel parameters at `/etc/default/grub`
+#
+# Models
+#
+# Intel/DeepSeek-V4-Flash-W4A16-AutoRound 
+#   - VRAM:  ( startup )
+
+services:
+
+  ## OpenWebUI
+  vllm-open-webui-deepseek-v4-flash:
+    image: ghcr.io/open-webui/open-webui:latest
+    ports:
+      - 3001:8080
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm-minimax-m2.7:8000/v1
+    restart: unless-stopped
+
+  vllm-deepseek-v4-flash:
+    image: vllm/vllm-openai:v0.20.0-cu130
+    pull_policy: always
+    ipc: host
+    shm_size: 32g
+    command: >
+      Intel/DeepSeek-V4-Flash-W4A16-AutoRound
+      --port 8000
+      --served-model-name DeepSeek-V4-Flash
+      --trust-remote-code
+      --kv-cache-dtype fp8_e4m3
+      --max-model-len 60000 
+      --enable_expert_parallel
+      --tensor-parallel-size 2
+      --enable-auto-tool-choice
+      --enable-chunked-prefill
+      --max-num-seqs 4
+      --gpu-memory-utilization 0.96
+    ports:
+      - "8000:8000"
+    volumes:
+      - $HOME/.cache/huggingface:/root/.cache/huggingface
+      - $HOME/.cache/flashinfer:/root/.cache/flashinfer
+      - $HOME/github/ai-playground/tools/llm/vllm/source/config:/config
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              device_ids: ["0","1"]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0,1
+      - SAFETENSORS_FAST_GPU=1
+      - VLLM_LOGGING_LEVEL=INFO
+      - VLLM_USE_FLASHINFER_MOE_FP4=1
+      - VLLM_NVFP4_GEMM_BACKEND=cutlass
+      - FLASHINFER_JIT_CACHE=/root/.cache/flashinfer  # persist JIT cache
+      - VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=1
+      - OMP_NUM_THREADS=8
+    restart: unless-stopped
+
