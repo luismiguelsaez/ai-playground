@@ -5,6 +5,7 @@
 # Models
 #
 # nvidia/MiniMax-M2.7-NVFP4
+#   - VRAM: 92.494 ( startup )
 # lukealonso/MiniMax-M2.7-NVFP4
 #   - VRAM: 92.494 ( startup )
 
@@ -31,7 +32,7 @@ services:
     ipc: host
     shm_size: 32g
     command: >
-      lukealonso/MiniMax-M2.7-NVFP4
+      nvidia/MiniMax-M2.7-NVFP4
       --port 8000
       --served-model-name MiniMax-M2.7
       --trust-remote-code
