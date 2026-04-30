@@ -32,10 +32,20 @@
       "apiKey": "aa",
       "models": [
         {
-          "id": "model",
-          "reasoning": true,
-          "contextWindow": 262144,
-          "maxTokens": 25536
+          "id": "Qwen3.6-27B",
+          "contextWindow": 262144
+        },
+        {
+          "id": "Gemma-4-31B-it",
+          "contextWindow": 262144
+        },
+        {
+          "id": "Qwen3.6-35B-A3B",
+          "contextWindow": 262144
+        },
+        {
+          "id": "MiniMax-M2.7",
+          "contextWindow": 191000
         }
       ]
     }
