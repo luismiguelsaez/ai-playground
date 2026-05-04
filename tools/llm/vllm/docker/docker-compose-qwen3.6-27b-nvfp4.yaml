@@ -18,7 +18,7 @@ services:
   vllm-qwen3.6-27b:
     ipc: host
     shm_size: 32g
-    image: vllm/vllm-openai:nightly
+    image: vllm/vllm-openai:v0.20.1
     command: >
       AEON-7/Qwen3.6-27B-AEON-Ultimate-Uncensored-NVFP4
       --served-model-name Qwen3.6-27B

@@ -4,7 +4,7 @@ services:
   vllm:
     ipc: host
     shm_size: 32g
-    image: vllm/vllm-openai:v0.20.0
+    image: vllm/vllm-openai:v0.20.1
     command: >
       RedHatAI/gemma-4-31B-it-NVFP4
       --served-model-name Gemma-4-31B-it

@@ -1,31 +1,17 @@
 ## Build
 
 ```bash
-cd llama.cpp
-CMAKE_PREFIX_PATH=/usr/local/cuda cmake -B build -DGGML_CUDA=ON -DGGML_CUDA_FA_ALL_QUANTS=ON -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_CUDA_ARCHITECTURES="86"
-cmake --build build --config Release -j48 --clean-first --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
+CUDA_HOME=${CUDA_HOME:-/usr/local/cuda-13} \
+CMAKE_PREFIX_PATH=$CUDA_HOME \
+CUDA_ARCHS="${CUDA_ARCHS:-120}" \
+cmake -B build \
+  -DGGML_CUDA=ON \
+  -DGGML_CUDA_FA=ON \
+  -DGGML_CUDA_FA_ALL_QUANTS=ON \
+  -DCMAKE_CUDA_COMPILER=$CUDA_HOME/bin/nvcc \
+  -DCMAKE_CUDA_ARCHITECTURES="$CUDA_ARCHS" \
+  -DLLAMA_OPENSSL=ON
+
+cmake --build build --config Release -j$(nproc) --clean-first
 ```
 
-## Build ( ik_llama)
-
-```bash
-cd ik_llama.cpp
-cmake -B build -DGGML_NATIVE=ON -DGGML_CUDA=ON
-cmake --build build --config Release -j$(nproc)
-```
-
-## Build ( turbo-tan llama )
-
-```bash
-cd llama.cpp-tq3
-
-cmake -B build -DGGML_CUDA=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j
-```
-
-## Build ( Buun llama - TurboQuant )
-
-```bash
-rm -rf build && cmake -B build -DGGML_CUDA=ON -DGGML_NATIVE=ON -DGGML_CUDA_FA=ON -DGGML_CUDA_FA_ALL_QUANTS=ON -DCMAKE_BUILD_TYPE=Release -DLLAMA_OPENSSL=ON
-cmake --build build -j$(nproc)
-```

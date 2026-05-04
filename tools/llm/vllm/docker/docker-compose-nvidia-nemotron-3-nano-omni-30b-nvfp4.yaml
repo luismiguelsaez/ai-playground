@@ -17,20 +17,23 @@ services:
     image: vllm/vllm-openai:v0.20.0
     command: >
       nvidia/Nemotron-3-Nano-Omni-30B-A3B-Reasoning-NVFP4
-      --served-model-name Nvidia-Nemotron-3-Nano-Omni-30B 
-      --max-num-seqs 8 
-      --max-model-len 262144
+      --served-model-name Nvidia-Nemotron-3-Nano-Omni-30B
       --port 8000
+      --max-model-len 131072
+      --gpu-memory-utilization 0.50
+      --tensor-parallel-size 1
       --trust-remote-code
-      --gpu-memory-utilization 0.8
-      --limit-mm-per-prompt '{"video": 1, "image": 1, "audio": 1}'
-      --media-io-kwargs '{"video": {"fps": 2,  "num_frames": 256}}'
-      --allowed-local-media-path=/
+      --video-pruning-rate 0.5
+      --max-num-seqs 1
+      --allowed-local-media-path /
+      --limit-mm-per-prompt '{"video": 1, "image": 1, "audio": 1}' 
+      --media-io-kwargs '{"video": {"fps": 2, "num_frames": 256}}'
       --enable-prefix-caching
       --max-num-batched-tokens 32768
       --reasoning-parser nemotron_v3
       --enable-auto-tool-choice
       --tool-call-parser qwen3_coder
+      --kv-cache-dtype fp8
     ports:
       - "8000:8000"
     volumes:

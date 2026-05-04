@@ -66,9 +66,9 @@ services:
     security_opt:
       - "label=type:nvidia_container_t"
     volumes:
-      - /data/models/comfy/models:/root/ComfyUI/models
-      - /data/models/comfy/workflows:/root/ComfyUI/user/default/workflows
-      - /data/models/comfy/custom_nodes:/root/ComfyUI/custom_nodes
+      - /data2/models/comfy/models:/root/ComfyUI/models
+      - /data2/models/comfy/workflows:/root/ComfyUI/user/default/workflows
+      - /data2/models/comfy/custom_nodes:/root/ComfyUI/custom_nodes
     environment:
       CLI_ARGS: "--disable-xformers"
     deploy:
