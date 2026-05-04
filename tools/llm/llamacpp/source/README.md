@@ -1,9 +1,16 @@
-## Build
+# Build
+
+## Architectures
+
+- RTX 3090: `86`
+- RTX Pro 6000: `90`
+
+## Build command
 
 ```bash
 CUDA_HOME=${CUDA_HOME:-/usr/local/cuda-13} \
 CMAKE_PREFIX_PATH=$CUDA_HOME \
-CUDA_ARCHS="${CUDA_ARCHS:-120}" \
+CUDA_ARCHS="${CUDA_ARCHS:-90}" \
 cmake -B build \
   -DGGML_CUDA=ON \
   -DGGML_CUDA_FA=ON \
