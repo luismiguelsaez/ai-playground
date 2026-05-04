@@ -13,5 +13,7 @@ cmake -B build \
   -DLLAMA_OPENSSL=ON
 
 cmake --build build --config Release -j$(nproc) --clean-first
+
+sudo cp -rp build/bin/{llama-cli,llama-server,llama-bench,llama-quantize,llama-gguf-split} /usr/local/bin
 ```
 
