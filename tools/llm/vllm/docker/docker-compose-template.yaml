@@ -1,21 +1,19 @@
 ---
 
-# - VRAM Usage: 50Gi ( startup )
-# - Speculative config
-#   - MTP:    --speculative-config '{"method":"mtp","num_speculative_tokens":1}'
-#   - DFlash: --speculative-config '{"method": "dflash", "model": "z-lab/Qwen3.6-27B-DFlash", "num_speculative_tokens": 15}'
+# - Model:
+# - VRAM Usage: Gi ( startup )
 
 services:
   ## OpenWebUI
-  vllm-open-webui-qwen3.5-27b:
+  vllm-open-webui:
     image: ghcr.io/open-webui/open-webui:latest
     ports:
       - 3001:8080
     environment:
-      - OPENAI_API_BASE_URL=http://vllm-qwen3.6-27b:8000/v1
+      - OPENAI_API_BASE_URL=http://vllm:8000/v1
     restart: unless-stopped
 
-  vllm-qwen3.6-27b:
+  vllm:
     ipc: host
     shm_size: 32g
     image: vllm/vllm-openai:v0.20.1
